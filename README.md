@@ -1,77 +1,39 @@
-# React + TypeScript + Vite
+# Driving School Platform - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview of the Problem We Solve
+The Driving School Platform is designed to modernize and streamline the operations of driving schools. It provides a centralized system to manage student enrollments, mentor assignments, course curriculum, scheduling, attendance, and task grading. It ensures a seamless digital experience for students, mentors, and administrators to interact with the platform.
 
-Currently, two official plugins are available:
+## Project Architecture
+The frontend is designed with decoupled data and UI layers:
+- **Stack**: React 18, TypeScript, Vite, Tailwind CSS, React Context, react-router-dom
+- **State Management**: React Context + `useReducer` organized by domain (no external state libraries).
+- **Service Layer**: A dedicated service interface layer (`src/services`) allowing seamless switching between mock data and the real API backend.
+- **Styling**: Tailwind CSS configured with CSS variables (`theme/tokens.css`) for consistent design tokens.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## How to Set Up and Run
 
-## React Compiler
+### Prerequisites
+- Node.js (v18+)
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### Setup Instructions
+1. **Clone the repository** and navigate to the frontend directory.
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+3. **Environment Setup**:
+   Copy the example environment file and configure your API base URL (and toggle mock services if needed).
+   ```bash
+   cp .env.example .env
+   ```
+4. **Run the Application**:
+   Start the Vite development server:
+   ```bash
+   npm run dev
+   ```
 
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+## The Team
+- **Zeamanuel Mebit** (ID: CTC-3498-26) - Lead, Code Reviewer
+- **Yonas** (ID: [id]) - Backend dev
+- **Yeabsra** (ID: [id]) - Frontend dev
+- **Yohannes** (ID: [id]) - UI/UX designer, frontend dev
