@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
+import { AuthPage } from '../../features/auth/AuthPage/AuthPage.tsx';
 
 export default function RegisterPage() {
-  return <PlaceholderPage title="Register" section="Auth" />;
+  return <AuthPage initialMode="register" />;
 }
