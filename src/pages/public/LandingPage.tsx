@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
+import { LandingPage as LandingPageFeature } from '../../features/public/LandingPage/LandingPage.tsx';
 
 export default function LandingPage() {
-  return <PlaceholderPage title="Landing Page" section="Public" />;
+  return <LandingPageFeature />;
 }
