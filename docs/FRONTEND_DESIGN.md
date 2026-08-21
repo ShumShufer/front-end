@@ -157,21 +157,22 @@ driving-platform-frontend/
 
 Routes are declared once in `routes.config.ts` with an associated `allowedRoles` array. `ProtectedRoute` reads the current user's role from `AuthContext` and redirects to `/403` or `/login` as needed.
 
-| Path prefix | Layout | Access |
-|---|---|---|
-| `/` , `/schools`, `/courses`, `/mentors` (browse) | PublicLayout | Everyone (guest included) |
-| `/auth/*` | PublicLayout | Guest only |
-| `/app/student/*` | AppShell (student nav) | STUDENT |
-| `/app/mentor/*` | AppShell (mentor nav) | MENTOR |
-| `/app/education-head/*` | AppShell | EDUCATION_HEAD |
-| `/app/admin/*` | AppShell | ADMIN |
-| `/app/super-admin/*` | AppShell | SUPER_ADMIN |
+| Path prefix                                       | Layout                 | Access                    |
+| ------------------------------------------------- | ---------------------- | ------------------------- |
+| `/` , `/schools`, `/courses`, `/mentors` (browse) | PublicLayout           | Everyone (guest included) |
+| `/auth/*`                                         | PublicLayout           | Guest only                |
+| `/app/student/*`                                  | AppShell (student nav) | STUDENT                   |
+| `/app/mentor/*`                                   | AppShell (mentor nav)  | MENTOR                    |
+| `/app/education-head/*`                           | AppShell               | EDUCATION_HEAD            |
+| `/app/admin/*`                                    | AppShell               | ADMIN                     |
+| `/app/super-admin/*`                              | AppShell               | SUPER_ADMIN               |
 
 ---
 
 ## 4. Full Screen List
 
 ### 4.1 Public / Guest (no login required)
+
 1. **Landing Page** — value proposition, search bar for schools/courses
 2. **Browse Schools** — filter/sort by location, rating, price, courses offered
 3. **School Profile (public)** — locations, branches, courses, prices, rating/reviews, "Apply" CTA
@@ -183,6 +184,7 @@ Routes are declared once in `routes.config.ts` with an associated `allowedRoles`
 9. **Pricing / Commission info (for schools)**
 
 ### 4.2 Auth
+
 10. **Register** (role: prospective student or school representative)
 11. **Fayda (National ID) Verification** — step in signup, age verification
 12. **Login**
@@ -191,6 +193,7 @@ Routes are declared once in `routes.config.ts` with an associated `allowedRoles`
 15. **Onboarding / Role Selection** (student vs. school-registration path)
 
 ### 4.3 Student
+
 16. **Student Dashboard** — enrolled school/classroom summary, upcoming tasks, notifications, progress
 17. **School Discovery & Application** — apply online, upload documents, choose in-person/online
 18. **My Applications** — status tracker (pending/accepted/rejected)
@@ -213,6 +216,7 @@ Routes are declared once in `routes.config.ts` with an associated `allowedRoles`
 35. **Comments/Feedback on course** (leave review)
 
 ### 4.4 Mentor
+
 36. **Mentor Dashboard** — assigned classrooms, pending grading, today's schedule
 37. **Classroom Management (list of my classrooms)**
 38. **Classroom Detail (mentor view)** — same tabs as student but editable
@@ -230,6 +234,7 @@ Routes are declared once in `routes.config.ts` with an associated `allowedRoles`
 50. **Mentor Profile**
 
 ### 4.5 Education Head
+
 51. **Education Head Dashboard**
 52. **Mentor Management** (assign/remove mentors to classrooms)
 53. **Global Education Schedule Builder** (school-wide calendar, higher priority than classroom schedule)
@@ -237,6 +242,7 @@ Routes are declared once in `routes.config.ts` with an associated `allowedRoles`
 55. **Course Catalog Oversight** (approve/monitor courses across classrooms)
 
 ### 4.6 Admin (per school)
+
 56. **Admin Dashboard** — school KPIs: student count, graduation rate, rating, revenue
 57. **School Profile Editor** (locations, branches, description, media)
 58. **Branch Management**
@@ -257,6 +263,7 @@ Routes are declared once in `routes.config.ts` with an associated `allowedRoles`
 73. **School Settings**
 
 ### 4.7 Super Admin
+
 74. **Super Admin Dashboard** — platform-wide metrics (all schools, students, revenue)
 75. **Schools Management** — approve new schools, suspend/activate
 76. **Admin Management** — assign/revoke ADMIN role per school
@@ -269,6 +276,7 @@ Routes are declared once in `routes.config.ts` with an associated `allowedRoles`
 83. **System Settings / Feature Flags**
 
 ### 4.8 Shared / Cross-cutting
+
 84. **404 Not Found**
 85. **403 Forbidden**
 86. **Notifications Center** (shared shell, filtered by audience)
@@ -290,15 +298,15 @@ context/<domain>/
 
 ### 5.1 Context list & responsibility
 
-| Context | Holds | Talks to service |
-|---|---|---|
-| `AuthContext` | current user, role, token, verification status | `IAuthService` |
-| `SchoolContext` | active school being viewed/managed, branches, courses, pricing | `ISchoolService` |
-| `ClassroomContext` | active classroom, its courses/topics/tasks/schedule/announcements | `IClassroomService`, `ICourseService`, `ITaskService` |
-| `EnrollmentContext` | applications (student's own, or school's inbox) | `IEnrollmentService` |
-| `NotificationContext` | unread list, polling interval / future websocket hook | `INotificationService` |
-| `PaymentContext` | transaction history, pending payment state | `IPaymentService` |
-| `UIContext` | toasts, global modals, page loading, theme (light only for MVP) | — |
+| Context               | Holds                                                             | Talks to service                                      |
+| --------------------- | ----------------------------------------------------------------- | ----------------------------------------------------- |
+| `AuthContext`         | current user, role, token, verification status                    | `IAuthService`                                        |
+| `SchoolContext`       | active school being viewed/managed, branches, courses, pricing    | `ISchoolService`                                      |
+| `ClassroomContext`    | active classroom, its courses/topics/tasks/schedule/announcements | `IClassroomService`, `ICourseService`, `ITaskService` |
+| `EnrollmentContext`   | applications (student's own, or school's inbox)                   | `IEnrollmentService`                                  |
+| `NotificationContext` | unread list, polling interval / future websocket hook             | `INotificationService`                                |
+| `PaymentContext`      | transaction history, pending payment state                        | `IPaymentService`                                     |
+| `UIContext`           | toasts, global modals, page loading, theme (light only for MVP)   | —                                                     |
 
 ### 5.2 Provider composition
 
@@ -314,8 +322,12 @@ This is the seam that lets the whole mock layer be swapped for the real API with
 ```ts
 // services/index.ts
 const useMock = import.meta.env.VITE_USE_MOCK === "true";
-export const authService: IAuthService = useMock ? mockAuthService : authServiceRemote;
-export const schoolService: ISchoolService = useMock ? mockSchoolService : schoolServiceRemote;
+export const authService: IAuthService = useMock
+  ? mockAuthService
+  : authServiceRemote;
+export const schoolService: ISchoolService = useMock
+  ? mockSchoolService
+  : schoolServiceRemote;
 // ...etc
 ```
 
@@ -331,10 +343,21 @@ export interface IClassroomService {
   getById(id: string): Promise<Classroom>;
   listForMentor(mentorId: string): Promise<Classroom[]>;
   listForStudent(studentId: string): Promise<Classroom[]>;
-  createAnnouncement(classroomId: string, data: AnnouncementInput): Promise<Announcement>;
+  createAnnouncement(
+    classroomId: string,
+    data: AnnouncementInput,
+  ): Promise<Announcement>;
   getSchedule(classroomId: string): Promise<ScheduleEvent[]>;
-  markAttendance(classroomId: string, sessionId: string, records: AttendanceRecord[]): Promise<void>;
-  reportStudent(classroomId: string, studentId: string, note: string): Promise<void>;
+  markAttendance(
+    classroomId: string,
+    sessionId: string,
+    records: AttendanceRecord[],
+  ): Promise<void>;
+  reportStudent(
+    classroomId: string,
+    studentId: string,
+    note: string,
+  ): Promise<void>;
 }
 ```
 
@@ -342,7 +365,8 @@ export interface IClassroomService {
 // services/remote/classroomService.ts
 export const classroomServiceRemote: IClassroomService = {
   getById: (id) => httpClient.get(`/classrooms/${id}`),
-  listForMentor: (mentorId) => httpClient.get(`/classrooms?mentorId=${mentorId}`),
+  listForMentor: (mentorId) =>
+    httpClient.get(`/classrooms?mentorId=${mentorId}`),
   // ...
 };
 ```
@@ -350,7 +374,7 @@ export const classroomServiceRemote: IClassroomService = {
 ```ts
 // services/mock/mockClassroomService.ts
 export const mockClassroomService: IClassroomService = {
-  getById: async (id) => delay(mockClassrooms.find(c => c.id === id)),
+  getById: async (id) => delay(mockClassrooms.find((c) => c.id === id)),
   // ...
 };
 ```

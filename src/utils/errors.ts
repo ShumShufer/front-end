@@ -3,9 +3,9 @@ export function getErrorMessage(error: unknown, fallback: string): string {
     return error.message || fallback;
   }
 
-  if (typeof error === 'object' && error !== null && 'message' in error) {
+  if (typeof error === "object" && error !== null && "message" in error) {
     const message = (error as { message: unknown }).message;
-    if (typeof message === 'string') {
+    if (typeof message === "string") {
       return message;
     }
   }

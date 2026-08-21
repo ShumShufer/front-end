@@ -1,5 +1,4 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
-
+import { EducationWorkspace } from "../../features/education-head/EducationWorkspace/EducationWorkspace.tsx";
 export default function MentorManagementPage() {
-  return <PlaceholderPage title="Mentor Management" section="Education Head" />;
+  return <EducationWorkspace view="mentors" />;
 }

@@ -4,48 +4,48 @@
   /* ================================
      Brand
      ================================ */
-  --color-primary: #1A6A38;
+  --color-primary: #1a6a38;
   --color-primary-hover: #1c713d;
   --color-primary-dark: #0f3d20;
   --color-primary-soft: #dbfee1;
   --color-primary-glow: rgba(26, 106, 56, 0.35);
 
-  --color-secondary: #0EA5E9;
-  --color-secondary-soft: #E0F2FE;
+  --color-secondary: #0ea5e9;
+  --color-secondary-soft: #e0f2fe;
 
   /* ================================
      Semantic
      ================================ */
-  --color-success: #16A34A;
-  --color-success-soft: #DCFCE7;
+  --color-success: #16a34a;
+  --color-success-soft: #dcfce7;
 
-  --color-warning: #F59E0B;
-  --color-warning-soft: #FEF3C7;
+  --color-warning: #f59e0b;
+  --color-warning-soft: #fef3c7;
 
-  --color-danger: #DC2626;
-  --color-danger-soft: #FEE2E2;
+  --color-danger: #dc2626;
+  --color-danger-soft: #fee2e2;
 
   /* ================================
      Surfaces
      ================================ */
-  --color-bg: #F8FAFC;
-  --color-surface: #FFFFFF;
-  --color-surface-raised: #FFFFFF;
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
   --color-surface-dark: #0a1f12;
   --color-surface-dark-raised: #122a1a;
   --color-surface-glass: rgba(255, 255, 255, 0.88);
   --color-surface-glass-dark: rgba(10, 31, 18, 0.85);
-  --color-border: #E2E8F0;
+  --color-border: #e2e8f0;
   --color-border-dark: rgba(255, 255, 255, 0.1);
 
   /* ================================
      Text
      ================================ */
-  --color-text: #0F172A;
+  --color-text: #0f172a;
   --color-text-body: #475569;
-  --color-text-muted: #64748B;
-  --color-text-subtle: #94A3B8;
-  --color-text-inverse: #FFFFFF;
+  --color-text-muted: #64748b;
+  --color-text-subtle: #94a3b8;
+  --color-text-inverse: #ffffff;
   --color-text-inverse-muted: rgba(255, 255, 255, 0.7);
 
   /* ================================
@@ -119,7 +119,8 @@
   --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.05);
   --shadow-card-hover: 0 8px 24px rgba(15, 23, 42, 0.08);
   --shadow-modal: 0 16px 40px rgba(15, 23, 42, 0.16);
-  --shadow-glow-primary: 0 0 32px rgba(26, 106, 56, 0.4), 0 4px 16px rgba(26, 106, 56, 0.2);
+  --shadow-glow-primary:
+    0 0 32px rgba(26, 106, 56, 0.4), 0 4px 16px rgba(26, 106, 56, 0.2);
   --shadow-glow-primary-sm: 0 0 16px rgba(26, 106, 56, 0.3);
   --shadow-nav: 0 4px 24px rgba(15, 23, 42, 0.08);
   --shadow-auth: 0 24px 64px rgba(15, 23, 42, 0.14);
@@ -151,12 +152,12 @@
   /* ================================
      Gradients & accents
      ================================ */
-  --color-hero-blue: #EFF6FF;
-  --color-hero-cyan: #E0F2FE;
-  --color-cta-accent: #93C5FD;
-  --color-footer-text: #CBD5E1;
-  --color-footer-muted: #94A3B8;
-  --color-footer-border: #1E293B;
+  --color-hero-blue: #eff6ff;
+  --color-hero-cyan: #e0f2fe;
+  --color-cta-accent: #93c5fd;
+  --color-footer-text: #cbd5e1;
+  --color-footer-muted: #94a3b8;
+  --color-footer-border: #1e293b;
   --color-focus-ring: rgba(26, 106, 56, 0.18);
 
   --gradient-hero: linear-gradient(
@@ -189,4 +190,9 @@
   --btn-height-lg: 52px;
   --btn-height-md: 44px;
   --btn-height-sm: 34px;
+  --map-height-browse: 31.25rem;
+  --map-height-profile: 26rem;
+  --map-marker-size: 2.125rem;
+  --map-marker-border: 0.1875rem;
+  --app-sidebar-width: 17rem;
 }

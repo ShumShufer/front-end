@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
+import { SchoolAdminWorkspace } from "../../features/admin/SchoolAdminWorkspace/SchoolAdminWorkspace.tsx";
 
 export default function AssignEducationHeadsPage() {
-  return <PlaceholderPage title="Assign Education Heads" section="Admin" />;
+  return <SchoolAdminWorkspace view="educationHeads" />;
 }

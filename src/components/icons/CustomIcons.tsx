@@ -9,7 +9,7 @@
  *   <CiSteeringWheelIcon size={24} />
  */
 
-import React from 'react';
+import React from "react";
 
 interface CustomIconProps {
   size?: number;
@@ -22,7 +22,7 @@ interface CustomIconProps {
 // ─── Steering Wheel ───────────────────────────────────────────────────────────
 export function CiSteeringWheelIcon({
   size = 24,
-  color = 'currentColor',
+  color = "currentColor",
   strokeWidth = 1.8,
   className,
   style,
@@ -62,7 +62,7 @@ export function CiSteeringWheelIcon({
 // ─── Road / Highway ───────────────────────────────────────────────────────────
 export function CiRoadIcon({
   size = 24,
-  color = 'currentColor',
+  color = "currentColor",
   strokeWidth = 1.8,
   className,
   style,
@@ -96,7 +96,7 @@ export function CiRoadIcon({
 // ─── Ethiopian Flag Star (Pentagram) ─────────────────────────────────────────
 export function CiEthiopianStarIcon({
   size = 24,
-  color = 'currentColor',
+  color = "currentColor",
   strokeWidth = 1.5,
   className,
   style,
@@ -113,7 +113,7 @@ export function CiEthiopianStarIcon({
   const d = `M ${points[0]} ${points
     .slice(1)
     .map((p) => `L ${p}`)
-    .join(' ')} Z`;
+    .join(" ")} Z`;
 
   return (
     <svg
@@ -137,7 +137,7 @@ export function CiEthiopianStarIcon({
 // ─── Speedometer / Dashboard ──────────────────────────────────────────────────
 export function CiSpeedometerIcon({
   size = 24,
-  color = 'currentColor',
+  color = "currentColor",
   strokeWidth = 1.8,
   className,
   style,
@@ -175,7 +175,7 @@ export function CiSpeedometerIcon({
 // ─── License / ID Card ────────────────────────────────────────────────────────
 export function CiLicenseCardIcon({
   size = 24,
-  color = 'currentColor',
+  color = "currentColor",
   strokeWidth = 1.8,
   className,
   style,

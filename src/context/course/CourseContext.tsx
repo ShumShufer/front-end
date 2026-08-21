@@ -1,5 +1,5 @@
-import { createContext } from 'react';
-import type { Course, Topic, CourseResult } from '../../types/course.types.ts';
+import { createContext } from "react";
+import type { Course, Topic, CourseResult } from "../../types/course.types.ts";
 
 export interface CourseState {
   courses: Course[];

@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
+import { SchoolAdminWorkspace } from "../../features/admin/SchoolAdminWorkspace/SchoolAdminWorkspace.tsx";
 
 export default function BranchManagementPage() {
-  return <PlaceholderPage title="Branch Management" section="Admin" />;
+  return <SchoolAdminWorkspace view="branches" />;
 }

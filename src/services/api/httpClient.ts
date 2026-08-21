@@ -1,11 +1,11 @@
-import axios, { AxiosError } from 'axios';
-import { type ApiError } from '../../types/common.types.ts';
+import axios, { AxiosError } from "axios";
+import { type ApiError } from "../../types/common.types.ts";
 
 const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || "/api/v1",
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -13,13 +13,13 @@ const httpClient = axios.create({
 httpClient.interceptors.request.use(
   (config) => {
     // @TODO: remove local storage logic and use secure measures
-    const token = localStorage.getItem('token'); // Simplistic approach for now
+    const token = localStorage.getItem("token"); // Simplistic approach for now
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // Response Interceptor
@@ -27,8 +27,8 @@ httpClient.interceptors.response.use(
   (response) => response.data,
   (error: AxiosError) => {
     let apiError: ApiError = {
-      code: 'UNKNOWN_ERROR',
-      message: 'An unexpected error occurred.',
+      code: "UNKNOWN_ERROR",
+      message: "An unexpected error occurred.",
     };
 
     if (error.response?.data) {
@@ -37,7 +37,10 @@ httpClient.interceptors.response.use(
         apiError = data.error;
       }
     } else if (error.request) {
-      apiError = { code: 'NETWORK_ERROR', message: 'Could not connect to the server.' };
+      apiError = {
+        code: "NETWORK_ERROR",
+        message: "Could not connect to the server.",
+      };
     }
 
     if (error.response?.status === 401) {
@@ -47,7 +50,7 @@ httpClient.interceptors.response.use(
     }
 
     return Promise.reject(apiError);
-  }
+  },
 );
 
 export default httpClient;

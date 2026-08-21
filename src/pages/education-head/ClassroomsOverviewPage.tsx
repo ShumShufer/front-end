@@ -1,5 +1,4 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
-
+import { EducationWorkspace } from "../../features/education-head/EducationWorkspace/EducationWorkspace.tsx";
 export default function ClassroomsOverviewPage() {
-  return <PlaceholderPage title="Classrooms Overview" section="Education Head" />;
+  return <EducationWorkspace view="classrooms" />;
 }

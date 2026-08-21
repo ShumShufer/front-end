@@ -1,4 +1,4 @@
-import type { ApplicationMode, ApplicationStatus } from './common.types.ts';
+import type { ApplicationMode, ApplicationStatus } from "./common.types.ts";
 
 export interface Enrollment {
   id: string;
@@ -16,7 +16,12 @@ export interface Enrollment {
 export interface ApplicationFormTemplate {
   id: string;
   schoolId: string;
-  fields: Array<{ key: string; label: string; type: string; required: boolean }>; // form field definitions
+  fields: Array<{
+    key: string;
+    label: string;
+    type: string;
+    required: boolean;
+  }>; // form field definitions
 }
 
 export interface PracticeElsewhereRequest {

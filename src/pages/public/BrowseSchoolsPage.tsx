@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
+import { DiscoverSchoolsPage as DiscoverSchoolsFeature } from "../../features/public/DiscoverSchoolsPage/DiscoverSchoolsPage.tsx";
 
 export default function BrowseSchoolsPage() {
-  return <PlaceholderPage title="Browse Schools" section="Public" />;
+  return <DiscoverSchoolsFeature />;
 }

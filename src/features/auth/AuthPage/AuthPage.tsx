@@ -1,31 +1,31 @@
-import { type FormEvent, useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Loader2, Lock, Mail, User } from 'lucide-react';
-import { useAuth } from '../../../context/auth/useAuth.ts';
-import { Button } from '../../../components/Button/Button.tsx';
-import { Input } from '../../../components/Form/Input.tsx';
-import { CiSteeringWheelIcon } from '../../../components/icons/CustomIcons.tsx';
-import { Role, VerificationStatus } from '../../../types/common.types.ts';
-import { getDashboardPathForRole } from '../../../utils/permissions.ts';
-import { ROUTES } from '../../../router/routes.config.ts';
-import styles from './AuthPage.module.css';
+import { type FormEvent, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Loader2, Lock, Mail, User } from "lucide-react";
+import { useAuth } from "../../../context/auth/useAuth.ts";
+import { Button } from "../../../components/Button/Button.tsx";
+import { Input } from "../../../components/Form/Input.tsx";
+import { CiSteeringWheelIcon } from "../../../components/icons/CustomIcons.tsx";
+import { Role, VerificationStatus } from "../../../types/common.types.ts";
+import { getDashboardPathForRole } from "../../../utils/permissions.ts";
+import { ROUTES } from "../../../router/routes.config.ts";
+import styles from "./AuthPage.module.css";
 
-type AuthMode = 'login' | 'register';
+type AuthMode = "login" | "register";
 
 interface AuthPageProps {
   initialMode?: AuthMode;
 }
 
-export function AuthPage({ initialMode = 'login' }: AuthPageProps) {
+export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, login, register, isLoading, error } = useAuth();
 
   const [mode, setMode] = useState<AuthMode>(initialMode);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [authSucceeded, setAuthSucceeded] = useState(false);
 
@@ -53,7 +53,9 @@ export function AuthPage({ initialMode = 'login' }: AuthPageProps) {
   const switchMode = (nextMode: AuthMode) => {
     setMode(nextMode);
     setFormError(null);
-    navigate(nextMode === 'login' ? ROUTES.auth.login : ROUTES.auth.register, { replace: true });
+    navigate(nextMode === "login" ? ROUTES.auth.login : ROUTES.auth.register, {
+      replace: true,
+    });
   };
 
   const handleLogin = async (event: FormEvent) => {
@@ -61,7 +63,7 @@ export function AuthPage({ initialMode = 'login' }: AuthPageProps) {
     setFormError(null);
 
     if (!email.trim()) {
-      setFormError('Please enter your email.');
+      setFormError("Please enter your email.");
       return;
     }
 
@@ -78,15 +80,15 @@ export function AuthPage({ initialMode = 'login' }: AuthPageProps) {
     setFormError(null);
 
     if (!firstName.trim() || !lastName.trim()) {
-      setFormError('Please enter your first and last name.');
+      setFormError("Please enter your first and last name.");
       return;
     }
     if (!email.trim()) {
-      setFormError('Please enter your email.');
+      setFormError("Please enter your email.");
       return;
     }
     if (!password.trim()) {
-      setFormError('Please create a password.');
+      setFormError("Please create a password.");
       return;
     }
 
@@ -120,10 +122,12 @@ export function AuthPage({ initialMode = 'login' }: AuthPageProps) {
               <CiSteeringWheelIcon size={14} color="currentColor" />
               ShumShufer
             </span>
-            <h2 className={styles.visualTitle}>Shift into gear. Your license awaits.</h2>
+            <h2 className={styles.visualTitle}>
+              Shift into gear. Your license awaits.
+            </h2>
             <p className={styles.visualDesc}>
-              Join thousands of learners finding verified schools, mastering theory, and hitting
-              the road with confidence.
+              Join thousands of learners finding verified schools, mastering
+              theory, and hitting the road with confidence.
             </p>
             <div className={styles.visualStats}>
               <div className={styles.visualStat}>
@@ -140,28 +144,42 @@ export function AuthPage({ initialMode = 'login' }: AuthPageProps) {
 
         <div className={styles.formPanel}>
           <div className={styles.card}>
-            <div className={styles.tabBar} role="tablist" aria-label="Authentication mode">
+            <div
+              className={styles.tabBar}
+              role="tablist"
+              aria-label="Authentication mode"
+            >
               <button
                 type="button"
                 role="tab"
-                aria-selected={mode === 'login'}
-                className={[styles.tab, mode === 'login' ? styles.tabActive : ''].filter(Boolean).join(' ')}
-                onClick={() => switchMode('login')}
+                aria-selected={mode === "login"}
+                className={[
+                  styles.tab,
+                  mode === "login" ? styles.tabActive : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                onClick={() => switchMode("login")}
               >
                 Log in
               </button>
               <button
                 type="button"
                 role="tab"
-                aria-selected={mode === 'register'}
-                className={[styles.tab, mode === 'register' ? styles.tabActive : ''].filter(Boolean).join(' ')}
-                onClick={() => switchMode('register')}
+                aria-selected={mode === "register"}
+                className={[
+                  styles.tab,
+                  mode === "register" ? styles.tabActive : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                onClick={() => switchMode("register")}
               >
                 Sign up
               </button>
             </div>
 
-            {mode === 'login' ? (
+            {mode === "login" ? (
               <>
                 <p className={styles.eyebrow}>Welcome back</p>
                 <h1 className={styles.title}>Good to see you again</h1>
@@ -170,7 +188,9 @@ export function AuthPage({ initialMode = 'login' }: AuthPageProps) {
                 </p>
 
                 <form className={styles.form} onSubmit={handleLogin}>
-                  {displayError ? <div className={styles.errorBanner}>{displayError}</div> : null}
+                  {displayError ? (
+                    <div className={styles.errorBanner}>{displayError}</div>
+                  ) : null}
 
                   <Input
                     label="Email"
@@ -195,7 +215,10 @@ export function AuthPage({ initialMode = 'login' }: AuthPageProps) {
                   />
 
                   <div className={styles.forgotRow}>
-                    <Link to={ROUTES.auth.forgotPassword} className={styles.forgotLink}>
+                    <Link
+                      to={ROUTES.auth.forgotPassword}
+                      className={styles.forgotLink}
+                    >
                       Forgot password?
                     </Link>
                   </div>
@@ -207,14 +230,18 @@ export function AuthPage({ initialMode = 'login' }: AuthPageProps) {
                         Signing in...
                       </>
                     ) : (
-                      'Sign in'
+                      "Sign in"
                     )}
                   </Button>
                 </form>
 
                 <p className={styles.foot}>
-                  Don&apos;t have an account?{' '}
-                  <button type="button" className={styles.footLink} onClick={() => switchMode('register')}>
+                  Don&apos;t have an account?{" "}
+                  <button
+                    type="button"
+                    className={styles.footLink}
+                    onClick={() => switchMode("register")}
+                  >
                     Create account
                   </button>
                 </p>
@@ -223,10 +250,14 @@ export function AuthPage({ initialMode = 'login' }: AuthPageProps) {
               <>
                 <p className={styles.eyebrow}>Join ShumShufer Ethiopia</p>
                 <h1 className={styles.title}>Start your journey today</h1>
-                <p className={styles.subtitle}>Create your free account in under a minute.</p>
+                <p className={styles.subtitle}>
+                  Create your free account in under a minute.
+                </p>
 
                 <form className={styles.form} onSubmit={handleRegister}>
-                  {displayError ? <div className={styles.errorBanner}>{displayError}</div> : null}
+                  {displayError ? (
+                    <div className={styles.errorBanner}>{displayError}</div>
+                  ) : null}
 
                   <div className={styles.nameRow}>
                     <Input
@@ -277,13 +308,13 @@ export function AuthPage({ initialMode = 'login' }: AuthPageProps) {
                         Creating account...
                       </>
                     ) : (
-                      'Create account'
+                      "Create account"
                     )}
                   </Button>
                 </form>
 
                 <p className={styles.foot}>
-                  Registering a school instead?{' '}
+                  Registering a school instead?{" "}
                   <Link to={ROUTES.auth.onboarding} className={styles.footLink}>
                     School registration
                   </Link>

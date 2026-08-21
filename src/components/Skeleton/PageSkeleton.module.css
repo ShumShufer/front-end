@@ -1,0 +1,83 @@
+.page {
+  display: grid;
+  gap: var(--space-6);
+  min-height: 100%;
+  padding: var(--space-8);
+  background: var(--color-bg);
+}
+.header,
+.metric,
+.list,
+.row,
+.form,
+.map,
+.weekdays,
+.day {
+  background: var(--color-border);
+  border-radius: var(--radius-lg);
+  animation: pulse var(--transition-slow) infinite alternate;
+}
+.header {
+  width: min(100%, var(--space-32));
+  min-height: var(--space-10);
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+.metric {
+  min-height: var(--space-24);
+}
+.columns,
+.adminGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+.list {
+  display: grid;
+  gap: var(--space-3);
+  min-height: var(--space-32);
+  padding: var(--space-5);
+}
+.row {
+  min-height: var(--space-12);
+}
+.form,
+.map {
+  min-height: calc(var(--space-32) * 2);
+}
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-2);
+}
+.weekdays {
+  grid-column: span 7;
+  min-height: var(--space-5);
+}
+.day {
+  min-height: var(--space-16);
+}
+@keyframes pulse {
+  to {
+    opacity: 0.45;
+  }
+}
+@media (max-width: 760px) {
+  .page {
+    padding: var(--space-4);
+  }
+  .metrics,
+  .columns,
+  .adminGrid {
+    grid-template-columns: 1fr;
+  }
+  .calendar {
+    gap: var(--space-1);
+  }
+  .day {
+    min-height: var(--space-12);
+  }
+}

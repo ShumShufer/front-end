@@ -1,5 +1,4 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
-
+import { StudentWorkspace } from "../../features/student/StudentWorkspace/StudentWorkspace.tsx";
 export default function StudentDashboardPage() {
-  return <PlaceholderPage title="Student Dashboard" section="Student" />;
+  return <StudentWorkspace view="dashboard" />;
 }

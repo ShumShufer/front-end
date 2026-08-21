@@ -1,4 +1,4 @@
-import type { TaskType } from './common.types.ts';
+import type { TaskType } from "./common.types.ts";
 
 export interface Task {
   id: string;

@@ -1,5 +1,8 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
-
+import { SchoolCalendar } from "../../features/shared/Calendar/SchoolCalendar.tsx";
+import { useAuth } from "../../context/auth/useAuth.ts";
 export default function AdminSchedulePage() {
-  return <PlaceholderPage title="School Schedule Management" section="Admin" />;
+  const { user } = useAuth();
+  return user?.schoolId ? (
+    <SchoolCalendar schoolId={user.schoolId} role="ADMIN" editable />
+  ) : null;
 }

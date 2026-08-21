@@ -1,4 +1,4 @@
-import type { Role, ScheduleScope } from './common.types.ts';
+import type { Role, ScheduleScope } from "./common.types.ts";
 
 export interface Classroom {
   id: string;

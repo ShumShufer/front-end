@@ -1,4 +1,4 @@
-import type { NotificationTopic } from './common.types.ts';
+import type { NotificationTopic } from "./common.types.ts";
 
 export interface Notification {
   id: string;

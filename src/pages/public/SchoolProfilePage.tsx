@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
+import { SchoolProfilePage as SchoolProfileFeature } from "../../features/public/SchoolProfilePage/SchoolProfilePage.tsx";
 
 export default function SchoolProfilePage() {
-  return <PlaceholderPage title="School Profile" section="Public" />;
+  return <SchoolProfileFeature />;
 }

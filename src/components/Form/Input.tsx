@@ -1,5 +1,5 @@
-import type { InputHTMLAttributes, ReactNode } from 'react';
-import styles from './Input.module.css';
+import type { InputHTMLAttributes, ReactNode } from "react";
+import styles from "./Input.module.css";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -8,7 +8,15 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: ReactNode;
 }
 
-export function Input({ label, hint, error, icon, className, id, ...rest }: InputProps) {
+export function Input({
+  label,
+  hint,
+  error,
+  icon,
+  className,
+  id,
+  ...rest
+}: InputProps) {
   const inputId = id ?? rest.name;
 
   return (
@@ -22,12 +30,12 @@ export function Input({ label, hint, error, icon, className, id, ...rest }: Inpu
           id={inputId}
           className={[
             styles.input,
-            icon ? styles.inputWithIcon : '',
-            error ? styles.inputError : '',
-            className ?? '',
+            icon ? styles.inputWithIcon : "",
+            error ? styles.inputError : "",
+            className ?? "",
           ]
             .filter(Boolean)
-            .join(' ')}
+            .join(" ")}
           {...rest}
         />
       </div>

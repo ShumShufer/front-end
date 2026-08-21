@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
+import { SchoolAdminWorkspace } from "../../features/admin/SchoolAdminWorkspace/SchoolAdminWorkspace.tsx";
 
 export default function AdminDashboardPage() {
-  return <PlaceholderPage title="Admin Dashboard" section="Admin" />;
+  return <SchoolAdminWorkspace view="dashboard" />;
 }

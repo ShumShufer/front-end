@@ -1,4 +1,4 @@
-import type { Role, VerificationStatus } from './common.types.ts';
+import type { Role, VerificationStatus } from "./common.types.ts";
 
 export interface User {
   id: string;

@@ -13,7 +13,9 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
-  transition: background-color var(--transition-base), box-shadow var(--transition-base),
+  transition:
+    background-color var(--transition-base),
+    box-shadow var(--transition-base),
     border-color var(--transition-base);
 }
 
@@ -100,7 +102,9 @@
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-body);
   text-decoration: none;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
   white-space: nowrap;
 }
 
@@ -135,7 +139,9 @@
   background: transparent;
   border: none;
   text-decoration: none;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -158,7 +164,9 @@
   background: var(--color-primary);
   border: none;
   text-decoration: none;
-  transition: background-color var(--transition-fast), box-shadow var(--transition-fast),
+  transition:
+    background-color var(--transition-fast),
+    box-shadow var(--transition-fast),
     transform var(--transition-fast);
   cursor: pointer;
   white-space: nowrap;
@@ -229,7 +237,9 @@
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-body);
   text-decoration: none;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .mobileNavLink:hover {

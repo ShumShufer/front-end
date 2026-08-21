@@ -4,8 +4,8 @@ import type {
   Resource,
   ScheduleEvent,
   AttendanceRecord,
-} from '../../types/classroom.types.ts';
-import type { User } from '../../types/user.types.ts';
+} from "../../types/classroom.types.ts";
+import type { User } from "../../types/user.types.ts";
 
 export interface IClassroomService {
   getById(id: string): Promise<Classroom>;
@@ -13,7 +13,10 @@ export interface IClassroomService {
   listForStudent(studentId: string): Promise<Classroom[]>;
   getStudents(classroomId: string): Promise<User[]>;
   getAnnouncements(classroomId: string): Promise<Announcement[]>;
-  createAnnouncement(classroomId: string, data: Partial<Announcement>): Promise<Announcement>;
+  createAnnouncement(
+    classroomId: string,
+    data: Partial<Announcement>,
+  ): Promise<Announcement>;
   getResources(classroomId: string): Promise<Resource[]>;
   getSchedule(classroomId: string): Promise<ScheduleEvent[]>;
   markAttendance(
@@ -21,5 +24,9 @@ export interface IClassroomService {
     sessionId: string,
     records: AttendanceRecord[],
   ): Promise<void>;
-  reportStudent(classroomId: string, studentId: string, note: string): Promise<void>;
+  reportStudent(
+    classroomId: string,
+    studentId: string,
+    note: string,
+  ): Promise<void>;
 }
