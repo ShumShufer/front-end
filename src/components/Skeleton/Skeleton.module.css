@@ -1,0 +1,12 @@
+.skeleton {
+  display: block;
+  min-height: var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--color-border);
+  animation: pulse var(--transition-slow) infinite alternate;
+}
+@keyframes pulse {
+  to {
+    opacity: 0.45;
+  }
+}
