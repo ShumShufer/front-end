@@ -1,6 +1,7 @@
 .page {
   padding-top: var(--nav-height);
-  background: var(--color-bg);
+  background-color: var(--color-bg);
+  background-image: url("/shumshufer-pattern.svg");
   min-height: 100vh;
 }
 .state {

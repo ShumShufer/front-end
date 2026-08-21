@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Loader2, Lock, Mail, User } from "lucide-react";
+import { ArrowLeft, Loader2, Lock, Mail, User } from "lucide-react";
 import { useAuth } from "../../../context/auth/useAuth.ts";
 import { Button } from "../../../components/Button/Button.tsx";
 import { Input } from "../../../components/Form/Input.tsx";
@@ -108,8 +108,28 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
 
   const displayError = formError ?? error;
 
+  const handleBack = () => {
+    // React Router stores the history index in state; fall back to the
+    // landing page when there is nothing to go back to.
+    const idx = window.history.state?.idx;
+    if (typeof idx === "number" && idx > 0) {
+      navigate(-1);
+      return;
+    }
+    navigate(ROUTES.public.landing, { replace: true });
+  };
+
   return (
     <div className={styles.page}>
+      <button
+        type="button"
+        className={styles.backButton}
+        onClick={handleBack}
+        aria-label="Go back"
+      >
+        <ArrowLeft size={20} />
+        Back
+      </button>
       <div className={styles.layout}>
         <div className={styles.visual}>
           <img

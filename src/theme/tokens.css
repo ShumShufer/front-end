@@ -8,6 +8,7 @@
   --color-primary-hover: #1c713d;
   --color-primary-dark: #0f3d20;
   --color-primary-soft: #dbfee1;
+  --color-primary-bright: #7ee2a1;
   --color-primary-glow: rgba(26, 106, 56, 0.35);
 
   --color-secondary: #0ea5e9;
@@ -29,8 +30,9 @@
      Surfaces
      ================================ */
   --color-bg: #f8fafc;
-  --color-surface: #ffffff;
+  --color-surface: #eef2f7;
   --color-surface-raised: #ffffff;
+  --color-surface-dim: #b3b3b333;
   --color-surface-dark: #0a1f12;
   --color-surface-dark-raised: #122a1a;
   --color-surface-glass: rgba(255, 255, 255, 0.88);
@@ -73,6 +75,7 @@
   --text-5xl: 3rem;
   --text-6xl: 3.75rem;
   --text-7xl: 4.5rem;
+  --text-hero: 6.25rem;
 
   --line-height-tight: 0.92;
   --line-height-snug: 1.1;
@@ -181,6 +184,12 @@
     160deg,
     rgba(15, 23, 42, 0.72) 0%,
     rgba(26, 106, 56, 0.55) 100%
+  );
+  --gradient-scrim-hero: linear-gradient(
+    180deg,
+    rgba(10, 31, 18, 0.62) 0%,
+    rgba(10, 31, 18, 0.32) 45%,
+    rgba(10, 31, 18, 0.88) 100%
   );
 
   /* ================================

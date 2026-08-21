@@ -15,6 +15,17 @@ const NAV_LINKS = [
   { to: ROUTES.public.pricing, label: "Pricing" },
 ];
 
+const LANDING_HERO_SELECTOR = "[data-landing-hero]";
+const DEFAULT_SCROLL_THRESHOLD = 24;
+
+function getNavHeight() {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(
+    "--nav-height",
+  );
+  const parsed = Number.parseFloat(raw);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
 function isAuthRoute(pathname: string) {
   return pathname.startsWith("/auth");
 }
@@ -37,11 +48,19 @@ export function PublicLayout() {
   }, [location.pathname]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => {
+      const hero = document.querySelector<HTMLElement>(LANDING_HERO_SELECTOR);
+      // Stay transparent while the hero fills the viewport; turn solid once
+      // the user scrolls past it.
+      const threshold = hero
+        ? hero.offsetHeight - getNavHeight()
+        : DEFAULT_SCROLL_THRESHOLD;
+      setScrolled(window.scrollY > threshold);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [location.pathname]);
 
   const navClass = [
     styles.nav,
@@ -50,18 +69,18 @@ export function PublicLayout() {
 
   return (
     <div className={styles.main}>
-      <header className={navClass}>
-        <Link to={ROUTES.public.landing} className={styles.brand}>
-          <div className={styles.logoWrap}>
-            <img src="/shumshufer-logo.jpg" alt="ShumShufer logo" />
-          </div>
-          <div className={styles.brandText}>
-            <span className={styles.brandName}>ShumShufer</span>
-            <span className={styles.brandSub}>Ethiopia</span>
-          </div>
-        </Link>
+      {!authRoute && (
+        <header className={navClass}>
+          <Link to={ROUTES.public.landing} className={styles.brand}>
+            <div className={styles.logoWrap}>
+              <img src="/shumshufer-logo.jpg" alt="ShumShufer logo" />
+            </div>
+            <div className={styles.brandText}>
+              <span className={styles.brandName}>ShumShufer</span>
+              <span className={styles.brandSub}>Ethiopia</span>
+            </div>
+          </Link>
 
-        {!authRoute ? (
           <nav className={styles.navLinks} aria-label="Main navigation">
             {NAV_LINKS.map((link) => (
               <NavLink
@@ -77,118 +96,103 @@ export function PublicLayout() {
               </NavLink>
             ))}
           </nav>
-        ) : (
-          <div className={styles.navLinks} aria-hidden="true" />
-        )}
 
-        <div className={styles.navActions}>
-          {authRoute ? (
-            location.pathname === ROUTES.auth.login ? (
+          <div className={styles.navActions}>
+            {user ? (
+              <Link
+                to={getDashboardPathForRole(user.role)}
+                className={styles.btnPrimary}
+              >
+                <ArrowUpRight size={16} />
+                Portal
+              </Link>
+            ) : (
               <>
-                <span className={styles.navHint}>New here?</span>
-                <Link to={ROUTES.auth.register} className={styles.btnGhost}>
-                  Sign up
-                </Link>
-              </>
-            ) : location.pathname === ROUTES.auth.register ? (
-              <>
-                <span className={styles.navHint}>Already have an account?</span>
                 <Link to={ROUTES.auth.login} className={styles.btnGhost}>
                   Log in
                 </Link>
+                <Link to={ROUTES.auth.register} className={styles.btnPrimary}>
+                  Sign up
+                  <ArrowRight size={16} />
+                </Link>
               </>
-            ) : null
-          ) : user ? (
-            <Link
-              to={getDashboardPathForRole(user.role)}
-              className={styles.btnPrimary}
-            >
-              <ArrowUpRight size={16} />
-              Portal
-            </Link>
-          ) : (
-            <>
-              <Link to={ROUTES.auth.login} className={styles.btnGhost}>
-                Log in
-              </Link>
-              <Link to={ROUTES.auth.register} className={styles.btnPrimary}>
-                Sign up
-                <ArrowRight size={16} />
-              </Link>
-            </>
-          )}
-        </div>
+            )}
+          </div>
 
-        <button
-          type="button"
-          className={styles.mobileMenuBtn}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((open) => !open)}
+          <button
+            type="button"
+            className={styles.mobileMenuBtn}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </header>
+      )}
+
+      {!authRoute && (
+        <div
+          className={[
+            styles.mobileDrawer,
+            menuOpen ? styles.mobileDrawerOpen : "",
+          ].join(" ")}
         >
-          {menuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      </header>
-
-      <div
-        className={[
-          styles.mobileDrawer,
-          menuOpen ? styles.mobileDrawerOpen : "",
-        ].join(" ")}
-      >
-        {!authRoute
-          ? NAV_LINKS.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                className={({ isActive }) =>
-                  [styles.mobileNavLink, isActive ? styles.navLinkActive : ""]
-                    .filter(Boolean)
-                    .join(" ")
-                }
-              >
-                {link.label}
-              </NavLink>
-            ))
-          : null}
-
-        <div className={styles.mobileDivider} />
-
-        <div className={styles.mobileActions}>
-          {user ? (
-            <Link
-              to={getDashboardPathForRole(user.role)}
-              className={[
-                styles.mobileActionBtn,
-                styles.mobileActionBtnSolid,
-              ].join(" ")}
+          {NAV_LINKS.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) =>
+                [
+                  styles.mobileNavLink,
+                  isActive ? styles.mobileNavLinkActive : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")
+              }
             >
-              <ArrowUpRight size={16} /> Portal
-            </Link>
-          ) : (
-            <>
+              {link.label}
+            </NavLink>
+          ))}
+
+          <div className={styles.mobileDivider} />
+
+          <div className={styles.mobileActions}>
+            {user ? (
               <Link
-                to={ROUTES.auth.login}
-                className={[
-                  styles.mobileActionBtn,
-                  styles.mobileActionBtnOutline,
-                ].join(" ")}
-              >
-                Log in
-              </Link>
-              <Link
-                to={ROUTES.auth.register}
+                to={getDashboardPathForRole(user.role)}
                 className={[
                   styles.mobileActionBtn,
                   styles.mobileActionBtnSolid,
                 ].join(" ")}
               >
-                Sign up
+                <ArrowUpRight size={16} /> Portal
               </Link>
-            </>
-          )}
+            ) : (
+              <>
+                <Link
+                  to={ROUTES.auth.login}
+                  className={[
+                    styles.mobileActionBtn,
+                    styles.mobileActionBtnOutline,
+                  ].join(" ")}
+                >
+                  Log in
+                </Link>
+                <Link
+                  to={ROUTES.auth.register}
+                  className={[
+                    styles.mobileActionBtn,
+                    styles.mobileActionBtnSolid,
+                  ].join(" ")}
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <Outlet />
     </div>
