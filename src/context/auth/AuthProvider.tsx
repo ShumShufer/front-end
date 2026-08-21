@@ -82,11 +82,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     initAuth();
   }, []);
 
+  const persistSession = (response: AuthResponse) => {
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("user", JSON.stringify(response.user));
+  };
+
   const login = useCallback(async (credentials: LoginCredentials) => {
     dispatch({ type: "LOGIN_START" });
     try {
       const response = await authService.login(credentials);
-      localStorage.setItem("token", response.token);
+      persistSession(response);
       dispatch({ type: "LOGIN_SUCCESS", payload: response });
     } catch (error: unknown) {
       dispatch({
@@ -101,7 +106,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     dispatch({ type: "LOGIN_START" });
     try {
       const response = await authService.register(payload);
-      localStorage.setItem("token", response.token);
+      persistSession(response);
       dispatch({ type: "LOGIN_SUCCESS", payload: response });
     } catch (error: unknown) {
       dispatch({
@@ -117,6 +122,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       await authService.logout();
     } finally {
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       dispatch({ type: "LOGOUT" });
     }
   }, []);

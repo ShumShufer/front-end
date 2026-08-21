@@ -12,6 +12,25 @@ import { parseRole } from "../utils/typeGuards.ts";
 const delay = <T>(ms: number, value: T): Promise<T> =>
   new Promise((resolve) => setTimeout(() => resolve(value), ms));
 
+// The mock user list lives in module memory and reseeds on every refresh,
+// so the signed-in account must be restored from its persisted session
+// snapshot instead of from mockUsers.
+const SESSION_USER_KEY = "user";
+
+function getStoredSessionUser(): User {
+  const raw = localStorage.getItem(SESSION_USER_KEY);
+  if (!raw) throw new Error("No active session");
+  try {
+    const user = JSON.parse(raw) as User;
+    if (!user?.id || !user?.email || !user?.role) {
+      throw new Error("Malformed session payload");
+    }
+    return user;
+  } catch {
+    throw new Error("Stored session is invalid");
+  }
+}
+
 class AuthService implements IAuthService {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     // REAL API IMPLEMENTATION (Commented out until ready):
@@ -58,7 +77,7 @@ class AuthService implements IAuthService {
     // return httpClient.get<User>('/auth/me');
 
     // MOCK DATA IMPLEMENTATION:
-    return delay(500, mockUsers[0]); // Returns the admin by default for testing
+    return delay(500, getStoredSessionUser());
   }
 
   async requestPasswordReset(email: string): Promise<void> {
