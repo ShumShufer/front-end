@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   BadgeCheck,
-  CalendarDays,
-  CreditCard,
+  Layers,
+  Laptop,
   MapPin,
   Search,
   Star,
@@ -13,33 +13,114 @@ import { SchoolProvider } from "../../../context/school/SchoolProvider.tsx";
 import { useSchool } from "../../../context/school/useSchool.ts";
 import { Button } from "../../../components/Button/Button.tsx";
 import { PublicFooter } from "../../../components/Layout/PublicFooter.tsx";
-import {
-  CiEthiopianStarIcon,
-  CiSteeringWheelIcon,
-} from "../../../components/icons/CustomIcons.tsx";
+import { CiEthiopianStarIcon } from "../../../components/icons/CustomIcons.tsx";
+import { useCountUp } from "../../../hooks/useCountUp.ts";
+import { useInView } from "../../../hooks/useInView.ts";
 import { ROUTES } from "../../../router/routes.config.ts";
 import styles from "./LandingPage.module.css";
+
+const FALLBACK_SCHOOL_COUNT = 240;
+const STUDENTS_ENROLLED = 38000;
+const AVG_RATING = 4.7;
 
 const FEATURES = [
   {
     icon: BadgeCheck,
     title: "Verified Schools",
+    subtitle: "Trusted academies only",
     description:
-      "We partner only with certified and highly-rated driving academies across Ethiopia to ensure quality education.",
+      "Every academy on ShumShufer is certified and highly rated — we check credentials so you can pick with confidence.",
+    image: "/shumshufer-feature-schools.jpg",
+    alt: "Cars and buses moving through Addis Ababa traffic",
   },
   {
-    icon: CalendarDays,
-    title: "Easy Booking",
+    icon: Laptop,
+    title: "Online Learning",
+    subtitle: "Theory from your phone",
     description:
-      "Schedule your theory and practical lessons and manage your timetable effortlessly from your phone.",
+      "Study the full theory course with lessons and quiz banks, then walk into driving school already ahead.",
+    image: "/shumshufer-feature-online.jpg",
+    alt: "Ethiopian students learning together in a group discussion",
   },
   {
-    icon: CreditCard,
-    title: "Local Payments",
+    icon: Layers,
+    title: "All in One",
+    subtitle: "Search, book, pay",
     description:
-      "Pay securely using familiar local payment methods — Telebirr, CBE Birr and bank transfer.",
+      "Compare schools, book practical lessons and pay with Telebirr, CBE Birr or bank transfer — one platform for the whole journey.",
+    image: "/shumshufer-feature-allinone.jpg",
+    alt: "Streets of Addis Ababa lined with buildings",
   },
 ];
+
+interface StatProps {
+  value: number;
+  suffix?: string;
+  label: string;
+  decimals?: number;
+}
+
+function Stat({ value, suffix, label, decimals = 0 }: StatProps) {
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const display = useCountUp(value, { start: inView, decimals });
+
+  return (
+    <div ref={ref} className={styles.stat}>
+      <div className={styles.statValue}>
+        {display}
+        {suffix ? <span className={styles.statSuffix}>{suffix}</span> : null}
+      </div>
+      <div className={styles.statLabel}>{label}</div>
+    </div>
+  );
+}
+
+interface FeatureCardProps {
+  icon: typeof BadgeCheck;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  alt: string;
+  index: number;
+}
+
+function FeatureCard({
+  icon: Icon,
+  title,
+  subtitle,
+  description,
+  image,
+  alt,
+  index,
+}: FeatureCardProps) {
+  const { ref, inView } = useInView<HTMLElement>();
+
+  return (
+    <article
+      ref={ref}
+      className={[
+        styles.featureCard,
+        index % 2 === 1 ? styles.featureCardReverse : "",
+        inView ? styles.featureCardVisible : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      <div className={styles.featureMedia}>
+        <img src={image} alt={alt} loading="lazy" />
+      </div>
+      <div className={styles.featureBody}>
+        <span className={styles.featureIcon}>
+          <Icon size={22} />
+        </span>
+        <p className={styles.featureSubtitle}>{subtitle}</p>
+        <h3 className={styles.featureTitle}>{title}</h3>
+        <p className={styles.featureDesc}>{description}</p>
+      </div>
+    </article>
+  );
+}
 
 function LandingPageContent() {
   const navigate = useNavigate();
@@ -67,110 +148,76 @@ function LandingPageContent() {
 
   return (
     <div className={styles.page}>
-      <section className={styles.hero}>
-        <div className={styles.heroInner}>
-          <div>
-            <p className={styles.eyebrow}>
-              <CiEthiopianStarIcon size={16} />
-              Ethiopia&apos;s driving school hub
-            </p>
-            <h1 className={styles.heroTitle}>
-              Learn to drive.
-              <br />
-              Find a school.
-              <br />
-              <span className={styles.heroAccent}>All in one place.</span>
-            </h1>
-            <p className={styles.heroLead}>
-              Compare verified driving schools near you, learn the theory online
-              with ShumShufer, and book your practical lessons — all from your
-              phone.
-            </p>
+      <section className={styles.hero} data-landing-hero="">
+        <img
+          src="/shumshufer-asset-1.jpg"
+          alt="Student learning to drive in Addis Ababa"
+          className={styles.heroImage}
+        />
+        <div className={styles.heroScrim} aria-hidden="true" />
 
-            <div className={styles.heroActions}>
-              <Button to={ROUTES.public.schools} size="lg">
-                Schools nearby
-                <ArrowRight size={18} />
-              </Button>
-              <Button to={ROUTES.public.courses} variant="secondary" size="lg">
-                Learn how to drive
-              </Button>
-            </div>
+        <div className={styles.heroContent}>
+          <p className={styles.eyebrow}>
+            <CiEthiopianStarIcon size={16} />
+            Ethiopia&apos;s driving school hub
+          </p>
+          <h1 className={styles.heroTitle}>
+            Learn to drive.
+            <br />
+            <span className={styles.heroAccent}>All in one place.</span>
+          </h1>
 
-            <div className={styles.stats}>
-              <div>
-                <div className={styles.statValue}>
-                  {schoolCount > 0 ? `${schoolCount}+` : "240+"}
-                </div>
-                <div className={styles.statLabel}>Verified schools</div>
-              </div>
-              <div>
-                <div className={styles.statValue}>38,000+</div>
-                <div className={styles.statLabel}>Students enrolled</div>
-              </div>
-              <div>
-                <div className={styles.statValue}>4.7</div>
-                <div className={styles.statLabel}>Avg. school rating</div>
-              </div>
-            </div>
+          <div className={styles.heroActions}>
+            <Button to={ROUTES.public.schools} size="lg">
+              Schools nearby
+              <ArrowRight size={18} />
+            </Button>
+            <Button to={ROUTES.public.courses} variant="secondary" size="lg">
+              Learn how to drive
+            </Button>
           </div>
 
-          <div className={styles.heroCard}>
-            <div className={styles.heroImageWrap}>
-              <img
-                src="/shumshufer-asset-1.jpg"
-                alt="Student learning to drive in Addis Ababa"
-                className={styles.heroImage}
-              />
-              <div className={styles.heroImageOverlay}>
-                <span className={styles.heroImageBadge}>
-                  <CiSteeringWheelIcon size={14} color="currentColor" />
-                  On the road
-                </span>
-                <p className={styles.heroImageCaption}>
-                  Your license journey starts here
-                </p>
-                <p className={styles.heroImageSub}>
-                  Theory, practice, and certification — connected.
-                </p>
-              </div>
-            </div>
-
-            <form className={styles.searchBox} onSubmit={handleSearch}>
-              <Search size={18} className={styles.searchIcon} />
-              <input
-                className={styles.searchInput}
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Search school or location (e.g. Bole)"
-                aria-label="Search schools"
-              />
-              <Button type="submit" size="sm">
-                Search
-              </Button>
-            </form>
+          <div className={styles.stats}>
+            <Stat
+              value={schoolCount > 0 ? schoolCount : FALLBACK_SCHOOL_COUNT}
+              suffix="+"
+              label="Verified schools"
+            />
+            <Stat
+              value={STUDENTS_ENROLLED}
+              suffix="+"
+              label="Students enrolled"
+            />
+            <Stat value={AVG_RATING} decimals={1} label="Avg. school rating" />
           </div>
         </div>
+
+        <form className={styles.searchBox} onSubmit={handleSearch}>
+          <Search size={18} className={styles.searchIcon} />
+          <input
+            className={styles.searchInput}
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search school or location (e.g. Bole)"
+            aria-label="Search schools"
+          />
+          <button type="submit" className={styles.searchSubmit}>
+            Search
+          </button>
+        </form>
       </section>
 
       <section className={styles.section}>
-        <p className={styles.sectionEyebrow}>Why choose us</p>
-        <h2 className={styles.sectionTitle}>
-          Everything you need to become a licensed driver.
-        </h2>
-        <div className={styles.featureGrid}>
-          {FEATURES.map((feature) => {
-            const Icon = feature.icon;
-            return (
-              <article key={feature.title} className={styles.featureCard}>
-                <div className={styles.featureIcon}>
-                  <Icon size={22} />
-                </div>
-                <h3 className={styles.featureTitle}>{feature.title}</h3>
-                <p className={styles.featureDesc}>{feature.description}</p>
-              </article>
-            );
-          })}
+        <div className={styles.sectionInner}>
+          <p className={styles.sectionEyebrow}>Why choose us</p>
+          <h2 className={styles.sectionTitle}>
+            Everything you need to become a licensed driver.
+          </h2>
+          <div className={styles.featureList}>
+            {FEATURES.map((feature, index) => (
+              <FeatureCard key={feature.title} {...feature} index={index} />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -212,10 +259,14 @@ function LandingPageContent() {
                   </div>
                   <h3 className={styles.schoolName}>{school.name}</h3>
                   <div className={styles.schoolMeta}>
-                    <Star size={14} />
-                    {school.rating.toFixed(1)}
-                    <MapPin size={14} />
-                    Addis Ababa
+                    <span className={styles.ratingChip}>
+                      <Star size={14} />
+                      {school.rating.toFixed(1)}
+                    </span>
+                    <span className={styles.locationChip}>
+                      <MapPin size={14} />
+                      Addis Ababa
+                    </span>
                   </div>
                   <p className={styles.schoolDesc}>{school.description}</p>
                   <Button
@@ -239,7 +290,9 @@ function LandingPageContent() {
 
       <section className={styles.ctaBand}>
         <div className={styles.ctaInner}>
-          <div>
+          <div className={styles.ctaGlowOne} aria-hidden="true" />
+          <div className={styles.ctaGlowTwo} aria-hidden="true" />
+          <div className={styles.ctaCopy}>
             <p className={styles.ctaEyebrow}>Learn with ShumShufer</p>
             <h3 className={styles.ctaTitle}>
               Start the theory today — no school required yet.

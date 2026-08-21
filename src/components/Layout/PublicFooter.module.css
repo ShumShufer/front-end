@@ -1,5 +1,6 @@
 .footer {
-  background: var(--color-text);
+  background-color: var(--color-text);
+  background-image: url("/shumshufer-pattern-dark.svg") ;
   color: var(--color-footer-text);
   padding: var(--space-12) var(--space-8) var(--space-6);
 }

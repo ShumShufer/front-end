@@ -53,7 +53,7 @@ export function DiscoverSchoolsPage() {
       default:
         return data;
     }
-  }, [schools?.data, filters.sortBy]);
+  }, [schools, filters.sortBy]);
 
   const handleSchoolClick = (schoolId: string) => {
     navigate(ROUTES.public.schoolProfile(schoolId));
@@ -68,7 +68,18 @@ export function DiscoverSchoolsPage() {
 
   return (
     <div className={styles.page}>
-      {/* Header Section */}
+      {/* Map — full width, top of the page */}
+      <section className={styles.mapSection}>
+        <div className={styles.mapContainer}>
+          <SchoolsMap
+            schools={sortedSchools}
+            branches={branches || []}
+            className={styles.mapFull}
+          />
+        </div>
+      </section>
+
+      {/* Header + Search + Filters */}
       <section className={styles.header}>
         <div className={styles.headerContent}>
           <div>
@@ -91,7 +102,12 @@ export function DiscoverSchoolsPage() {
             className={styles.searchInput}
           />
           <button
-            className={styles.filterButton}
+            className={[
+              styles.filterButton,
+              showFilters ? styles.filterButtonActive : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             onClick={() => setShowFilters(!showFilters)}
             title="Toggle filters"
           >
@@ -118,83 +134,73 @@ export function DiscoverSchoolsPage() {
         )}
       </section>
 
-      {/* Main Content */}
+      {/* Schools Grid */}
       <section className={styles.content}>
-        <div className={styles.contentGrid}>
-          {/* Schools List */}
-          <div className={styles.schoolsList}>
-            {isLoading ? (
-              <div className={styles.loadingState}>Loading schools...</div>
-            ) : sortedSchools.length === 0 ? (
-              <div className={styles.emptyState}>
-                <MapPin size={48} />
-                <h3>No schools found</h3>
-                <p>Try adjusting your search filters</p>
-              </div>
-            ) : (
-              <div className={styles.schoolsGrid}>
-                {sortedSchools.map((school) => (
-                  <div key={school.id} className={styles.schoolCard}>
-                    <div className={styles.cardHeader}>
-                      <div className={styles.schoolTitle}>
-                        <h3>{school.name}</h3>
-                        {school.status === "ACTIVE" && (
-                          <span aria-label="Verified school">
-                            <BadgeCheck
-                              size={16}
-                              className={styles.verifiedBadge}
-                            />
-                          </span>
-                        )}
-                      </div>
-                      <div className={styles.rating}>
-                        <Star size={18} className={styles.starIcon} />
-                        <span>{school.rating.toFixed(1)}</span>
-                      </div>
-                    </div>
-
-                    <p className={styles.description}>{school.description}</p>
-
-                    <div className={styles.cardMeta}>
-                      <div className={styles.metaItem}>
-                        <MapPin size={16} />
-                        <span>
-                          {branches?.filter((b) => b.schoolId === school.id)
-                            .length || 0}{" "}
-                          branches
+        <div className={styles.schoolsList}>
+          {isLoading ? (
+            <div className={styles.loadingState}>Loading schools...</div>
+          ) : sortedSchools.length === 0 ? (
+            <div className={styles.emptyState}>
+              <MapPin size={48} />
+              <h3>No schools found</h3>
+              <p>Try adjusting your search filters</p>
+            </div>
+          ) : (
+            <div className={styles.schoolsGrid}>
+              {sortedSchools.map((school) => (
+                <div key={school.id} className={styles.schoolCard}>
+                  <div className={styles.cardHeader}>
+                    <div className={styles.schoolTitle}>
+                      <h3>{school.name}</h3>
+                      {school.status === "ACTIVE" && (
+                        <span aria-label="Verified school">
+                          <BadgeCheck
+                            size={16}
+                            className={styles.verifiedBadge}
+                          />
                         </span>
-                      </div>
-                      <div className={styles.metaItem}>
-                        <Users size={16} />
-                        <span>Est. 500+ students</span>
-                      </div>
+                      )}
                     </div>
-
-                    <div className={styles.cardActions}>
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        block
-                        onClick={() => handleSchoolClick(school.id)}
-                      >
-                        View Details
-                      </Button>
-                      <Button variant="secondary" size="sm" block>
-                        Enroll Now
-                      </Button>
+                    <div className={styles.rating}>
+                      <Star size={18} className={styles.starIcon} />
+                      <span>{school.rating.toFixed(1)}</span>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
 
-          {/* Map Sidebar */}
-          <div className={styles.mapSidebar}>
-            <div className={styles.mapContainer}>
-              <SchoolsMap schools={sortedSchools} branches={branches || []} />
+                  <p className={styles.description}>{school.description}</p>
+
+                  <div className={styles.cardMeta}>
+                    <div className={styles.metaItem}>
+                      <MapPin size={16} />
+                      <span>
+                        {branches?.filter((b) => b.schoolId === school.id)
+                          .length || 0}{" "}
+                        branches
+                      </span>
+                    </div>
+                    <div className={styles.metaItem}>
+                      <Users size={16} />
+                      <span>Est. 500+ students</span>
+                    </div>
+                  </div>
+
+                  <div className={styles.cardActions}>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      block
+                      onClick={() => handleSchoolClick(school.id)}
+                    >
+                      View Details
+                    </Button>
+                    <Button variant="secondary" size="sm" block>
+                      Enroll Now
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
       </section>
     </div>

@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from "react";
-import { KeyRound, Mail } from "lucide-react";
+import { ArrowLeft, KeyRound, Mail } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "../../../components/Button/Button.tsx";
 import { Input } from "../../../components/Form/Input.tsx";
@@ -39,8 +39,28 @@ export function PasswordFlow({ reset = false }: { reset?: boolean }) {
       );
     }
   };
+  const handleBack = () => {
+    // React Router stores the history index in state; fall back to the
+    // landing page when there is nothing to go back to.
+    const idx = window.history.state?.idx;
+    if (typeof idx === "number" && idx > 0) {
+      navigate(-1);
+      return;
+    }
+    navigate(ROUTES.public.landing, { replace: true });
+  };
+
   return (
     <main className={styles.page}>
+      <button
+        type="button"
+        className={styles.backButton}
+        onClick={handleBack}
+        aria-label="Go back"
+      >
+        <ArrowLeft size={20} />
+        Back
+      </button>
       <section className={styles.card}>
         <div className={styles.icon}>
           <KeyRound size={24} />

@@ -13,16 +13,28 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
+  animation: navEnter var(--transition-slow) ease-out backwards;
   transition:
     background-color var(--transition-base),
     box-shadow var(--transition-base),
     border-color var(--transition-base);
 }
 
+@keyframes navEnter {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .navTransparent {
-  background-color: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border-bottom: 1px solid transparent;
 }
 
@@ -53,6 +65,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: var(--shadow-glow-primary-sm);
+  transition: transform var(--transition-spring);
+}
+
+.brand:hover .logoWrap {
+  transform: rotate(-8deg) scale(1.08);
 }
 
 .logoWrap img {
@@ -68,9 +86,10 @@
 }
 
 .brandName {
-  font-size: var(--text-lg);
-  font-weight: var(--font-weight-extrabold);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-black);
   letter-spacing: var(--letter-spacing-snug);
+  text-transform: uppercase;
   color: var(--color-text);
   transition: color var(--transition-fast);
 }
@@ -88,34 +107,58 @@
 .navLinks {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--space-4);
   flex: 1;
   justify-content: center;
 }
 
 .navLink {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-semibold);
+  padding: var(--space-2) var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
   color: var(--color-text-body);
   text-decoration: none;
-  transition:
-    background-color var(--transition-fast),
-    color var(--transition-fast);
   white-space: nowrap;
+  background: none;
+  border-radius: 0;
+  transition: color var(--transition-fast);
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  left: var(--space-1);
+  right: var(--space-1);
+  bottom: 0;
+  height: 2px;
+  border-radius: var(--radius-full);
+  background: var(--gradient-brand);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--transition-base);
 }
 
 .navLink:hover {
-  background-color: var(--color-primary-soft);
   color: var(--color-primary);
+  background-color: transparent;
+}
+
+.navLink:hover::after {
+  transform: scaleX(1);
 }
 
 .navLinkActive {
   color: var(--color-primary);
-  background-color: var(--color-primary-soft);
+  background-color: transparent;
+}
+
+.navLinkActive::after {
+  transform: scaleX(1);
 }
 
 /* ─── Nav Actions ─────────────────────────────────────────────────────────── */
@@ -134,7 +177,9 @@
   padding: 0 var(--space-4);
   border-radius: var(--radius-full);
   font-size: var(--text-sm);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
   color: var(--color-text-body);
   background: transparent;
   border: none;
@@ -159,7 +204,9 @@
   padding: 0 var(--space-5);
   border-radius: var(--radius-full);
   font-size: var(--text-sm);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-extrabold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
   color: var(--color-text-inverse);
   background: var(--color-primary);
   border: none;
@@ -174,8 +221,44 @@
 
 .btnPrimary:hover {
   background: var(--color-primary-hover);
-  box-shadow: var(--shadow-glow-primary-sm);
+  box-shadow: var(--shadow-glow-primary);
   transform: translateY(-1px);
+}
+
+/* ─── Transparent (over hero) state ──────────────────────────────────────── */
+.navTransparent .brandName {
+  color: var(--color-text-inverse);
+}
+
+.navTransparent .brandSub {
+  color: var(--color-text-inverse-muted);
+}
+
+.navTransparent .navLink {
+  color: var(--color-text-inverse-muted);
+}
+
+.navTransparent .navLink:hover,
+.navTransparent .navLinkActive {
+  color: var(--color-text-inverse);
+}
+
+.navTransparent .btnGhost {
+  color: var(--color-text-inverse-muted);
+}
+
+.navTransparent .btnGhost:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  color: var(--color-text-inverse);
+}
+
+.navTransparent .mobileMenuBtn {
+  color: var(--color-text-inverse);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.navTransparent .mobileMenuBtn:hover {
+  background-color: rgba(255, 255, 255, 0.12);
 }
 
 /* ─── Main ────────────────────────────────────────────────────────────────── */
@@ -195,17 +278,14 @@
   background: transparent;
   color: var(--color-text);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .mobileMenuBtn:hover {
   background-color: var(--color-bg);
-}
-
-.navHint {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  white-space: nowrap;
 }
 
 /* ─── Mobile drawer ───────────────────────────────────────────────────────── */
@@ -243,6 +323,11 @@
 }
 
 .mobileNavLink:hover {
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.mobileNavLinkActive {
   background-color: var(--color-primary-soft);
   color: var(--color-primary);
 }

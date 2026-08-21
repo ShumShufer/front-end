@@ -1,11 +1,40 @@
 .page {
-  min-height: calc(100vh - var(--nav-height));
-  padding-top: var(--nav-height);
-  background: var(--gradient-auth);
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  background-image:
+    url("/shumshufer-pattern.svg"),
+    var(--gradient-auth);
+}
+
+.backButton {
+  position: absolute;
+  top: var(--space-5);
+  left: var(--space-5);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: none;
+  background: transparent;
+  color: var(--color-text-inverse);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.backButton:hover {
+  transform: translateX(-3px);
+  opacity: 0.85;
 }
 
 .layout {
-  min-height: calc(100vh - var(--nav-height));
+  min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
