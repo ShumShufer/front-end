@@ -6,6 +6,8 @@ import { SchoolsMap } from "../../../components/Map/SchoolsMap.tsx";
 import { useAuth } from "../../../context/auth/useAuth.ts";
 import { useSchool } from "../../../context/school/useSchool.ts";
 import { ROUTES } from "../../../router/routes.config.ts";
+import { Role } from "../../../types/common.types.ts";
+import { getDashboardPathForRole } from "../../../utils/permissions.ts";
 import styles from "./SchoolProfilePage.module.css";
 
 export function SchoolProfilePage() {
@@ -29,7 +31,7 @@ export function SchoolProfilePage() {
 
   const startApplication = () => {
     if (!schoolId) return;
-    navigate(user ? ROUTES.student.apply(schoolId) : ROUTES.auth.login, {
+    navigate(user?.role === Role.STUDENT ? ROUTES.student.apply(schoolId) : user ? getDashboardPathForRole(user.role) : ROUTES.auth.login, {
       state: { from: ROUTES.student.apply(schoolId) },
     });
   };
@@ -72,7 +74,7 @@ export function SchoolProfilePage() {
               </div>
               <div className={styles.actions}>
                 <Button size="lg" onClick={startApplication}>
-                  Apply to this school
+                  {user && user.role !== Role.STUDENT ? "Open your portal" : "Apply to this school"}
                 </Button>
                 <Button
                   variant="secondary"

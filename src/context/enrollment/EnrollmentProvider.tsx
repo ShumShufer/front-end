@@ -39,9 +39,35 @@ function enrollmentReducer(
     case "FETCH_PRACTICE_REQUESTS_SUCCESS":
       return { ...state, isLoading: false, practiceRequests: action.payload };
     case "SUBMIT_SUCCESS":
-      return { ...state, isLoading: false, error: null };
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        enrollments: state.enrollments
+          ? {
+              ...state.enrollments,
+              data: [...state.enrollments.data, action.payload],
+              meta: {
+                ...state.enrollments.meta,
+                total: state.enrollments.meta.total + 1,
+              },
+            }
+          : state.enrollments,
+      };
     case "UPDATE_SUCCESS":
-      return { ...state, isLoading: false, error: null };
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        enrollments: state.enrollments
+          ? {
+              ...state.enrollments,
+              data: state.enrollments.data.map((item) =>
+                item.id === action.payload.id ? action.payload : item,
+              ),
+            }
+          : state.enrollments,
+      };
     case "PRACTICE_SUBMIT_SUCCESS":
       return {
         ...state,
@@ -89,6 +115,7 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const submitApplication = useCallback(
     async (
+      studentId: string,
       schoolId: string,
       mode: ApplicationMode,
       formResponses: Record<string, unknown>,
@@ -96,6 +123,7 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch({ type: "FETCH_START" });
       try {
         const data = await enrollmentService.submitApplication(
+          studentId,
           schoolId,
           mode,
           formResponses,
@@ -135,6 +163,23 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch({
         type: "FETCH_ERROR",
         payload: getErrorMessage(error, "Failed to reject application"),
+      });
+      throw error;
+    }
+  }, []);
+
+  const acceptApplications = useCallback(async (ids: string[]) => {
+    if (!ids.length) return;
+    dispatch({ type: "FETCH_START" });
+    try {
+      const updated = await enrollmentService.acceptApplications(ids);
+      updated.forEach((item) =>
+        dispatch({ type: "UPDATE_SUCCESS", payload: item }),
+      );
+    } catch (error: unknown) {
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: getErrorMessage(error, "Failed to accept applications"),
       });
       throw error;
     }
@@ -198,6 +243,7 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
         loadEnrollments,
         submitApplication,
         acceptApplication,
+        acceptApplications,
         rejectApplication,
         loadPracticeRequests,
         submitPracticeRequest,

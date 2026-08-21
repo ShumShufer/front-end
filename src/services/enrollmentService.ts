@@ -40,6 +40,7 @@ class EnrollmentService implements IEnrollmentService {
   }
 
   async submitApplication(
+    studentId: string,
     schoolId: string,
     mode: ApplicationMode,
     formResponses: Record<string, unknown>,
@@ -47,7 +48,7 @@ class EnrollmentService implements IEnrollmentService {
     // return httpClient.post('/enrollments', { schoolId, mode, formResponses });
     const newEnrollment: Enrollment = {
       id: `enrollment-${Date.now()}`,
-      studentId: "user-2", // mocked current user
+      studentId,
       schoolId,
       classroomId: null,
       mode,
@@ -71,6 +72,24 @@ class EnrollmentService implements IEnrollmentService {
       reviewedAt: new Date().toISOString(),
     };
     return delay(500, mockEnrollments[index]);
+  }
+
+  async acceptApplications(ids: string[]): Promise<Enrollment[]> {
+    // return httpClient.patch('/enrollments/accept-bulk', { ids });
+    const reviewedAt = new Date().toISOString();
+    const accepted: Enrollment[] = [];
+    ids.forEach((id) => {
+      const index = mockEnrollments.findIndex((item) => item.id === id);
+      if (index === -1) return;
+      mockEnrollments[index] = {
+        ...mockEnrollments[index],
+        status: ApplicationStatus.ACCEPTED,
+        reviewedAt,
+      };
+      accepted.push(mockEnrollments[index]);
+    });
+    if (!accepted.length) throw new Error("No enrollment applications were found");
+    return delay(550, accepted);
   }
 
   async rejectApplication(id: string): Promise<Enrollment> {

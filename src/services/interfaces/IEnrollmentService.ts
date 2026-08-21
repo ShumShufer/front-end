@@ -15,11 +15,13 @@ export interface IEnrollmentService {
   }): Promise<PaginatedData<Enrollment>>;
   getEnrollmentById(id: string): Promise<Enrollment>;
   submitApplication(
+    studentId: string,
     schoolId: string,
     mode: ApplicationMode,
     formResponses: Record<string, unknown>,
   ): Promise<Enrollment>;
   acceptApplication(id: string): Promise<Enrollment>;
+  acceptApplications(ids: string[]): Promise<Enrollment[]>;
   rejectApplication(id: string): Promise<Enrollment>;
 
   getPracticeRequests(params?: {

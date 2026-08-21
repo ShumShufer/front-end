@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
-import { ArrowRight, LayoutDashboard, Menu, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Menu, X } from "lucide-react";
 import { useAuth } from "../../context/auth/useAuth.ts";
 import { getDashboardPathForRole } from "../../utils/permissions.ts";
 import { ROUTES } from "../../router/routes.config.ts";
@@ -103,8 +103,8 @@ export function PublicLayout() {
               to={getDashboardPathForRole(user.role)}
               className={styles.btnPrimary}
             >
-              <LayoutDashboard size={16} />
-              Dashboard
+              <ArrowUpRight size={16} />
+              Portal
             </Link>
           ) : (
             <>
@@ -163,7 +163,7 @@ export function PublicLayout() {
                 styles.mobileActionBtnSolid,
               ].join(" ")}
             >
-              Go to Dashboard
+              <ArrowUpRight size={16} /> Portal
             </Link>
           ) : (
             <>

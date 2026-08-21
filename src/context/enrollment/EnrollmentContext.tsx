@@ -22,11 +22,13 @@ export interface EnrollmentContextType extends EnrollmentState {
     status?: string;
   }) => Promise<void>;
   submitApplication: (
+    studentId: string,
     schoolId: string,
     mode: ApplicationMode,
     formResponses: Record<string, unknown>,
   ) => Promise<void>;
   acceptApplication: (id: string) => Promise<void>;
+  acceptApplications: (ids: string[]) => Promise<void>;
   rejectApplication: (id: string) => Promise<void>;
   loadPracticeRequests: (params?: {
     schoolId?: string;
