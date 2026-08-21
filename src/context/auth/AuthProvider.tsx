@@ -99,8 +99,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
+  const requestPasswordReset = useCallback(async (email: string) => {
+    await authService.requestPasswordReset(email);
+  }, []);
+
+  const resetPassword = useCallback(async (token: string, password: string) => {
+    await authService.resetPassword(token, password);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ ...state, login, register, logout }}>
+    <AuthContext.Provider value={{ ...state, login, register, logout, requestPasswordReset, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

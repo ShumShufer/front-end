@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
+import { SchoolAdminWorkspace } from '../../features/admin/SchoolAdminWorkspace/SchoolAdminWorkspace.tsx';
 
 export default function StaffApplicationsInboxPage() {
-  return <PlaceholderPage title="Staff Applications Inbox" section="Admin" />;
+  return <SchoolAdminWorkspace view="applications" />;
 }

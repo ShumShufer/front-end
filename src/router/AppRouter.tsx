@@ -102,6 +102,7 @@ const EducationHeadNotificationsPage = () =>
 
 // Admin pages
 const AdminDashboardPage = () => lazyPage(() => import('../pages/admin/AdminDashboardPage.tsx'));
+const AdminProfilePage = () => lazyPage(() => import('../pages/admin/AdminProfilePage.tsx'));
 const SchoolProfileEditorPage = () => lazyPage(() => import('../pages/admin/SchoolProfileEditorPage.tsx'));
 const BranchManagementPage = () => lazyPage(() => import('../pages/admin/BranchManagementPage.tsx'));
 const AdminCoursesPage = () => lazyPage(() => import('../pages/admin/AdminCoursesPage.tsx'));
@@ -255,6 +256,7 @@ export function AppRouter() {
         <Route path="app/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboardPage />} />
+          <Route path="profile" element={<AdminProfilePage />} />
           <Route path="school/profile" element={<SchoolProfileEditorPage />} />
           <Route path="school/branches" element={<BranchManagementPage />} />
           <Route path="school/courses" element={<AdminCoursesPage />} />

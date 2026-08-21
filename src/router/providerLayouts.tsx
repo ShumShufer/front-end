@@ -39,7 +39,7 @@ export function StudentLayout() {
           <TaskProvider>
             <EnrollmentProvider>
               <PaymentProvider>
-                <AppShell roleLabel="Student" homePath={ROUTES.student.dashboard} />
+                <UserProvider><AppShell roleLabel="Student" homePath={ROUTES.student.dashboard} /></UserProvider>
               </PaymentProvider>
             </EnrollmentProvider>
           </TaskProvider>
@@ -55,7 +55,7 @@ export function MentorLayout() {
       <ClassroomProvider>
         <CourseProvider>
           <TaskProvider>
-            <AppShell roleLabel="Mentor" homePath={ROUTES.mentor.dashboard} />
+            <UserProvider><AppShell roleLabel="Mentor" homePath={ROUTES.mentor.dashboard} /></UserProvider>
           </TaskProvider>
         </CourseProvider>
       </ClassroomProvider>

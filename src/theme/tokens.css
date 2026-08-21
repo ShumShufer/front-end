@@ -189,4 +189,9 @@
   --btn-height-lg: 52px;
   --btn-height-md: 44px;
   --btn-height-sm: 34px;
+  --map-height-browse: 31.25rem;
+  --map-height-profile: 26rem;
+  --map-marker-size: 2.125rem;
+  --map-marker-border: 0.1875rem;
+  --app-sidebar-width: 17rem;
 }

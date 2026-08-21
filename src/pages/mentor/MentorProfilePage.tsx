@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
+import { ProfilePage } from '../../features/shared/ProfilePage/ProfilePage.tsx';
 
 export default function MentorProfilePage() {
-  return <PlaceholderPage title="Mentor Profile" section="Mentor" />;
+  return <ProfilePage />;
 }

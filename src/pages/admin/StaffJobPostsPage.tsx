@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
+import { SchoolAdminWorkspace } from '../../features/admin/SchoolAdminWorkspace/SchoolAdminWorkspace.tsx';
 
 export default function StaffJobPostsPage() {
-  return <PlaceholderPage title="Post Staff Job Opening" section="Admin" />;
+  return <SchoolAdminWorkspace view="posts" />;
 }

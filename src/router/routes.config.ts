@@ -79,6 +79,7 @@ export const ROUTES = {
   admin: {
     root: '/app/admin',
     dashboard: '/app/admin/dashboard',
+    profile: '/app/admin/profile',
     schoolProfile: '/app/admin/school/profile',
     branches: '/app/admin/school/branches',
     courses: '/app/admin/school/courses',

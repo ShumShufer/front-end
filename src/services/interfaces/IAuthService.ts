@@ -23,4 +23,6 @@ export interface IAuthService {
   register(payload: RegisterPayload): Promise<AuthResponse>;
   logout(): Promise<void>;
   getCurrentUser(): Promise<User>;
+  requestPasswordReset(email: string): Promise<void>;
+  resetPassword(token: string, password: string): Promise<void>;
 }

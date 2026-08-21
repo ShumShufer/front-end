@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
+import { PasswordFlow } from '../../features/auth/PasswordFlow/PasswordFlow.tsx';
 
 export default function ForgotPasswordPage() {
-  return <PlaceholderPage title="Forgot Password" section="Auth" />;
+  return <PasswordFlow />;
 }

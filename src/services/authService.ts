@@ -55,6 +55,16 @@ class AuthService implements IAuthService {
     // MOCK DATA IMPLEMENTATION:
     return delay(500, mockUsers[0]); // Returns the admin by default for testing
   }
+
+  async requestPasswordReset(email: string): Promise<void> {
+    if (!mockUsers.some((user) => user.email === email)) throw new Error('No account exists with that email');
+    return delay(600, undefined);
+  }
+
+  async resetPassword(token: string, password: string): Promise<void> {
+    if (!token || password.length < 8) throw new Error('Please provide a valid reset link and a password of at least 8 characters');
+    return delay(600, undefined);
+  }
 }
 
 export const authService = new AuthService();
