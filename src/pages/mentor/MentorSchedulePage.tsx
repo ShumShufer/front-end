@@ -1,5 +1,15 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
-
+import { useParams } from "react-router-dom";
+import { SchoolCalendar } from "../../features/shared/Calendar/SchoolCalendar.tsx";
+import { useAuth } from "../../context/auth/useAuth.ts";
 export default function MentorSchedulePage() {
-  return <PlaceholderPage title="Classroom Calendar" section="Mentor" />;
+  const { user } = useAuth();
+  const { classroomId } = useParams<{ classroomId: string }>();
+  return user?.schoolId && classroomId ? (
+    <SchoolCalendar
+      schoolId={user.schoolId}
+      classroomId={classroomId}
+      role="MENTOR"
+      editable
+    />
+  ) : null;
 }

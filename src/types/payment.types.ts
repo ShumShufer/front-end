@@ -1,4 +1,4 @@
-import type { PaymentType, PaymentStatus } from './common.types.ts';
+import type { PaymentType, PaymentStatus } from "./common.types.ts";
 
 export interface Payment {
   id: string;

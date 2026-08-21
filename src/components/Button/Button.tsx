@@ -1,9 +1,9 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { Link } from 'react-router-dom';
-import styles from './Button.module.css';
+import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { Link } from "react-router-dom";
+import styles from "./Button.module.css";
 
-type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost';
-type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonVariant = "primary" | "secondary" | "tertiary" | "ghost";
+type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonBaseProps {
   variant?: ButtonVariant;
@@ -14,7 +14,10 @@ interface ButtonBaseProps {
 }
 
 type ButtonAsButton = ButtonBaseProps &
-  ButtonHTMLAttributes<HTMLButtonElement> & { to?: undefined; type?: 'button' | 'submit' | 'reset' };
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    to?: undefined;
+    type?: "button" | "submit" | "reset";
+  };
 
 type ButtonAsLink = ButtonBaseProps & {
   to: string;
@@ -23,22 +26,27 @@ type ButtonAsLink = ButtonBaseProps & {
 
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
-function buildClassName(variant: ButtonVariant, size: ButtonSize, block: boolean, className?: string) {
+function buildClassName(
+  variant: ButtonVariant,
+  size: ButtonSize,
+  block: boolean,
+  className?: string,
+) {
   return [
     styles.btn,
     styles[variant],
     styles[size],
-    block ? styles.block : '',
-    className ?? '',
+    block ? styles.block : "",
+    className ?? "",
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 }
 
 export function Button(props: ButtonProps) {
   const {
-    variant = 'primary',
-    size = 'md',
+    variant = "primary",
+    size = "md",
     block = false,
     children,
     className,
@@ -46,7 +54,7 @@ export function Button(props: ButtonProps) {
   } = props;
   const cls = buildClassName(variant, size, block, className);
 
-  if ('to' in rest && rest.to) {
+  if ("to" in rest && rest.to) {
     const { to, replace, ...linkRest } = rest;
     return (
       <Link to={to} replace={replace} className={cls} {...linkRest}>
@@ -55,7 +63,8 @@ export function Button(props: ButtonProps) {
     );
   }
 
-  const buttonType = (rest as ButtonHTMLAttributes<HTMLButtonElement>).type ?? 'button';
+  const buttonType =
+    (rest as ButtonHTMLAttributes<HTMLButtonElement>).type ?? "button";
 
   return (
     <button

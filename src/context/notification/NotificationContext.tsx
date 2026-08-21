@@ -1,6 +1,9 @@
-import { createContext } from 'react';
-import type { Notification, NotificationRecipient } from '../../types/notification.types.ts';
-import type { PaginatedData } from '../../types/common.types.ts';
+import { createContext } from "react";
+import type {
+  Notification,
+  NotificationRecipient,
+} from "../../types/notification.types.ts";
+import type { PaginatedData } from "../../types/common.types.ts";
 
 export type NotificationWithRecipient = Notification & NotificationRecipient;
 
@@ -17,4 +20,5 @@ export interface NotificationContextType extends NotificationState {
   markAllAsRead: () => Promise<void>;
 }
 
-export const NotificationContext = createContext<NotificationContextType | null>(null);
+export const NotificationContext =
+  createContext<NotificationContextType | null>(null);

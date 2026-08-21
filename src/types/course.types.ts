@@ -1,4 +1,4 @@
-import type { CoursePassStatus } from './common.types.ts';
+import type { CoursePassStatus } from "./common.types.ts";
 
 export interface Course {
   id: string;

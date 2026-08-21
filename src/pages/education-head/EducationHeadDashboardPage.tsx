@@ -1,5 +1,4 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
-
+import { EducationWorkspace } from "../../features/education-head/EducationWorkspace/EducationWorkspace.tsx";
 export default function EducationHeadDashboardPage() {
-  return <PlaceholderPage title="Education Head Dashboard" section="Education Head" />;
+  return <EducationWorkspace view="dashboard" />;
 }

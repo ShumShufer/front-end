@@ -1,4 +1,4 @@
-import type { Role, ApplicationStatus } from './common.types.ts';
+import type { Role, ApplicationStatus } from "./common.types.ts";
 
 export interface School {
   id: string;

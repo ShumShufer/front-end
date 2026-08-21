@@ -1,4 +1,4 @@
-import type { IClassroomService } from './interfaces/IClassroomService.ts';
+import type { IClassroomService } from "./interfaces/IClassroomService.ts";
 import type {
   Classroom,
   Announcement,
@@ -6,12 +6,9 @@ import type {
   ScheduleEvent,
   AttendanceRecord,
   StudentReport,
-} from '../types/classroom.types.ts';
-import type { User } from '../types/user.types.ts';
-import {
-  ApplicationStatus,
-  Role,
-} from '../types/common.types.ts';
+} from "../types/classroom.types.ts";
+import type { User } from "../types/user.types.ts";
+import { ApplicationStatus, Role } from "../types/common.types.ts";
 import {
   mockClassrooms,
   mockAnnouncements,
@@ -23,7 +20,7 @@ import {
   mockAttendanceSessions,
   mockAttendanceRecords,
   mockStudentReports,
-} from './mockData.ts';
+} from "./mockData.ts";
 
 const delay = <T>(ms: number, value: T): Promise<T> =>
   new Promise((resolve) => setTimeout(() => resolve(value), ms));
@@ -31,7 +28,7 @@ const delay = <T>(ms: number, value: T): Promise<T> =>
 class ClassroomService implements IClassroomService {
   async getById(id: string): Promise<Classroom> {
     const classroom = mockClassrooms.find((c) => c.id === id);
-    if (!classroom) throw new Error('Classroom not found');
+    if (!classroom) throw new Error("Classroom not found");
     return delay(400, classroom);
   }
 
@@ -59,7 +56,7 @@ class ClassroomService implements IClassroomService {
 
   async getStudents(classroomId: string): Promise<User[]> {
     const classroom = mockClassrooms.find((c) => c.id === classroomId);
-    if (!classroom) throw new Error('Classroom not found');
+    if (!classroom) throw new Error("Classroom not found");
 
     const studentIds = mockEnrollments
       .filter(
@@ -76,7 +73,9 @@ class ClassroomService implements IClassroomService {
   }
 
   async getAnnouncements(classroomId: string): Promise<Announcement[]> {
-    const filtered = mockAnnouncements.filter((a) => a.classroomId === classroomId);
+    const filtered = mockAnnouncements.filter(
+      (a) => a.classroomId === classroomId,
+    );
     return delay(500, filtered);
   }
 
@@ -87,10 +86,10 @@ class ClassroomService implements IClassroomService {
     const newAnnouncement: Announcement = {
       id: `announcement-${Date.now()}`,
       classroomId,
-      authorId: data.authorId ?? 'user-3',
-      title: data.title ?? '',
-      body: data.body ?? '',
-      audience: data.audience ?? 'ALL',
+      authorId: data.authorId ?? "user-3",
+      title: data.title ?? "",
+      body: data.body ?? "",
+      audience: data.audience ?? "ALL",
       createdAt: new Date().toISOString(),
     };
     mockAnnouncements.push(newAnnouncement);
@@ -103,7 +102,9 @@ class ClassroomService implements IClassroomService {
   }
 
   async getSchedule(classroomId: string): Promise<ScheduleEvent[]> {
-    const filtered = mockScheduleEvents.filter((e) => e.classroomId === classroomId);
+    const filtered = mockScheduleEvents.filter(
+      (e) => e.classroomId === classroomId,
+    );
     return delay(500, filtered);
   }
 
@@ -115,7 +116,7 @@ class ClassroomService implements IClassroomService {
     const session = mockAttendanceSessions.find(
       (s) => s.id === sessionId && s.classroomId === classroomId,
     );
-    if (!session) throw new Error('Attendance session not found');
+    if (!session) throw new Error("Attendance session not found");
 
     for (const record of records) {
       const existingIndex = mockAttendanceRecords.findIndex(
@@ -146,13 +147,15 @@ class ClassroomService implements IClassroomService {
     note: string,
   ): Promise<void> {
     const classroom = mockClassrooms.find((c) => c.id === classroomId);
-    if (!classroom) throw new Error('Classroom not found');
+    if (!classroom) throw new Error("Classroom not found");
 
     const student = mockUsers.find((u) => u.id === studentId);
-    if (!student) throw new Error('Student not found');
+    if (!student) throw new Error("Student not found");
 
-    const mentorLink = mockClassroomMentors.find((link) => link.classroomId === classroomId);
-    const reportedById = mentorLink?.mentorId ?? 'user-3';
+    const mentorLink = mockClassroomMentors.find(
+      (link) => link.classroomId === classroomId,
+    );
+    const reportedById = mentorLink?.mentorId ?? "user-3";
 
     const report: StudentReport = {
       id: `report-${Date.now()}`,

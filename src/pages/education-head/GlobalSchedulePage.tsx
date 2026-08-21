@@ -1,5 +1,8 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
-
+import { SchoolCalendar } from "../../features/shared/Calendar/SchoolCalendar.tsx";
+import { useAuth } from "../../context/auth/useAuth.ts";
 export default function GlobalSchedulePage() {
-  return <PlaceholderPage title="Global Education Schedule" section="Education Head" />;
+  const { user } = useAuth();
+  return user?.schoolId ? (
+    <SchoolCalendar schoolId={user.schoolId} role="EDUCATION_HEAD" editable />
+  ) : null;
 }

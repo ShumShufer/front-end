@@ -54,7 +54,7 @@ Tags: `feat` (new feature), `fix` (bug fix), `doc` (documentation), `ui` (stylin
 
 ## 6. Comments & Documentation
 
-- Every exported function/service method gets a short comment explaining *why* it exists if the name alone isn't obvious — not a restatement of the code.
+- Every exported function/service method gets a short comment explaining _why_ it exists if the name alone isn't obvious — not a restatement of the code.
 - Complex logic (price recommendation, schedule priority check, commission calc) must have a comment explaining the rule being implemented, so anyone reading it understands the business reason.
 - Every repo has an up-to-date `README.md`: how to install, run, seed, and test.
 - No leftover commented-out code blocks in merged PRs — delete it, git history is the backup.
@@ -69,6 +69,7 @@ Tags: `feat` (new feature), `fix` (bug fix), `doc` (documentation), `ui` (stylin
 ## 8. Definition of Done
 
 A task is only "done" when:
+
 1. Code is merged into the relevant `*-dev` branch.
 2. It matches the design/architecture rules above.
 3. It has no leftover `console.log`/debug code.

@@ -1,20 +1,23 @@
-import type { INotificationService } from './interfaces/INotificationService.ts';
-import type { Notification, NotificationRecipient } from '../types/notification.types.ts';
-import type { PaginatedData } from '../types/common.types.ts';
-import { mockNotifications } from './mockData.ts';
+import type { INotificationService } from "./interfaces/INotificationService.ts";
+import type {
+  Notification,
+  NotificationRecipient,
+} from "../types/notification.types.ts";
+import type { PaginatedData } from "../types/common.types.ts";
+import { mockNotifications } from "./mockData.ts";
 // import httpClient from './api/httpClient.ts';
 
 const delay = <T>(ms: number, value: T): Promise<T> =>
   new Promise((resolve) => setTimeout(() => resolve(value), ms));
 
 class NotificationService implements INotificationService {
-  async getNotifications(
-    params?: { unreadOnly?: boolean },
-  ): Promise<PaginatedData<Notification & NotificationRecipient>> {
+  async getNotifications(params?: {
+    unreadOnly?: boolean;
+  }): Promise<PaginatedData<Notification & NotificationRecipient>> {
     // return httpClient.get('/notifications', { params });
     let filtered = mockNotifications;
     if (params?.unreadOnly) {
-      filtered = filtered.filter(n => !n.read);
+      filtered = filtered.filter((n) => !n.read);
     }
     return delay(400, {
       data: filtered,
@@ -24,7 +27,7 @@ class NotificationService implements INotificationService {
 
   async markAsRead(id: string): Promise<void> {
     // return httpClient.patch(`/notifications/${id}/read`);
-    const notification = mockNotifications.find(n => n.id === id);
+    const notification = mockNotifications.find((n) => n.id === id);
     if (notification) {
       notification.read = true;
     }

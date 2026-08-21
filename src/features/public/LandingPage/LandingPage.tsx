@@ -1,5 +1,5 @@
-import { type FormEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { type FormEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   BadgeCheck,
@@ -8,43 +8,46 @@ import {
   MapPin,
   Search,
   Star,
-} from 'lucide-react';
-import { SchoolProvider } from '../../../context/school/SchoolProvider.tsx';
-import { useSchool } from '../../../context/school/useSchool.ts';
-import { Button } from '../../../components/Button/Button.tsx';
-import { PublicFooter } from '../../../components/Layout/PublicFooter.tsx';
-import { CiEthiopianStarIcon, CiSteeringWheelIcon } from '../../../components/icons/CustomIcons.tsx';
-import { ROUTES } from '../../../router/routes.config.ts';
-import styles from './LandingPage.module.css';
+} from "lucide-react";
+import { SchoolProvider } from "../../../context/school/SchoolProvider.tsx";
+import { useSchool } from "../../../context/school/useSchool.ts";
+import { Button } from "../../../components/Button/Button.tsx";
+import { PublicFooter } from "../../../components/Layout/PublicFooter.tsx";
+import {
+  CiEthiopianStarIcon,
+  CiSteeringWheelIcon,
+} from "../../../components/icons/CustomIcons.tsx";
+import { ROUTES } from "../../../router/routes.config.ts";
+import styles from "./LandingPage.module.css";
 
 const FEATURES = [
   {
     icon: BadgeCheck,
-    title: 'Verified Schools',
+    title: "Verified Schools",
     description:
-      'We partner only with certified and highly-rated driving academies across Ethiopia to ensure quality education.',
+      "We partner only with certified and highly-rated driving academies across Ethiopia to ensure quality education.",
   },
   {
     icon: CalendarDays,
-    title: 'Easy Booking',
+    title: "Easy Booking",
     description:
-      'Schedule your theory and practical lessons and manage your timetable effortlessly from your phone.',
+      "Schedule your theory and practical lessons and manage your timetable effortlessly from your phone.",
   },
   {
     icon: CreditCard,
-    title: 'Local Payments',
+    title: "Local Payments",
     description:
-      'Pay securely using familiar local payment methods — Telebirr, CBE Birr and bank transfer.',
+      "Pay securely using familiar local payment methods — Telebirr, CBE Birr and bank transfer.",
   },
 ];
 
 function LandingPageContent() {
   const navigate = useNavigate();
   const { schools, loadSchools, isLoading } = useSchool();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    void loadSchools({ status: 'ACTIVE' });
+    void loadSchools({ status: "ACTIVE" });
   }, [loadSchools]);
 
   const topSchools = schools?.data.slice(0, 3) ?? [];
@@ -54,10 +57,12 @@ function LandingPageContent() {
     event.preventDefault();
     const params = new URLSearchParams();
     if (searchQuery.trim()) {
-      params.set('search', searchQuery.trim());
+      params.set("search", searchQuery.trim());
     }
     const query = params.toString();
-    navigate(query ? `${ROUTES.public.schools}?${query}` : ROUTES.public.schools);
+    navigate(
+      query ? `${ROUTES.public.schools}?${query}` : ROUTES.public.schools,
+    );
   };
 
   return (
@@ -77,8 +82,9 @@ function LandingPageContent() {
               <span className={styles.heroAccent}>All in one place.</span>
             </h1>
             <p className={styles.heroLead}>
-              Compare verified driving schools near you, learn the theory online with ShumShufer,
-              and book your practical lessons — all from your phone.
+              Compare verified driving schools near you, learn the theory online
+              with ShumShufer, and book your practical lessons — all from your
+              phone.
             </p>
 
             <div className={styles.heroActions}>
@@ -93,7 +99,9 @@ function LandingPageContent() {
 
             <div className={styles.stats}>
               <div>
-                <div className={styles.statValue}>{schoolCount > 0 ? `${schoolCount}+` : '240+'}</div>
+                <div className={styles.statValue}>
+                  {schoolCount > 0 ? `${schoolCount}+` : "240+"}
+                </div>
                 <div className={styles.statLabel}>Verified schools</div>
               </div>
               <div>
@@ -119,8 +127,12 @@ function LandingPageContent() {
                   <CiSteeringWheelIcon size={14} color="currentColor" />
                   On the road
                 </span>
-                <p className={styles.heroImageCaption}>Your license journey starts here</p>
-                <p className={styles.heroImageSub}>Theory, practice, and certification — connected.</p>
+                <p className={styles.heroImageCaption}>
+                  Your license journey starts here
+                </p>
+                <p className={styles.heroImageSub}>
+                  Theory, practice, and certification — connected.
+                </p>
               </div>
             </div>
 
@@ -143,7 +155,9 @@ function LandingPageContent() {
 
       <section className={styles.section}>
         <p className={styles.sectionEyebrow}>Why choose us</p>
-        <h2 className={styles.sectionTitle}>Everything you need to become a licensed driver.</h2>
+        <h2 className={styles.sectionTitle}>
+          Everything you need to become a licensed driver.
+        </h2>
         <div className={styles.featureGrid}>
           {FEATURES.map((feature) => {
             const Icon = feature.icon;
@@ -160,11 +174,18 @@ function LandingPageContent() {
         </div>
       </section>
 
-      <section className={[styles.section, styles.schoolsSection].join(' ')}>
+      <section className={[styles.section, styles.schoolsSection].join(" ")}>
         <div className={styles.schoolsInner}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionHeaderTitle}>Top-rated schools nearby</h2>
-            <Button to={ROUTES.public.schools} variant="ghost" size="sm" className={styles.sectionHeaderLink}>
+            <h2 className={styles.sectionHeaderTitle}>
+              Top-rated schools nearby
+            </h2>
+            <Button
+              to={ROUTES.public.schools}
+              variant="ghost"
+              size="sm"
+              className={styles.sectionHeaderLink}
+            >
               Browse all
               <ArrowRight size={16} />
             </Button>
@@ -177,11 +198,17 @@ function LandingPageContent() {
               {topSchools.map((school) => (
                 <article key={school.id} className={styles.schoolCard}>
                   <div className={styles.schoolBadges}>
-                    <span className={[styles.badge, styles.badgeSuccess].join(' ')}>
+                    <span
+                      className={[styles.badge, styles.badgeSuccess].join(" ")}
+                    >
                       <BadgeCheck size={12} />
                       Verified
                     </span>
-                    <span className={[styles.badge, styles.badgeNeutral].join(' ')}>Active</span>
+                    <span
+                      className={[styles.badge, styles.badgeNeutral].join(" ")}
+                    >
+                      Active
+                    </span>
                   </div>
                   <h3 className={styles.schoolName}>{school.name}</h3>
                   <div className={styles.schoolMeta}>
@@ -191,14 +218,21 @@ function LandingPageContent() {
                     Addis Ababa
                   </div>
                   <p className={styles.schoolDesc}>{school.description}</p>
-                  <Button to={ROUTES.public.schoolProfile(school.id)} variant="tertiary" size="sm" block>
+                  <Button
+                    to={ROUTES.public.schoolProfile(school.id)}
+                    variant="tertiary"
+                    size="sm"
+                    block
+                  >
                     View School
                   </Button>
                 </article>
               ))}
             </div>
           ) : (
-            <div className={styles.emptySchools}>No schools found yet. Check back soon.</div>
+            <div className={styles.emptySchools}>
+              No schools found yet. Check back soon.
+            </div>
           )}
         </div>
       </section>
@@ -207,10 +241,12 @@ function LandingPageContent() {
         <div className={styles.ctaInner}>
           <div>
             <p className={styles.ctaEyebrow}>Learn with ShumShufer</p>
-            <h3 className={styles.ctaTitle}>Start the theory today — no school required yet.</h3>
+            <h3 className={styles.ctaTitle}>
+              Start the theory today — no school required yet.
+            </h3>
             <p className={styles.ctaDesc}>
-              Free traffic-sign lessons and paid full theory + quiz bank, so you arrive at driving
-              school already ahead.
+              Free traffic-sign lessons and paid full theory + quiz bank, so you
+              arrive at driving school already ahead.
             </p>
           </div>
           <Button to={ROUTES.public.courses} size="lg">

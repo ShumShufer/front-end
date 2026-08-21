@@ -1,10 +1,13 @@
 # Driving School Platform - Frontend
 
 ## Overview of the Problem We Solve
+
 The Driving School Platform is designed to modernize and streamline the operations of driving schools. It provides a centralized system to manage student enrollments, mentor assignments, course curriculum, scheduling, attendance, and task grading. It ensures a seamless digital experience for students, mentors, and administrators to interact with the platform.
 
 ## Project Architecture
+
 The frontend is designed with decoupled data and UI layers:
+
 - **Stack**: React 18, TypeScript, Vite, Tailwind CSS, React Context, react-router-dom
 - **State Management**: React Context + `useReducer` organized by domain (no external state libraries).
 - **Service Layer**: A dedicated service interface layer (`src/services`) allowing seamless switching between mock data and the real API backend.
@@ -13,9 +16,11 @@ The frontend is designed with decoupled data and UI layers:
 ## How to Set Up and Run
 
 ### Prerequisites
+
 - Node.js (v18+)
 
 ### Setup Instructions
+
 1. **Clone the repository** and navigate to the frontend directory.
 2. **Install dependencies**:
    ```bash
@@ -33,6 +38,7 @@ The frontend is designed with decoupled data and UI layers:
    ```
 
 ## The Team
+
 - **Zeamanuel Mebit** (ID: CTC-3498-26) - Lead, Code Reviewer
 - **Yonas** (ID: [id]) - Backend dev
 - **Yeabsra** (ID: [id]) - Frontend dev

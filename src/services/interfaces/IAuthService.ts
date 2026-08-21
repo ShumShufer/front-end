@@ -1,4 +1,4 @@
-import { type User } from '../../types/user.types.ts';
+import { type User } from "../../types/user.types.ts";
 
 export interface LoginCredentials {
   email: string;
@@ -25,4 +25,5 @@ export interface IAuthService {
   getCurrentUser(): Promise<User>;
   requestPasswordReset(email: string): Promise<void>;
   resetPassword(token: string, password: string): Promise<void>;
+  updateCurrentUser(id: string, data: Partial<User>): Promise<User>;
 }

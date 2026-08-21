@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { ROUTES } from '../../router/routes.config.ts';
-import styles from './PublicFooter.module.css';
+import { Link } from "react-router-dom";
+import { ROUTES } from "../../router/routes.config.ts";
+import styles from "./PublicFooter.module.css";
 
 export function PublicFooter() {
   return (
@@ -15,8 +15,8 @@ export function PublicFooter() {
               <span className={styles.brandName}>ShumShufer</span>
             </div>
             <p className={styles.brandDesc}>
-              Ethiopia&apos;s driving school hub — find a verified school, learn the theory, book
-              your practical lessons, and get road-ready.
+              Ethiopia&apos;s driving school hub — find a verified school, learn
+              the theory, book your practical lessons, and get road-ready.
             </p>
           </div>
 
@@ -56,8 +56,8 @@ export function PublicFooter() {
       </div>
 
       <div className={styles.bottom}>
-        © 2026 ShumShufer. Driving education, connected. · Addis Ababa, Ethiopia · Pay with
-        Telebirr &amp; CBE Birr
+        © 2026 ShumShufer. Driving education, connected. · Addis Ababa, Ethiopia
+        · Pay with Telebirr &amp; CBE Birr
       </div>
     </footer>
   );

@@ -1,31 +1,25 @@
-import { useEffect, useState, useMemo } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  MapPin,
-  Star,
-  Search,
-  Filter,
-  BadgeCheck,
-  Users,
-} from 'lucide-react';
-import { useSchool } from '../../../context/school/useSchool.ts';
-import { Button } from '../../../components/Button/Button.tsx';
-import { SchoolsMap } from '../../../components/Map/SchoolsMap.tsx';
-import { ROUTES } from '../../../router/routes.config.ts';
-import styles from './DiscoverSchoolsPage.module.css';
+import { useEffect, useState, useMemo } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { MapPin, Star, Search, Filter, BadgeCheck, Users } from "lucide-react";
+import { useSchool } from "../../../context/school/useSchool.ts";
+import { Button } from "../../../components/Button/Button.tsx";
+import { SchoolsMap } from "../../../components/Map/SchoolsMap.tsx";
+import { ROUTES } from "../../../router/routes.config.ts";
+import styles from "./DiscoverSchoolsPage.module.css";
 
 interface FilterState {
   searchQuery: string;
-  sortBy: 'rating' | 'name' | 'newest';
+  sortBy: "rating" | "name" | "newest";
 }
 
 export function DiscoverSchoolsPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { schools, branches, loadSchools, loadBranches, isLoading } = useSchool();
+  const { schools, branches, loadSchools, loadBranches, isLoading } =
+    useSchool();
   const [filters, setFilters] = useState<FilterState>({
-    searchQuery: searchParams.get('search') || '',
-    sortBy: 'rating',
+    searchQuery: searchParams.get("search") || "",
+    sortBy: "rating",
   });
   const [showFilters, setShowFilters] = useState(false);
 
@@ -45,14 +39,17 @@ export function DiscoverSchoolsPage() {
   const sortedSchools = useMemo(() => {
     if (!schools?.data) return [];
     const data = [...schools.data];
-    
+
     switch (filters.sortBy) {
-      case 'rating':
+      case "rating":
         return data.sort((a, b) => b.rating - a.rating);
-      case 'name':
+      case "name":
         return data.sort((a, b) => a.name.localeCompare(b.name));
-      case 'newest':
-        return data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      case "newest":
+        return data.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
       default:
         return data;
     }
@@ -62,8 +59,11 @@ export function DiscoverSchoolsPage() {
     navigate(ROUTES.public.schoolProfile(schoolId));
   };
 
-  const handleFilterChange = (key: keyof FilterState, value: string | boolean) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+  const handleFilterChange = (
+    key: keyof FilterState,
+    value: string | boolean,
+  ) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
@@ -74,7 +74,8 @@ export function DiscoverSchoolsPage() {
           <div>
             <h1 className={styles.title}>Find Your Driving School</h1>
             <p className={styles.subtitle}>
-              Discover verified driving schools in Addis Ababa. Compare ratings, locations, and book your lessons today.
+              Discover verified driving schools in Addis Ababa. Compare ratings,
+              locations, and book your lessons today.
             </p>
           </div>
         </div>
@@ -86,7 +87,7 @@ export function DiscoverSchoolsPage() {
             type="text"
             placeholder="Search by school name or location..."
             value={filters.searchQuery}
-            onChange={e => handleFilterChange('searchQuery', e.target.value)}
+            onChange={(e) => handleFilterChange("searchQuery", e.target.value)}
             className={styles.searchInput}
           />
           <button
@@ -105,7 +106,7 @@ export function DiscoverSchoolsPage() {
               <label className={styles.filterLabel}>Sort by</label>
               <select
                 value={filters.sortBy}
-                onChange={e => handleFilterChange('sortBy', e.target.value)}
+                onChange={(e) => handleFilterChange("sortBy", e.target.value)}
                 className={styles.filterSelect}
               >
                 <option value="rating">Highest Rating</option>
@@ -132,13 +133,18 @@ export function DiscoverSchoolsPage() {
               </div>
             ) : (
               <div className={styles.schoolsGrid}>
-                {sortedSchools.map(school => (
+                {sortedSchools.map((school) => (
                   <div key={school.id} className={styles.schoolCard}>
                     <div className={styles.cardHeader}>
                       <div className={styles.schoolTitle}>
                         <h3>{school.name}</h3>
-                        {school.status === 'ACTIVE' && (
-                          <span aria-label="Verified school"><BadgeCheck size={16} className={styles.verifiedBadge} /></span>
+                        {school.status === "ACTIVE" && (
+                          <span aria-label="Verified school">
+                            <BadgeCheck
+                              size={16}
+                              className={styles.verifiedBadge}
+                            />
+                          </span>
                         )}
                       </div>
                       <div className={styles.rating}>
@@ -152,7 +158,11 @@ export function DiscoverSchoolsPage() {
                     <div className={styles.cardMeta}>
                       <div className={styles.metaItem}>
                         <MapPin size={16} />
-                        <span>{branches?.filter(b => b.schoolId === school.id).length || 0} branches</span>
+                        <span>
+                          {branches?.filter((b) => b.schoolId === school.id)
+                            .length || 0}{" "}
+                          branches
+                        </span>
                       </div>
                       <div className={styles.metaItem}>
                         <Users size={16} />
@@ -169,11 +179,7 @@ export function DiscoverSchoolsPage() {
                       >
                         View Details
                       </Button>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        block
-                      >
+                      <Button variant="secondary" size="sm" block>
                         Enroll Now
                       </Button>
                     </div>
@@ -186,10 +192,7 @@ export function DiscoverSchoolsPage() {
           {/* Map Sidebar */}
           <div className={styles.mapSidebar}>
             <div className={styles.mapContainer}>
-              <SchoolsMap
-                schools={sortedSchools}
-                branches={branches || []}
-              />
+              <SchoolsMap schools={sortedSchools} branches={branches || []} />
             </div>
           </div>
         </div>

@@ -1,5 +1,4 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
-
+import { StudentWorkspace } from "../../features/student/StudentWorkspace/StudentWorkspace.tsx";
 export default function MyResultsPage() {
-  return <PlaceholderPage title="My Results / Performance Report" section="Student" />;
+  return <StudentWorkspace view="courses" />;
 }

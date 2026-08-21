@@ -1,6 +1,9 @@
-import { createContext } from 'react';
-import type { User } from '../../types/user.types.ts';
-import type { LoginCredentials, RegisterPayload } from '../../services/interfaces/IAuthService.ts';
+import { createContext } from "react";
+import type { User } from "../../types/user.types.ts";
+import type {
+  LoginCredentials,
+  RegisterPayload,
+} from "../../services/interfaces/IAuthService.ts";
 
 export interface AuthState {
   user: User | null;
@@ -16,6 +19,7 @@ export interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<void>;
   resetPassword: (token: string, password: string) => Promise<void>;
+  updateProfile: (data: Partial<User>) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);

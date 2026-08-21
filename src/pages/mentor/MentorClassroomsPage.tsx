@@ -1,5 +1,4 @@
-import { PlaceholderPage } from '../shared/PlaceholderPage.tsx';
-
+import { MentorWorkspace } from "../../features/mentor/MentorWorkspace/MentorWorkspace.tsx";
 export default function MentorClassroomsPage() {
-  return <PlaceholderPage title="Classroom Management" section="Mentor" />;
+  return <MentorWorkspace view="classrooms" />;
 }

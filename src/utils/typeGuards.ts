@@ -5,7 +5,7 @@ import {
   type Role as RoleType,
   type ApplicationMode as ApplicationModeType,
   type PaymentType as PaymentTypeValue,
-} from '../types/common.types.ts';
+} from "../types/common.types.ts";
 
 const roleValues = new Set<string>(Object.values(Role));
 const applicationModeValues = new Set<string>(Object.values(ApplicationMode));
@@ -15,7 +15,10 @@ export function isRole(value: string): value is RoleType {
   return roleValues.has(value);
 }
 
-export function parseRole(value: string | undefined, fallback: RoleType): RoleType {
+export function parseRole(
+  value: string | undefined,
+  fallback: RoleType,
+): RoleType {
   if (value && isRole(value)) {
     return value;
   }
@@ -26,7 +29,10 @@ export function isApplicationMode(value: string): value is ApplicationModeType {
   return applicationModeValues.has(value);
 }
 
-export function parseApplicationMode(value: string, fallback: ApplicationModeType): ApplicationModeType {
+export function parseApplicationMode(
+  value: string,
+  fallback: ApplicationModeType,
+): ApplicationModeType {
   if (isApplicationMode(value)) {
     return value;
   }
@@ -37,7 +43,10 @@ export function isPaymentType(value: string): value is PaymentTypeValue {
   return paymentTypeValues.has(value);
 }
 
-export function parsePaymentType(value: string, fallback: PaymentTypeValue): PaymentTypeValue {
+export function parsePaymentType(
+  value: string,
+  fallback: PaymentTypeValue,
+): PaymentTypeValue {
   if (isPaymentType(value)) {
     return value;
   }

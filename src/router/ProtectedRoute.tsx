@@ -1,15 +1,18 @@
-import { Navigate, useLocation } from 'react-router-dom';
-import type { Role } from '../types/common.types.ts';
-import { useAuth } from '../context/auth/useAuth.ts';
-import { hasRole, getDashboardPathForRole } from '../utils/permissions.ts';
-import { ROUTES } from './routes.config.ts';
+import { Navigate, useLocation } from "react-router-dom";
+import type { Role } from "../types/common.types.ts";
+import { useAuth } from "../context/auth/useAuth.ts";
+import { hasRole, getDashboardPathForRole } from "../utils/permissions.ts";
+import { ROUTES } from "./routes.config.ts";
 
 interface ProtectedRouteProps {
   allowedRoles: Role[];
   children: React.ReactNode;
 }
 
-export function ProtectedRoute({ allowedRoles, children }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  allowedRoles,
+  children,
+}: ProtectedRouteProps) {
   const { user, isLoading, isInitialized } = useAuth();
   const location = useLocation();
 
@@ -22,7 +25,13 @@ export function ProtectedRoute({ allowedRoles, children }: ProtectedRouteProps) 
   }
 
   if (!user) {
-    return <Navigate to={ROUTES.auth.login} state={{ from: location.pathname }} replace />;
+    return (
+      <Navigate
+        to={ROUTES.auth.login}
+        state={{ from: location.pathname }}
+        replace
+      />
+    );
   }
 
   if (!hasRole(user.role, allowedRoles)) {

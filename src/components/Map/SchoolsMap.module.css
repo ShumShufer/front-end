@@ -9,9 +9,13 @@
   border: 1px solid var(--color-border);
 }
 
-.browse { height: var(--map-height-browse); }
+.browse {
+  height: var(--map-height-browse);
+}
 
-.profile { height: var(--map-height-profile); }
+.profile {
+  height: var(--map-height-profile);
+}
 
 .map {
   width: 100%;
@@ -29,14 +33,18 @@
   font-weight: var(--font-weight-semibold);
 }
 
-.markerContainer { background: transparent; border: 0; }
+.markerContainer {
+  background: transparent;
+  border: 0;
+}
 
 .marker {
   display: block;
   width: var(--map-marker-size);
   height: var(--map-marker-size);
   border: var(--map-marker-border) solid var(--color-surface);
-  border-radius: var(--radius-full) var(--radius-full) var(--radius-full) var(--radius-xs);
+  border-radius: var(--radius-full) var(--radius-full) var(--radius-full)
+    var(--radius-xs);
   background: var(--color-primary);
   box-shadow: var(--shadow-card-hover);
   transform: rotate(-45deg);

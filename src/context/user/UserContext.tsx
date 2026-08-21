@@ -1,6 +1,6 @@
-import { createContext } from 'react';
-import type { User } from '../../types/user.types.ts';
-import type { PaginatedData } from '../../types/common.types.ts';
+import { createContext } from "react";
+import type { User } from "../../types/user.types.ts";
+import type { PaginatedData } from "../../types/common.types.ts";
 
 export interface UserState {
   users: PaginatedData<User> | null;

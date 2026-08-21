@@ -1,22 +1,22 @@
-import { useEffect, useState } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { ArrowRight, LayoutDashboard, Menu, X } from 'lucide-react';
-import { useAuth } from '../../context/auth/useAuth.ts';
-import { getDashboardPathForRole } from '../../utils/permissions.ts';
-import { ROUTES } from '../../router/routes.config.ts';
-import styles from './PublicLayout.module.css';
+import { useEffect, useState } from "react";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { ArrowRight, LayoutDashboard, Menu, X } from "lucide-react";
+import { useAuth } from "../../context/auth/useAuth.ts";
+import { getDashboardPathForRole } from "../../utils/permissions.ts";
+import { ROUTES } from "../../router/routes.config.ts";
+import styles from "./PublicLayout.module.css";
 
 const NAV_LINKS = [
-  { to: ROUTES.public.schools, label: 'Find Schools' },
-  { to: ROUTES.public.courses, label: 'Learn Online' },
-  { to: ROUTES.public.mentors, label: 'Mentors' },
-  { to: ROUTES.public.drivers, label: 'Verify a Driver' },
-  { to: ROUTES.public.about, label: 'How it works' },
-  { to: ROUTES.public.pricing, label: 'Pricing' },
+  { to: ROUTES.public.schools, label: "Find Schools" },
+  { to: ROUTES.public.courses, label: "Learn Online" },
+  { to: ROUTES.public.mentors, label: "Mentors" },
+  { to: ROUTES.public.drivers, label: "Verify a Driver" },
+  { to: ROUTES.public.about, label: "How it works" },
+  { to: ROUTES.public.pricing, label: "Pricing" },
 ];
 
 function isAuthRoute(pathname: string) {
-  return pathname.startsWith('/auth');
+  return pathname.startsWith("/auth");
 }
 
 function isLandingRoute(pathname: string) {
@@ -39,14 +39,14 @@ export function PublicLayout() {
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const navClass = [
     styles.nav,
     landingRoute && !scrolled ? styles.navTransparent : styles.navSolid,
-  ].join(' ');
+  ].join(" ");
 
   return (
     <div className={styles.main}>
@@ -68,7 +68,9 @@ export function PublicLayout() {
                 key={link.to}
                 to={link.to}
                 className={({ isActive }) =>
-                  [styles.navLink, isActive ? styles.navLinkActive : ''].filter(Boolean).join(' ')
+                  [styles.navLink, isActive ? styles.navLinkActive : ""]
+                    .filter(Boolean)
+                    .join(" ")
                 }
               >
                 {link.label}
@@ -97,7 +99,10 @@ export function PublicLayout() {
               </>
             ) : null
           ) : user ? (
-            <Link to={getDashboardPathForRole(user.role)} className={styles.btnPrimary}>
+            <Link
+              to={getDashboardPathForRole(user.role)}
+              className={styles.btnPrimary}
+            >
               <LayoutDashboard size={16} />
               Dashboard
             </Link>
@@ -117,7 +122,7 @@ export function PublicLayout() {
         <button
           type="button"
           className={styles.mobileMenuBtn}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((open) => !open)}
         >
@@ -125,14 +130,21 @@ export function PublicLayout() {
         </button>
       </header>
 
-      <div className={[styles.mobileDrawer, menuOpen ? styles.mobileDrawerOpen : ''].join(' ')}>
+      <div
+        className={[
+          styles.mobileDrawer,
+          menuOpen ? styles.mobileDrawerOpen : "",
+        ].join(" ")}
+      >
         {!authRoute
           ? NAV_LINKS.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
                 className={({ isActive }) =>
-                  [styles.mobileNavLink, isActive ? styles.navLinkActive : ''].filter(Boolean).join(' ')
+                  [styles.mobileNavLink, isActive ? styles.navLinkActive : ""]
+                    .filter(Boolean)
+                    .join(" ")
                 }
               >
                 {link.label}
@@ -146,7 +158,10 @@ export function PublicLayout() {
           {user ? (
             <Link
               to={getDashboardPathForRole(user.role)}
-              className={[styles.mobileActionBtn, styles.mobileActionBtnSolid].join(' ')}
+              className={[
+                styles.mobileActionBtn,
+                styles.mobileActionBtnSolid,
+              ].join(" ")}
             >
               Go to Dashboard
             </Link>
@@ -154,13 +169,19 @@ export function PublicLayout() {
             <>
               <Link
                 to={ROUTES.auth.login}
-                className={[styles.mobileActionBtn, styles.mobileActionBtnOutline].join(' ')}
+                className={[
+                  styles.mobileActionBtn,
+                  styles.mobileActionBtnOutline,
+                ].join(" ")}
               >
                 Log in
               </Link>
               <Link
                 to={ROUTES.auth.register}
-                className={[styles.mobileActionBtn, styles.mobileActionBtnSolid].join(' ')}
+                className={[
+                  styles.mobileActionBtn,
+                  styles.mobileActionBtnSolid,
+                ].join(" ")}
               >
                 Sign up
               </Link>
