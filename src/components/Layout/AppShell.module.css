@@ -1,3 +1,7 @@
+header {
+  padding-bottom: 30px;
+}
+
 .shell {
   display: grid;
   grid-template-columns: var(--app-sidebar-width) minmax(0, 1fr);

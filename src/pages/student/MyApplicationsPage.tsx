@@ -56,7 +56,7 @@ export default function MyApplicationsPage() {
           </Button>
         </header>
         <section className={styles.stack}>
-          {enrollment.enrollments?.data.length ? (
+          {enrollment.enrollments?.data?.length ? (
             enrollment.enrollments.data.map((item) => (
               <article key={item.id} className={styles.application}>
                 <div className={styles.applicationMain}>

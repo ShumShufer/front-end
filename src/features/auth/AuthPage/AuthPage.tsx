@@ -68,6 +68,10 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
       setFormError("Please enter your email.");
       return;
     }
+    if (!password) {
+      setFormError("Please enter your password.");
+      return;
+    }
 
     try {
       await login({ email: email.trim(), password });
@@ -93,6 +97,14 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
       setFormError("Please create a password.");
       return;
     }
+    if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/.test(password)
+    ) {
+      setFormError(
+        "Password must be at least 8 characters and include uppercase, lowercase, a digit and a special character.",
+      );
+      return;
+    }
 
     try {
       await register({
@@ -111,13 +123,6 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const displayError = formError ?? error;
 
   const handleBack = () => {
-    // React Router stores the history index in state; fall back to the
-    // landing page when there is nothing to go back to.
-    const idx = window.history.state?.idx;
-    if (typeof idx === "number" && idx > 0) {
-      navigate(-1);
-      return;
-    }
     navigate(ROUTES.public.landing, { replace: true });
   };
 
@@ -127,10 +132,10 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
         type="button"
         className={styles.backButton}
         onClick={handleBack}
-        aria-label="Go back"
+        aria-label="Go to home page"
       >
         <ArrowLeft size={20} />
-        Back
+        Home
       </button>
       <div className={styles.layout}>
         <div className={styles.visual}>
@@ -218,6 +223,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     label="Email"
                     name="email"
                     type="email"
+                    required
                     autoComplete="email"
                     placeholder="student@example.com"
                     value={email}
@@ -229,6 +235,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     label="Password"
                     name="password"
                     type="password"
+                    required
                     autoComplete="current-password"
                     placeholder="Enter your password"
                     value={password}
@@ -285,6 +292,8 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     <Input
                       label="First name"
                       name="firstName"
+                      required
+                      minLength={2}
                       autoComplete="given-name"
                       placeholder="Abebe"
                       value={firstName}
@@ -294,6 +303,8 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     <Input
                       label="Last name"
                       name="lastName"
+                      required
+                      minLength={2}
                       autoComplete="family-name"
                       placeholder="Kebede"
                       value={lastName}
@@ -305,6 +316,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     label="Email"
                     name="email"
                     type="email"
+                    required
                     autoComplete="email"
                     placeholder="you@example.com"
                     value={email}
@@ -316,6 +328,9 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     label="Password"
                     name="password"
                     type="password"
+                    required
+                    minLength={8}
+                    hint="At least 8 characters, with uppercase, lowercase, a digit and a symbol."
                     autoComplete="new-password"
                     placeholder="Create a password"
                     value={password}

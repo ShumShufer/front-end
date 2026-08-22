@@ -8,7 +8,7 @@
   margin: 0 auto;
 }
 .header {
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-8);
 }
 .header p {
   display: inline-flex;

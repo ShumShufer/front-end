@@ -8,10 +8,11 @@
   margin: 0 auto;
 }
 .page > h1,
+.inner > h1,
 .page header h1 {
   font-size: var(--text-3xl);
   letter-spacing: var(--letter-spacing-tight);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
 }
 .page header p {
   color: var(--color-primary);

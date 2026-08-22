@@ -23,7 +23,7 @@
   color: var(--color-primary);
 }
 .header {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
 }
 .header p {
   display: inline-flex;

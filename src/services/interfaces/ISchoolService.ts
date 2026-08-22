@@ -15,6 +15,11 @@ import type { PaginatedData } from "../../types/common.types.ts";
 import type { ApplicationFormTemplate } from "../../types/enrollment.types.ts";
 
 export interface ISchoolService {
+  getPlatformStats(): Promise<{
+    totalActiveSchools: number;
+    totalStudentsEnrolled: number;
+    avgSchoolRating: number | null;
+  }>;
   getSchools(params?: {
     search?: string;
     status?: string;
