@@ -84,6 +84,8 @@ const ClassroomCoursesPage = () =>
   lazyPage(() => import("../pages/student/ClassroomCoursesPage.tsx"));
 const CoursePlayerPage = () =>
   lazyPage(() => import("../pages/student/CoursePlayerPage.tsx"));
+const StudentCoursesPage = () =>
+  lazyPage(() => import("../pages/student/StudentCoursesPage.tsx"));
 const CourseExamPage = () =>
   lazyPage(() => import("../pages/student/CourseExamPage.tsx"));
 const ClassroomResourcesPage = () =>
@@ -348,6 +350,7 @@ export function AppRouter() {
             path="classroom/:classroomId/attendance"
             element={<ClassroomAttendancePage />}
           />
+          <Route path="courses" element={<StudentCoursesPage />} />
           <Route path="courses/:courseId" element={<CoursePlayerPage />} />
           <Route path="courses/:courseId/exam" element={<CourseExamPage />} />
           <Route path="tasks/:taskId" element={<TaskDetailPage />} />

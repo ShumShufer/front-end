@@ -19,7 +19,7 @@
   color: var(--color-primary);
 }
 .header {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
 }
 .header p {
   display: inline-flex;
@@ -32,6 +32,7 @@
   letter-spacing: var(--letter-spacing-wide);
 }
 .header h1 {
+  margin: var(--space-2) 0 0;
   font-size: var(--text-3xl);
   letter-spacing: var(--letter-spacing-tight);
 }
@@ -106,6 +107,9 @@
 .muted {
   color: var(--color-text-muted);
   font-size: var(--text-sm);
+}
+.backWrap {
+  margin-top: var(--space-4);
 }
 .ctaRow {
   display: flex;

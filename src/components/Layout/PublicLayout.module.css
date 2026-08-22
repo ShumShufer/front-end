@@ -53,52 +53,7 @@
   gap: var(--space-3);
   text-decoration: none;
   flex-shrink: 0;
-}
-
-.logoWrap {
-  width: 52px;
-  height: 52px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform var(--transition-spring);
-}
-
-.brand:hover .logoWrap {
-  transform: rotate(-8deg) scale(1.08);
-}
-
-.logoWrap svg {
-  width: 100%;
-  height: 100%;
-}
-.logoSvg {
   color: var(--color-text);
-}
-
-.brandText {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
-
-.brandName {
-  font-size: var(--text-xl);
-  font-weight: var(--font-weight-black);
-  letter-spacing: var(--letter-spacing-snug);
-  text-transform: uppercase;
-  color: var(--color-text);
-  transition: color var(--transition-fast);
-}
-
-.brandSub {
-  font-size: 10px;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: var(--letter-spacing-wider);
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  transition: color var(--transition-fast);
 }
 
 /* ─── Nav Links ───────────────────────────────────────────────────────────── */
@@ -224,16 +179,8 @@
 }
 
 /* ─── Transparent (over hero) state ──────────────────────────────────────── */
-.navTransparent .brandName {
+.navTransparent .brand {
   color: var(--color-text-inverse);
-}
-
-.navTransparent .logoSvg {
-  color: var(--color-text-inverse);
-}
-
-.navTransparent .brandSub {
-  color: var(--color-text-inverse-muted);
 }
 
 .navTransparent .navLink {

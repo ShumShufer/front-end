@@ -6,7 +6,7 @@ import { useEnrollment } from "../../../context/enrollment/useEnrollment.ts";
 import { usePayment } from "../../../context/payment/usePayment.ts";
 import { useSchool } from "../../../context/school/useSchool.ts";
 import { useUser } from "../../../context/user/useUser.ts";
-import { formatCurrency } from "../../../utils/formatters.ts";
+import { formatCompactCurrency } from "../../../utils/formatters.ts";
 import styles from "./GlobalReports.module.css";
 
 const SUCCESS_STATUS = "SUCCESS";
@@ -82,7 +82,7 @@ export function GlobalReports() {
           </article>
           <article className={styles.stat}>
             <Wallet size={18} />
-            <strong>{formatCurrency(report.gross)}</strong>
+            <strong>{formatCompactCurrency(report.gross)}</strong>
             <span>Gross volume ({report.transactions})</span>
           </article>
         </section>
@@ -101,7 +101,7 @@ export function GlobalReports() {
                     }}
                   />
                 </div>
-                <strong>{formatCurrency(amount)}</strong>
+                <strong>{formatCompactCurrency(amount)}</strong>
               </div>
             ))
           ) : (

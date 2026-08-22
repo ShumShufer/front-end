@@ -3,8 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2, Lock, Mail, User } from "lucide-react";
 import { useAuth } from "../../../context/auth/useAuth.ts";
 import { Button } from "../../../components/Button/Button.tsx";
+import { BrandLogo } from "../../../components/BrandLogo/BrandLogo.tsx";
 import { Input } from "../../../components/Form/Input.tsx";
-import { CiSteeringWheelIcon } from "../../../components/icons/CustomIcons.tsx";
 import { Role, VerificationStatus } from "../../../types/common.types.ts";
 import { getDashboardPathForRole } from "../../../utils/permissions.ts";
 import { ROUTES } from "../../../router/routes.config.ts";
@@ -145,10 +145,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
             className={styles.visualImage}
           />
           <div className={styles.visualOverlay}>
-            <span className={styles.visualBadge}>
-              <CiSteeringWheelIcon size={14} color="currentColor" />
-              ShumShufer
-            </span>
+            <BrandLogo markSize={30} tone="inverse" className={styles.visualBadge} />
             <h2 className={styles.visualTitle}>
               Shift into gear. Your license awaits.
             </h2>
@@ -156,16 +153,6 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
               Join thousands of learners finding verified schools, mastering
               theory, and hitting the road with confidence.
             </p>
-            <div className={styles.visualStats}>
-              <div className={styles.visualStat}>
-                <div className={styles.visualStatValue}>240+</div>
-                <div className={styles.visualStatLabel}>Schools</div>
-              </div>
-              <div className={styles.visualStat}>
-                <div className={styles.visualStatValue}>38K+</div>
-                <div className={styles.visualStatLabel}>Students</div>
-              </div>
-            </div>
           </div>
         </div>
 

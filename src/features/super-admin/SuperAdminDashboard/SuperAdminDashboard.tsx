@@ -5,7 +5,7 @@ import { useCourse } from "../../../context/course/useCourse.ts";
 import { usePayment } from "../../../context/payment/usePayment.ts";
 import { useSchool } from "../../../context/school/useSchool.ts";
 import { useUser } from "../../../context/user/useUser.ts";
-import { formatCurrency } from "../../../utils/formatters.ts";
+import { formatCompactCurrency } from "../../../utils/formatters.ts";
 import styles from "./SuperAdminDashboard.module.css";
 
 const SUCCESS_STATUS = "SUCCESS";
@@ -65,7 +65,7 @@ export function SuperAdminDashboard() {
           </article>
           <article className={styles.stat}>
             <Wallet size={18} />
-            <strong>{formatCurrency(grossVolume)}</strong>
+            <strong>{formatCompactCurrency(grossVolume)}</strong>
             <span>Gross volume</span>
           </article>
         </section>

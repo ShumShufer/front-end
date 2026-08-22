@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../router/routes.config.ts";
 import styles from "./PublicFooter.module.css";
-import { Logo } from "../Logo/Logo.tsx";
+import { BrandLogo } from "../BrandLogo/BrandLogo.tsx";
 
 export function PublicFooter() {
   return (
@@ -9,12 +9,7 @@ export function PublicFooter() {
       <div className={styles.inner}>
         <div className={styles.columns}>
           <div className={styles.brandBlock}>
-            <div className={styles.brandRow}>
-              <div className={styles.logoWrap}>
-                <Logo className={styles.footerLogo} />
-              </div>
-              <span className={styles.brandName}>ShumShufer</span>
-            </div>
+            <BrandLogo markSize={40} tone="inverse" />
             <p className={styles.brandDesc}>
               Ethiopia&apos;s driving school hub — find a verified school, learn
               the theory, book your practical lessons, and get road-ready.

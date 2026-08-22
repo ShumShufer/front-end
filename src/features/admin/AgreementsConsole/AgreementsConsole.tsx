@@ -33,7 +33,7 @@ export function AgreementsConsole() {
 
   function partnerName(id: string): string {
     return (
-      school.schools?.data.find((s) => s.id === id)?.name ??
+      school.schools?.data?.find((s) => s.id === id)?.name ??
       `School ${id.slice(-4)}`
     );
   }

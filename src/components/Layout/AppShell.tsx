@@ -4,6 +4,7 @@ import {
   Briefcase,
   Building2,
   Calendar,
+  ClipboardCheck,
   ClipboardList,
   CreditCard,
   FileCheck2,
@@ -21,8 +22,8 @@ import {
   Users,
 } from "lucide-react";
 import { Link, NavLink, Outlet } from "react-router-dom";
+import { BrandLogo } from "../BrandLogo/BrandLogo.tsx";
 import { useAuth } from "../../context/auth/useAuth.ts";
-import { Logo } from "../Logo/Logo.tsx";
 import { ROUTES } from "../../router/routes.config.ts";
 import styles from "./AppShell.module.css";
 
@@ -74,7 +75,8 @@ function linksFor(homePath: string): NavItem[] {
       { label: "Dashboard", to: homePath, icon: LayoutDashboard },
       { label: "My schools", to: ROUTES.student.applications, icon: School },
       { label: "Classrooms", to: ROUTES.student.classroom, icon: GraduationCap },
-      { label: "Courses", to: ROUTES.student.results, icon: ClipboardList },
+      { label: "Courses", to: ROUTES.student.courses, icon: ClipboardList },
+      { label: "My results", to: ROUTES.student.results, icon: ClipboardCheck },
       { label: "My profile", to: ROUTES.student.profile, icon: UserRound },
       { label: "Notifications", to: ROUTES.student.notifications, icon: Bell },
     ];
@@ -121,8 +123,7 @@ export function AppShell({ roleLabel, homePath }: AppShellProps) {
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
         <Link to={ROUTES.public.landing} className={styles.brand}>
-          <Logo className={styles.brandLogo} />
-          <span>ShumShufer</span>
+          <BrandLogo markSize={38} />
         </Link>
         <p className={styles.role}>{roleLabel}</p>
         <nav>

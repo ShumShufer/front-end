@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Megaphone } from "lucide-react";
 import { Button } from "../../../components/Button/Button.tsx";
 import { useClassroom } from "../../../context/classroom/useClassroom.ts";
 import { ROUTES } from "../../../router/routes.config.ts";
+import { formatDate } from "../../../utils/formatters.ts";
 import styles from "./AnnouncementComposer.module.css";
 
 const MIN_TITLE_LENGTH = 4;
@@ -17,6 +18,12 @@ export function AnnouncementComposer() {
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (!classroomId) return;
+    void classroom.loadAnnouncements(classroomId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classroomId]);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -95,6 +102,27 @@ export function AnnouncementComposer() {
             </Button>
           </footer>
         </form>
+
+        <section className={styles.history} aria-label="Posted announcements">
+          <h2>Posted announcements</h2>
+          {classroom.announcements.length ? (
+            <ul className={styles.historyList}>
+              {classroom.announcements.map((item) => (
+                <li key={item.id} className={styles.historyItem}>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                  <time dateTime={item.createdAt}>
+                    {formatDate(item.createdAt)}
+                  </time>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.historyEmpty}>
+              You have not posted anything to this classroom yet.
+            </p>
+          )}
+        </section>
       </div>
     </main>
   );

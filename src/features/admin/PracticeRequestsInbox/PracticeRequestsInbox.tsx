@@ -28,7 +28,7 @@ export function PracticeRequestsInbox() {
   }, [schoolId]);
 
   useEffect(() => {
-    if ((userCtx.users?.data.length ?? 0) === 0) void userCtx.loadUsers();
+    if ((userCtx.users?.data?.length ?? 0) === 0) void userCtx.loadUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

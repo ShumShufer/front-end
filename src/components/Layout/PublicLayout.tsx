@@ -4,7 +4,7 @@ import { ArrowRight, ArrowUpRight, Menu, X } from "lucide-react";
 import { useAuth } from "../../context/auth/useAuth.ts";
 import { getDashboardPathForRole } from "../../utils/permissions.ts";
 import { ROUTES } from "../../router/routes.config.ts";
-import { Logo } from "../Logo/Logo.tsx";
+import { BrandLogo } from "../BrandLogo/BrandLogo.tsx";
 import styles from "./PublicLayout.module.css";
 
 const NAV_LINKS: Array<{
@@ -80,12 +80,10 @@ export function PublicLayout() {
       {!authRoute && (
         <header className={navClass}>
           <Link to={ROUTES.public.landing} className={styles.brand}>
-            <div className={styles.logoWrap}>
-              <Logo className={styles.logoSvg} />
-            </div>
-            <div className={styles.brandText}>
-              <span className={styles.brandName}>ShumShufer</span>
-            </div>
+            <BrandLogo
+              markSize={40}
+              tone={landingRoute && !scrolled ? "inverse" : "auto"}
+            />
           </Link>
 
           <nav className={styles.navLinks} aria-label="Main navigation">

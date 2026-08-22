@@ -51,7 +51,7 @@ export function StudentsDirectory() {
           />
         </label>
 
-        {userCtx.isLoading && (userCtx.users?.data.length ?? 0) === 0 ? (
+        {userCtx.isLoading && (userCtx.users?.data?.length ?? 0) === 0 ? (
           <PageSkeleton variant="list" />
         ) : directory.length ? (
           <section className={styles.table} aria-label="Student list">

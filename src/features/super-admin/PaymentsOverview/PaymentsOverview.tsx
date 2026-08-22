@@ -3,7 +3,11 @@ import { Receipt, Wallet } from "lucide-react";
 import { EmptyState } from "../../../components/EmptyState/EmptyState.tsx";
 import { PageSkeleton } from "../../../components/Skeleton/PageSkeleton.tsx";
 import { usePayment } from "../../../context/payment/usePayment.ts";
-import { formatCurrency, formatDate } from "../../../utils/formatters.ts";
+import {
+  formatCompactCurrency,
+  formatCurrency,
+  formatDate,
+} from "../../../utils/formatters.ts";
 import styles from "./PaymentsOverview.module.css";
 
 const COMMISSION_RATE = 0.1;
@@ -37,11 +41,11 @@ export function PaymentsOverview() {
         {successful.length > 0 && (
           <section className={styles.summary}>
             <div>
-              <strong>{formatCurrency(gross)}</strong>
+              <strong>{formatCompactCurrency(gross)}</strong>
               <span>Successful volume</span>
             </div>
             <div>
-              <strong>{formatCurrency(gross * COMMISSION_RATE)}</strong>
+              <strong>{formatCompactCurrency(gross * COMMISSION_RATE)}</strong>
               <span>Platform revenue ({COMMISSION_RATE * 100}%)</span>
             </div>
           </section>

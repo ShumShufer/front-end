@@ -47,6 +47,7 @@ export const ROUTES = {
       `/app/student/courses/${courseId}`,
     courseExam: (courseId = ":courseId") =>
       `/app/student/courses/${courseId}/exam`,
+    courses: "/app/student/courses",
     taskDetail: (taskId = ":taskId") => `/app/student/tasks/${taskId}`,
     practiceQuizzes: "/app/student/practice-quizzes",
     practiceElsewhere: "/app/student/practice-elsewhere",
