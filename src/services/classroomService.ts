@@ -1,10 +1,11 @@
-import type { IClassroomService } from "./interfaces/IClassroomService.ts";
+import type { IClassroomService, AttendanceSheet } from "./interfaces/IClassroomService.ts";
 import type {
   Classroom,
   Announcement,
   Resource,
   ScheduleEvent,
   AttendanceRecord,
+  AttendanceSession,
   StudentReport,
 } from "../types/classroom.types.ts";
 import type { User } from "../types/user.types.ts";
@@ -101,11 +102,57 @@ class ClassroomService implements IClassroomService {
     return delay(500, filtered);
   }
 
+  async uploadResource(
+    classroomId: string,
+    data: Partial<Resource>,
+  ): Promise<Resource> {
+    const resource: Resource = {
+      id: `resource-${Date.now()}`,
+      classroomId,
+      topicId: data.topicId ?? null,
+      title: data.title ?? "",
+      type: data.type ?? "LINK",
+      url: data.url ?? "",
+      mandatory: data.mandatory ?? false,
+      uploadedAt: new Date().toISOString(),
+    };
+    mockResources.push(resource);
+    return delay(600, resource);
+  }
+
   async getSchedule(classroomId: string): Promise<ScheduleEvent[]> {
     const filtered = mockScheduleEvents.filter(
       (e) => e.classroomId === classroomId,
     );
     return delay(500, filtered);
+  }
+
+  async getAttendance(classroomId: string): Promise<AttendanceSheet> {
+    const sessions = mockAttendanceSessions.filter(
+      (s) => s.classroomId === classroomId,
+    );
+    const sessionIds = sessions.map((s) => s.id);
+    const records = mockAttendanceRecords.filter((r) =>
+      sessionIds.includes(r.sessionId),
+    );
+    return delay(500, { sessions, records });
+  }
+
+  async createAttendanceSession(
+    classroomId: string,
+    date: string,
+  ): Promise<AttendanceSession> {
+    const existing = mockAttendanceSessions.find(
+      (s) => s.classroomId === classroomId && s.date === date,
+    );
+    if (existing) throw new Error("A session for this date already exists");
+    const session: AttendanceSession = {
+      id: `session-${Date.now()}`,
+      classroomId,
+      date,
+    };
+    mockAttendanceSessions.push(session);
+    return delay(600, session);
   }
 
   async markAttendance(
@@ -166,6 +213,66 @@ class ClassroomService implements IClassroomService {
       createdAt: new Date().toISOString(),
     };
     mockStudentReports.push(report);
+    return delay(500, undefined);
+  }
+
+  async getSchoolAnnouncements(schoolId: string): Promise<Announcement[]> {
+    const classroomIds = mockClassrooms
+      .filter((c) => c.schoolId === schoolId)
+      .map((c) => c.id);
+    const announcements = mockAnnouncements.filter(
+      (a) => a.classroomId && classroomIds.includes(a.classroomId),
+    );
+    return delay(500, [...announcements].sort((a, b) => b.createdAt.localeCompare(a.createdAt)));
+  }
+
+  async broadcastSchoolAnnouncement(
+    schoolId: string,
+    data: { title: string; body: string; authorId: string },
+  ): Promise<void> {
+    const classrooms = mockClassrooms.filter((c) => c.schoolId === schoolId);
+    if (classrooms.length === 0) throw new Error("No classrooms to announce to");
+    const now = new Date().toISOString();
+    classrooms.forEach((classroom, index) => {
+      mockAnnouncements.push({
+        id: `ann-${Date.now()}-${index}`,
+        schoolId,
+        classroomId: classroom.id,
+        authorId: data.authorId,
+        title: data.title,
+        body: data.body,
+        audience: "ALL",
+        createdAt: now,
+      });
+    });
+    return delay(600, undefined);
+  }
+
+  async getPlatformAnnouncements(): Promise<Announcement[]> {
+    const announcements = mockAnnouncements.filter(
+      (a) => a.classroomId === null && a.schoolId === null,
+    );
+    return delay(
+      400,
+      [...announcements].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
+    );
+  }
+
+  async broadcastPlatformAnnouncement(data: {
+    title: string;
+    body: string;
+    authorId: string;
+  }): Promise<void> {
+    mockAnnouncements.push({
+      id: `ann-${Date.now()}`,
+      schoolId: null,
+      classroomId: null,
+      authorId: data.authorId,
+      title: data.title,
+      body: data.body,
+      audience: "PLATFORM",
+      createdAt: new Date().toISOString(),
+    });
     return delay(500, undefined);
   }
 }

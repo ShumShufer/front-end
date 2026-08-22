@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { About } from "../../features/public/About/About.tsx";
 
 export default function AboutPage() {
-  return <PlaceholderPage title="About / How It Works" section="Public" />;
+  return <About />;
 }

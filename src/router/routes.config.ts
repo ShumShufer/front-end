@@ -9,6 +9,8 @@ export const ROUTES = {
     courseDetail: (courseId = ":courseId") => `/courses/${courseId}`,
     mentors: "/mentors",
     drivers: "/drivers",
+    applications: "/applications",
+    announcements: "/announcements",
     about: "/about",
     pricing: "/pricing",
   },
@@ -84,6 +86,7 @@ export const ROUTES = {
       `/app/mentor/classrooms/${classroomId}/resources`,
     profile: "/app/mentor/profile",
     notifications: "/app/mentor/notifications",
+    openings: "/app/mentor/openings",
   },
   educationHead: {
     root: "/app/education-head",

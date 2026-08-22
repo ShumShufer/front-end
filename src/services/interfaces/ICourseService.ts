@@ -1,4 +1,9 @@
-import type { Course, Topic, CourseResult } from "../../types/course.types.ts";
+import type {
+  Course,
+  Topic,
+  CourseResult,
+  ClassroomCourseLink,
+} from "../../types/course.types.ts";
 
 export interface ICourseService {
   getCourses(params?: { schoolId?: string }): Promise<Course[]>;
@@ -11,10 +16,18 @@ export interface ICourseService {
   createTopic(courseId: string, data: Partial<Topic>): Promise<Topic>;
   updateTopic(id: string, data: Partial<Topic>): Promise<Topic>;
 
+  getClassroomCourses(classroomId: string): Promise<ClassroomCourseLink[]>;
   getStudentProgress(studentId: string): Promise<CourseResult[]>;
   publishResult(
     courseId: string,
     studentId: string,
     data: Partial<CourseResult>,
+  ): Promise<CourseResult>;
+  submitFinalExam(
+    courseId: string,
+    studentId: string,
+    classroomId: string,
+    score: number,
+    passScore: number,
   ): Promise<CourseResult>;
 }

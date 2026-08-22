@@ -22,11 +22,10 @@
   font-weight: var(--font-weight-extrabold);
   letter-spacing: var(--letter-spacing-snug);
 }
-.brand img {
-  width: var(--space-8);
-  height: var(--space-8);
-  object-fit: cover;
-  border-radius: var(--radius-md);
+.brandLogo {
+  width: var(--space-10);
+  height: var(--space-10);
+  color: var(--color-primary);
 }
 .role {
   margin: var(--space-6) 0 var(--space-3);
@@ -110,8 +109,8 @@ nav {
     white-space: nowrap;
     padding: var(--space-2) var(--space-3);
   }
-  .brand img {
-    width: var(--space-6);
-    height: var(--space-6);
+  .brandLogo {
+    width: var(--space-8);
+    height: var(--space-8);
   }
 }

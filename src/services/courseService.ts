@@ -1,7 +1,17 @@
 import type { ICourseService } from "./interfaces/ICourseService.ts";
-import type { Course, Topic, CourseResult } from "../types/course.types.ts";
+import type {
+  Course,
+  Topic,
+  CourseResult,
+  ClassroomCourseLink,
+} from "../types/course.types.ts";
 import { CoursePassStatus } from "../types/common.types.ts";
-import { mockCourses, mockTopics, mockCourseResults } from "./mockData.ts";
+import {
+  mockCourses,
+  mockTopics,
+  mockCourseResults,
+  mockClassroomCourses,
+} from "./mockData.ts";
 // import httpClient from './api/httpClient.ts';
 
 const delay = <T>(ms: number, value: T): Promise<T> =>
@@ -91,6 +101,22 @@ class CourseService implements ICourseService {
     return delay(400, filtered);
   }
 
+  async getClassroomCourses(
+    classroomId: string,
+  ): Promise<ClassroomCourseLink[]> {
+    const links = mockClassroomCourses
+      .filter((link) => link.classroomId === classroomId)
+      .sort((a, b) => a.order - b.order);
+    const joined: ClassroomCourseLink[] = [];
+    for (const link of links) {
+      const course = mockCourses.find((c) => c.id === link.courseId);
+      if (course) {
+        joined.push({ course, order: link.order, mandatory: link.mandatory });
+      }
+    }
+    return delay(500, joined);
+  }
+
   async publishResult(
     courseId: string,
     studentId: string,
@@ -120,6 +146,24 @@ class CourseService implements ICourseService {
     };
     mockCourseResults.push(newResult);
     return delay(500, newResult);
+  }
+
+  async submitFinalExam(
+    courseId: string,
+    studentId: string,
+    classroomId: string,
+    score: number,
+    passScore: number,
+  ): Promise<CourseResult> {
+    // Passing rule: the exam is passed only when the score reaches the
+    // course's configured pass score; otherwise a retake is required.
+    const status =
+      score >= passScore ? CoursePassStatus.PASSED : CoursePassStatus.RETAKE_REQUIRED;
+    return this.publishResult(courseId, studentId, {
+      classroomId,
+      status,
+      finalExamScore: score,
+    });
   }
 }
 

@@ -59,6 +59,19 @@ class TaskService implements ITaskService {
     return delay(500, filtered);
   }
 
+  async getSubmissionById(id: string): Promise<Submission> {
+    // return httpClient.get(`/submissions/${id}`);
+    const submission = mockSubmissions.find((s) => s.id === id);
+    if (!submission) throw new Error("Submission not found");
+    return delay(400, submission);
+  }
+
+  async getStudentSubmissions(studentId: string): Promise<Submission[]> {
+    // return httpClient.get(`/students/${studentId}/submissions`);
+    const filtered = mockSubmissions.filter((s) => s.studentId === studentId);
+    return delay(400, filtered);
+  }
+
   async submitTask(
     taskId: string,
     studentId: string,

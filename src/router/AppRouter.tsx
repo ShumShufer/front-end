@@ -44,6 +44,10 @@ const BrowseMentorsPage = () =>
   lazyPage(() => import("../pages/public/BrowseMentorsPage.tsx"));
 const DriverLookupPage = () =>
   lazyPage(() => import("../pages/public/DriverLookupPage.tsx"));
+const ApplicationsPage = () =>
+  lazyPage(() => import("../pages/public/ApplicationsPage.tsx"));
+const AnnouncementsPage = () =>
+  lazyPage(() => import("../pages/public/AnnouncementsPage.tsx"));
 const AboutPage = () => lazyPage(() => import("../pages/public/AboutPage.tsx"));
 const PricingPage = () =>
   lazyPage(() => import("../pages/public/PricingPage.tsx"));
@@ -118,6 +122,8 @@ const CreateAnnouncementPage = () =>
   lazyPage(() => import("../pages/mentor/CreateAnnouncementPage.tsx"));
 const MentorCoursesPage = () =>
   lazyPage(() => import("../pages/mentor/MentorCoursesPage.tsx"));
+const MentorOpeningsPage = () =>
+  lazyPage(() => import("../pages/mentor/MentorOpeningsPage.tsx"));
 const EditTopicPage = () =>
   lazyPage(() => import("../pages/mentor/EditTopicPage.tsx"));
 const QuizBuilderPage = () =>
@@ -256,20 +262,25 @@ export function AppRouter() {
           <Route element={<SchoolProviderLayout />}>
             <Route path="schools" element={<BrowseSchoolsPage />} />
             <Route path="schools/:schoolId" element={<SchoolProfilePage />} />
-          </Route>
 
-          <Route element={<CourseProviderLayout />}>
-            <Route path="courses" element={<BrowseCoursesPage />} />
-            <Route
-              path="courses/:courseId"
-              element={<PublicCourseDetailPage />}
-            />
+            <Route element={<CourseProviderLayout />}>
+              <Route path="courses" element={<BrowseCoursesPage />} />
+              <Route
+                path="courses/:courseId"
+                element={<PublicCourseDetailPage />}
+              />
+            </Route>
           </Route>
 
           <Route path="mentors" element={<BrowseMentorsPage />} />
           <Route path="drivers" element={<DriverLookupPage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="pricing" element={<PricingPage />} />
+
+          <Route element={<SchoolProviderLayout />}>
+            <Route path="applications" element={<ApplicationsPage />} />
+          </Route>
+          <Route path="announcements" element={<AnnouncementsPage />} />
 
           {/* Auth routes (guest only) */}
           <Route
@@ -357,6 +368,7 @@ export function AppRouter() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<MentorDashboardPage />} />
           <Route path="classrooms" element={<MentorClassroomsPage />} />
+          <Route path="openings" element={<MentorOpeningsPage />} />
           <Route
             path="classrooms/:classroomId"
             element={<MentorClassroomHubPage />}

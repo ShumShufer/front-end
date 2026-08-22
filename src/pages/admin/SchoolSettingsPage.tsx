@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { SchoolSettings } from "../../features/admin/SchoolSettings/SchoolSettings.tsx";
 
 export default function SchoolSettingsPage() {
-  return <PlaceholderPage title="School Settings" section="Admin" />;
+  return <SchoolSettings />;
 }

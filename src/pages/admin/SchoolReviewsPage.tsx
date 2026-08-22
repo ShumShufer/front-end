@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { SchoolReviews } from "../../features/admin/SchoolReviews/SchoolReviews.tsx";
 
 export default function SchoolReviewsPage() {
-  return <PlaceholderPage title="School Reviews" section="Admin" />;
+  return <SchoolReviews />;
 }

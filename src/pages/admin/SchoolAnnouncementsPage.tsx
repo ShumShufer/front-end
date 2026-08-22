@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { SchoolAnnouncements } from "../../features/admin/SchoolAnnouncements/SchoolAnnouncements.tsx";
 
 export default function SchoolAnnouncementsPage() {
-  return <PlaceholderPage title="Official Announcements" section="Admin" />;
+  return <SchoolAnnouncements />;
 }

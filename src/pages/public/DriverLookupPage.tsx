@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { DriverLookup } from "../../features/public/DriverLookup/DriverLookup.tsx";
 
 export default function DriverLookupPage() {
-  return <PlaceholderPage title="Driver Lookup" section="Public" />;
+  return <DriverLookup />;
 }

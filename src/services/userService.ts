@@ -1,6 +1,7 @@
 import type { IUserService } from "./interfaces/IUserService.ts";
 import type { User } from "../types/user.types.ts";
 import type { PaginatedData } from "../types/common.types.ts";
+import type { Role } from "../types/common.types.ts";
 import { VerificationStatus } from "../types/common.types.ts";
 import { mockUsers } from "./mockData.ts";
 import { parseRole } from "../utils/typeGuards.ts";
@@ -38,6 +39,32 @@ class UserService implements IUserService {
     const user = mockUsers.find((u) => u.id === id);
     if (!user) throw new Error("User not found");
     return delay(400, user);
+  }
+
+  async createUser(data: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: Role;
+    schoolId?: string | null;
+  }): Promise<User> {
+    const email = data.email.trim().toLowerCase();
+    const exists = mockUsers.some((u) => u.email.toLowerCase() === email);
+    if (exists) throw new Error("A user with this email already exists");
+    const newUser: User = {
+      id: `user-${Date.now()}`,
+      email,
+      firstName: data.firstName.trim(),
+      lastName: data.lastName.trim(),
+      role: data.role,
+      schoolId: data.schoolId ?? null,
+      verificationStatus: VerificationStatus.VERIFIED,
+      dateOfBirth: "2000-01-01T00:00:00Z",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    mockUsers.push(newUser);
+    return delay(500, newUser);
   }
 
   async updateUser(id: string, data: Partial<User>): Promise<User> {

@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { ApplicationFormBuilder } from "../../features/admin/ApplicationFormBuilder/ApplicationFormBuilder.tsx";
 
 export default function ApplicationFormBuilderPage() {
-  return <PlaceholderPage title="Application Form Builder" section="Admin" />;
+  return <ApplicationFormBuilder />;
 }

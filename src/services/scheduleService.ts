@@ -2,16 +2,13 @@ import type { ScheduleEvent } from "../types/classroom.types.ts";
 import type { Role } from "../types/common.types.ts";
 import type { IScheduleService } from "./interfaces/IScheduleService.ts";
 import { mockScheduleEvents } from "./mockData.ts";
+import { ROLE_PRIORITY } from "../utils/permissions.ts";
 
 const delay = <T>(value: T) =>
   new Promise<T>((resolve) => setTimeout(() => resolve(value), 350));
-const priority: Record<Role, number> = {
-  STUDENT: 0,
-  MENTOR: 1,
-  EDUCATION_HEAD: 2,
-  ADMIN: 3,
-  SUPER_ADMIN: 4,
-};
+// Single source of truth for the schedule priority ladder lives in
+// utils/permissions.ts so the UI can mirror these server-side checks.
+const priority = ROLE_PRIORITY;
 
 class ScheduleService implements IScheduleService {
   async getSchoolEvents(schoolId: string) {

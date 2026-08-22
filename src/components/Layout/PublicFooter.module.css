@@ -29,18 +29,22 @@
 }
 
 .logoWrap {
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--color-primary);
   flex-shrink: 0;
 }
 
-.logoWrap img {
+.logoWrap svg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+}
+.footerLogo {
+  color: var(--color-text-inverted, #fff);
+  padding: 3px;
+  box-sizing: border-box;
 }
 
 .brandName {

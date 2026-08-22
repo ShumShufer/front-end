@@ -56,16 +56,12 @@
 }
 
 .logoWrap {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--color-primary);
+  width: 52px;
+  height: 52px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-glow-primary-sm);
   transition: transform var(--transition-spring);
 }
 
@@ -73,10 +69,12 @@
   transform: rotate(-8deg) scale(1.08);
 }
 
-.logoWrap img {
+.logoWrap svg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+}
+.logoSvg {
+  color: var(--color-text);
 }
 
 .brandText {
@@ -227,6 +225,10 @@
 
 /* ─── Transparent (over hero) state ──────────────────────────────────────── */
 .navTransparent .brandName {
+  color: var(--color-text-inverse);
+}
+
+.navTransparent .logoSvg {
   color: var(--color-text-inverse);
 }
 

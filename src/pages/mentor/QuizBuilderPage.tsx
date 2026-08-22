@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { QuizBuilder } from "../../features/mentor/QuizBuilder/QuizBuilder.tsx";
 
 export default function QuizBuilderPage() {
-  return <PlaceholderPage title="Quiz/Test Builder" section="Mentor" />;
+  return <QuizBuilder />;
 }

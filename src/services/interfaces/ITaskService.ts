@@ -8,6 +8,8 @@ export interface ITaskService {
   deleteTask(id: string): Promise<void>;
 
   getSubmissions(taskId: string): Promise<Submission[]>;
+  getSubmissionById(id: string): Promise<Submission>;
+  getStudentSubmissions(studentId: string): Promise<Submission[]>;
   submitTask(
     taskId: string,
     studentId: string,

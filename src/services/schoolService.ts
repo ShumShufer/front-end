@@ -2,12 +2,19 @@ import type { ISchoolService } from "./interfaces/ISchoolService.ts";
 import type {
   School,
   Branch,
+  SchoolAgreement,
   StaffApplication,
   StaffApplicationPost,
+  Review,
 } from "../types/school.types.ts";
 import type { Classroom, ClassroomMentor } from "../types/classroom.types.ts";
-import type { ApplicationStatus, Role } from "../types/common.types.ts";
 import type { PaginatedData } from "../types/common.types.ts";
+import type { ApplicationFormTemplate } from "../types/enrollment.types.ts";
+import {
+  ApplicationStatus,
+  NotificationTopic,
+  Role,
+} from "../types/common.types.ts";
 import {
   mockSchools,
   mockBranches,
@@ -16,11 +23,20 @@ import {
   mockStaffApplications,
   mockStaffPosts,
   mockUsers,
+  mockSchoolAgreements,
+  mockReviews,
+  mockApplicationFormTemplates,
 } from "./mockData.ts";
+import { notificationService } from "./notificationService.ts";
 // import httpClient from './api/httpClient.ts';
 
 const delay = <T>(ms: number, value: T): Promise<T> =>
   new Promise((resolve) => setTimeout(() => resolve(value), ms));
+
+const schoolAdminIds = (schoolId: string): string[] =>
+  mockUsers
+    .filter((user) => user.role === Role.ADMIN && user.schoolId === schoolId)
+    .map((user) => user.id);
 
 class SchoolService implements ISchoolService {
   async getSchools(params?: {
@@ -59,6 +75,21 @@ class SchoolService implements ISchoolService {
   async getAllBranches(): Promise<Branch[]> {
     // return httpClient.get('/branches');
     return delay(400, mockBranches);
+  }
+
+  async createSchool(
+    data: Pick<School, "name" | "description">,
+  ): Promise<School> {
+    const school: School = {
+      id: `school-${Date.now()}`,
+      name: data.name.trim(),
+      description: data.description?.trim() || null,
+      rating: 0,
+      status: "ACTIVE",
+      createdAt: new Date().toISOString(),
+    };
+    mockSchools.push(school);
+    return delay(500, school);
   }
 
   async updateSchool(id: string, data: Partial<School>): Promise<School> {
@@ -168,10 +199,10 @@ class SchoolService implements ISchoolService {
     return delay(350, undefined);
   }
 
-  async getStaffPosts(schoolId: string): Promise<StaffApplicationPost[]> {
+  async getStaffPosts(schoolId?: string): Promise<StaffApplicationPost[]> {
     return delay(
       400,
-      mockStaffPosts.filter((post) => post.schoolId === schoolId),
+      mockStaffPosts.filter((post) => !schoolId || post.schoolId === schoolId),
     );
   }
 
@@ -208,16 +239,61 @@ class SchoolService implements ISchoolService {
     return delay(400, undefined);
   }
 
-  async getStaffApplications(schoolId: string): Promise<StaffApplication[]> {
-    const postIds = mockStaffPosts
-      .filter((post) => post.schoolId === schoolId)
-      .map((post) => post.id);
-    return delay(
-      400,
-      mockStaffApplications.filter((application) =>
+  async getStaffApplications(params?: {
+    schoolId?: string;
+    applicantId?: string;
+  }): Promise<StaffApplication[]> {
+    let applications = mockStaffApplications;
+    if (params?.schoolId) {
+      const postIds = mockStaffPosts
+        .filter((post) => post.schoolId === params.schoolId)
+        .map((post) => post.id);
+      applications = applications.filter((application) =>
         postIds.includes(application.postId),
-      ),
+      );
+    }
+    if (params?.applicantId) {
+      applications = applications.filter(
+        (application) => application.applicantId === params.applicantId,
+      );
+    }
+    return delay(400, applications);
+  }
+
+  async applyToStaffPost(
+    postId: string,
+    applicantId: string,
+  ): Promise<StaffApplication> {
+    // return httpClient.post(`/staff-posts/${postId}/applications`, { applicantId });
+    const post = mockStaffPosts.find((item) => item.id === postId);
+    if (!post || post.status !== "OPEN")
+      throw new Error("This opening is no longer accepting applications");
+    const alreadyApplied = mockStaffApplications.some(
+      (application) =>
+        application.postId === postId &&
+        application.applicantId === applicantId &&
+        (application.status === ApplicationStatus.PENDING ||
+          application.status === ApplicationStatus.ACCEPTED),
     );
+    if (alreadyApplied)
+      throw new Error("You have already applied to this opening");
+    const application: StaffApplication = {
+      id: `staff-app-${Date.now()}`,
+      postId,
+      applicantId,
+      status: ApplicationStatus.PENDING,
+      resumeUrl: null,
+      submittedAt: new Date().toISOString(),
+    };
+    mockStaffApplications.push(application);
+    await notificationService.create({
+      topic: NotificationTopic.STAFF_POST,
+      title: "New staff application",
+      body: `${mockUsers.find((user) => user.id === applicantId)?.firstName ?? "A user"} applied for the ${post.role.toLowerCase().replace("_", " ")} opening.`,
+      recipientIds: schoolAdminIds(post.schoolId),
+      relatedEntityId: application.id,
+    });
+    return delay(500, application);
   }
 
   async updateStaffApplicationStatus(
@@ -228,7 +304,34 @@ class SchoolService implements ISchoolService {
       (application) => application.id === id,
     );
     if (index === -1) throw new Error("Staff application not found");
-    mockStaffApplications[index] = { ...mockStaffApplications[index], status };
+    const application = mockStaffApplications[index];
+    if (application.status !== ApplicationStatus.PENDING)
+      throw new Error("This application has already been reviewed");
+    mockStaffApplications[index] = { ...application, status };
+    const post = mockStaffPosts.find((item) => item.id === application.postId);
+    if (status === ApplicationStatus.ACCEPTED && post) {
+      // Hiring grants the posted role and moves the staff member into the
+      // hiring school, which makes them assignable inside that school.
+      const applicant = mockUsers.find((user) => user.id === application.applicantId);
+      if (applicant) {
+        applicant.role = post.role;
+        applicant.schoolId = post.schoolId;
+        applicant.updatedAt = new Date().toISOString();
+      }
+    }
+    await notificationService.create({
+      topic: NotificationTopic.STAFF_POST,
+      title:
+        status === ApplicationStatus.ACCEPTED
+          ? "Application accepted"
+          : "Application declined",
+      body:
+        status === ApplicationStatus.ACCEPTED && post
+          ? `Welcome aboard! You have been hired as ${post.role.toLowerCase().replace("_", " ")} at the hiring school.`
+          : "Your application was not accepted this time.",
+      recipientIds: [application.applicantId],
+      relatedEntityId: id,
+    });
     return delay(400, mockStaffApplications[index]);
   }
 
@@ -261,6 +364,129 @@ class SchoolService implements ISchoolService {
         )
         .map((user) => user.id),
     );
+  }
+
+  async getAgreements(params?: {
+    schoolId?: string;
+  }): Promise<SchoolAgreement[]> {
+    let filtered = mockSchoolAgreements;
+    if (params?.schoolId) {
+      filtered = filtered.filter(
+        (a) => a.schoolAId === params.schoolId || a.schoolBId === params.schoolId,
+      );
+    }
+    return delay(400, filtered);
+  }
+
+  async proposeAgreement(
+    proposerSchoolId: string,
+    partnerSchoolId: string,
+  ): Promise<SchoolAgreement> {
+    if (proposerSchoolId === partnerSchoolId)
+      throw new Error("A school cannot form an agreement with itself");
+    const agreement: SchoolAgreement = {
+      id: `agreement-${Date.now()}`,
+      schoolAId: proposerSchoolId,
+      schoolBId: partnerSchoolId,
+      status: "PENDING",
+      feeSplit: null,
+      createdAt: new Date().toISOString(),
+    };
+    mockSchoolAgreements.push(agreement);
+    return delay(600, agreement);
+  }
+
+  async respondToAgreement(
+    id: string,
+    accept: boolean,
+  ): Promise<SchoolAgreement> {
+    const index = mockSchoolAgreements.findIndex((a) => a.id === id);
+    if (index === -1) throw new Error("Agreement not found");
+    if (mockSchoolAgreements[index].status !== "PENDING")
+      throw new Error("Only pending agreements can be responded to");
+    mockSchoolAgreements[index] = {
+      ...mockSchoolAgreements[index],
+      // Even split is the default commission arrangement on acceptance.
+      feeSplit: accept ? { schoolA: 0.5, schoolB: 0.5 } : null,
+      status: accept ? "ACTIVE" : "TERMINATED",
+    };
+    return delay(500, mockSchoolAgreements[index]);
+  }
+
+  async terminateAgreement(id: string): Promise<SchoolAgreement> {
+    const index = mockSchoolAgreements.findIndex((a) => a.id === id);
+    if (index === -1) throw new Error("Agreement not found");
+    mockSchoolAgreements[index] = {
+      ...mockSchoolAgreements[index],
+      status: "TERMINATED",
+    };
+    return delay(500, mockSchoolAgreements[index]);
+  }
+
+  async getReviews(params?: { schoolId?: string }): Promise<Review[]> {
+    let filtered = mockReviews;
+    if (params?.schoolId)
+      filtered = filtered.filter((r) => r.schoolId === params.schoolId);
+    return delay(
+      400,
+      [...filtered].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)),
+    );
+  }
+
+  async addReview(
+    schoolId: string,
+    studentId: string,
+    rating: number,
+    comment: string,
+  ): Promise<Review> {
+    const review: Review = {
+      id: `review-${Date.now()}`,
+      schoolId,
+      studentId,
+      rating,
+      comment: comment || null,
+      createdAt: new Date().toISOString(),
+    };
+    mockReviews.push(review);
+    // Keep the school's aggregate rating roughly in sync with reviews.
+    const school = mockSchools.find((s) => s.id === schoolId);
+    if (school) {
+      const schoolReviews = mockReviews.filter((r) => r.schoolId === schoolId);
+      const average =
+        schoolReviews.reduce((sum, r) => sum + r.rating, 0) /
+        schoolReviews.length;
+      school.rating = Math.round(average * 10) / 10;
+    }
+    return delay(600, review);
+  }
+
+  async getApplicationForm(schoolId: string): Promise<ApplicationFormTemplate["fields"]> {
+    const template = mockApplicationFormTemplates.find(
+      (t) => t.schoolId === schoolId,
+    );
+    return delay(400, template ? template.fields : []);
+  }
+
+  async saveApplicationForm(
+    schoolId: string,
+    fields: ApplicationFormTemplate["fields"],
+  ): Promise<ApplicationFormTemplate["fields"]> {
+    const index = mockApplicationFormTemplates.findIndex(
+      (t) => t.schoolId === schoolId,
+    );
+    if (index > -1) {
+      mockApplicationFormTemplates[index] = {
+        ...mockApplicationFormTemplates[index],
+        fields,
+      };
+    } else {
+      mockApplicationFormTemplates.push({
+        id: `form-template-${Date.now()}`,
+        schoolId,
+        fields,
+      });
+    }
+    return delay(500, fields);
   }
 }
 

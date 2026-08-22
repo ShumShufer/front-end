@@ -29,9 +29,11 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const [formError, setFormError] = useState<string | null>(null);
   const [authSucceeded, setAuthSucceeded] = useState(false);
 
-  useEffect(() => {
+  const [prevMode, setPrevMode] = useState<AuthMode>(initialMode);
+  if (initialMode !== prevMode) {
+    setPrevMode(initialMode);
     setMode(initialMode);
-  }, [initialMode]);
+  }
 
   useEffect(() => {
     if (!authSucceeded || !user) return;

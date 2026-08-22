@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../router/routes.config.ts";
 import styles from "./PublicFooter.module.css";
+import { Logo } from "../Logo/Logo.tsx";
 
 export function PublicFooter() {
   return (
@@ -10,7 +11,7 @@ export function PublicFooter() {
           <div className={styles.brandBlock}>
             <div className={styles.brandRow}>
               <div className={styles.logoWrap}>
-                <img src="/shumshufer-logo.jpg" alt="ShumShufer logo" />
+                <Logo className={styles.footerLogo} />
               </div>
               <span className={styles.brandName}>ShumShufer</span>
             </div>
