@@ -419,6 +419,13 @@
   box-shadow: var(--shadow-card-hover), var(--shadow-glow-primary-sm);
 }
 
+/* "View School" fills with the primary button color on hover */
+.schoolCard a[class*="tertiary"]:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  color: var(--color-text-inverse);
+}
+
 .schoolCard:hover::before {
   transform: scaleX(1);
 }

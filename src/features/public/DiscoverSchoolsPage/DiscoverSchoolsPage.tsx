@@ -6,6 +6,7 @@ import { Button } from "../../../components/Button/Button.tsx";
 import { SchoolsMap } from "../../../components/Map/SchoolsMap.tsx";
 import { ROUTES } from "../../../router/routes.config.ts";
 import styles from "./DiscoverSchoolsPage.module.css";
+import { PublicFooter } from "../../../components/Layout/PublicFooter.tsx";
 
 interface FilterState {
   searchQuery: string;
@@ -203,6 +204,8 @@ export function DiscoverSchoolsPage() {
           )}
         </div>
       </section>
+
+      <PublicFooter/>
     </div>
   );
 }

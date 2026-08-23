@@ -40,13 +40,6 @@ export function PasswordFlow({ reset = false }: { reset?: boolean }) {
     }
   };
   const handleBack = () => {
-    // React Router stores the history index in state; fall back to the
-    // landing page when there is nothing to go back to.
-    const idx = window.history.state?.idx;
-    if (typeof idx === "number" && idx > 0) {
-      navigate(-1);
-      return;
-    }
     navigate(ROUTES.public.landing, { replace: true });
   };
 
@@ -56,10 +49,10 @@ export function PasswordFlow({ reset = false }: { reset?: boolean }) {
         type="button"
         className={styles.backButton}
         onClick={handleBack}
-        aria-label="Go back"
+        aria-label="Go to home page"
       >
         <ArrowLeft size={20} />
-        Back
+        Home
       </button>
       <section className={styles.card}>
         <div className={styles.icon}>
