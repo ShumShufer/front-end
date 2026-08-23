@@ -3,8 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2, Lock, Mail, User } from "lucide-react";
 import { useAuth } from "../../../context/auth/useAuth.ts";
 import { Button } from "../../../components/Button/Button.tsx";
+import { BrandLogo } from "../../../components/BrandLogo/BrandLogo.tsx";
 import { Input } from "../../../components/Form/Input.tsx";
-import { CiSteeringWheelIcon } from "../../../components/icons/CustomIcons.tsx";
 import { Role, VerificationStatus } from "../../../types/common.types.ts";
 import { getDashboardPathForRole } from "../../../utils/permissions.ts";
 import { ROUTES } from "../../../router/routes.config.ts";
@@ -29,9 +29,11 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const [formError, setFormError] = useState<string | null>(null);
   const [authSucceeded, setAuthSucceeded] = useState(false);
 
-  useEffect(() => {
+  const [prevMode, setPrevMode] = useState<AuthMode>(initialMode);
+  if (initialMode !== prevMode) {
+    setPrevMode(initialMode);
     setMode(initialMode);
-  }, [initialMode]);
+  }
 
   useEffect(() => {
     if (!authSucceeded || !user) return;
@@ -66,6 +68,10 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
       setFormError("Please enter your email.");
       return;
     }
+    if (!password) {
+      setFormError("Please enter your password.");
+      return;
+    }
 
     try {
       await login({ email: email.trim(), password });
@@ -91,6 +97,14 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
       setFormError("Please create a password.");
       return;
     }
+    if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/.test(password)
+    ) {
+      setFormError(
+        "Password must be at least 8 characters and include uppercase, lowercase, a digit and a special character.",
+      );
+      return;
+    }
 
     try {
       await register({
@@ -109,13 +123,6 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const displayError = formError ?? error;
 
   const handleBack = () => {
-    // React Router stores the history index in state; fall back to the
-    // landing page when there is nothing to go back to.
-    const idx = window.history.state?.idx;
-    if (typeof idx === "number" && idx > 0) {
-      navigate(-1);
-      return;
-    }
     navigate(ROUTES.public.landing, { replace: true });
   };
 
@@ -125,10 +132,10 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
         type="button"
         className={styles.backButton}
         onClick={handleBack}
-        aria-label="Go back"
+        aria-label="Go to home page"
       >
         <ArrowLeft size={20} />
-        Back
+        Home
       </button>
       <div className={styles.layout}>
         <div className={styles.visual}>
@@ -138,10 +145,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
             className={styles.visualImage}
           />
           <div className={styles.visualOverlay}>
-            <span className={styles.visualBadge}>
-              <CiSteeringWheelIcon size={14} color="currentColor" />
-              ShumShufer
-            </span>
+            <BrandLogo markSize={30} tone="inverse" className={styles.visualBadge} />
             <h2 className={styles.visualTitle}>
               Shift into gear. Your license awaits.
             </h2>
@@ -149,16 +153,6 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
               Join thousands of learners finding verified schools, mastering
               theory, and hitting the road with confidence.
             </p>
-            <div className={styles.visualStats}>
-              <div className={styles.visualStat}>
-                <div className={styles.visualStatValue}>240+</div>
-                <div className={styles.visualStatLabel}>Schools</div>
-              </div>
-              <div className={styles.visualStat}>
-                <div className={styles.visualStatValue}>38K+</div>
-                <div className={styles.visualStatLabel}>Students</div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -216,6 +210,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     label="Email"
                     name="email"
                     type="email"
+                    required
                     autoComplete="email"
                     placeholder="student@example.com"
                     value={email}
@@ -227,6 +222,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     label="Password"
                     name="password"
                     type="password"
+                    required
                     autoComplete="current-password"
                     placeholder="Enter your password"
                     value={password}
@@ -283,6 +279,8 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     <Input
                       label="First name"
                       name="firstName"
+                      required
+                      minLength={2}
                       autoComplete="given-name"
                       placeholder="Abebe"
                       value={firstName}
@@ -292,6 +290,8 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     <Input
                       label="Last name"
                       name="lastName"
+                      required
+                      minLength={2}
                       autoComplete="family-name"
                       placeholder="Kebede"
                       value={lastName}
@@ -303,6 +303,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     label="Email"
                     name="email"
                     type="email"
+                    required
                     autoComplete="email"
                     placeholder="you@example.com"
                     value={email}
@@ -314,6 +315,9 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     label="Password"
                     name="password"
                     type="password"
+                    required
+                    minLength={8}
+                    hint="At least 8 characters, with uppercase, lowercase, a digit and a symbol."
                     autoComplete="new-password"
                     placeholder="Create a password"
                     value={password}
