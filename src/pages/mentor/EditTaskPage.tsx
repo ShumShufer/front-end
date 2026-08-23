@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { TaskEditor } from "../../features/mentor/TaskEditor/TaskEditor.tsx";
 
 export default function EditTaskPage() {
-  return <PlaceholderPage title="Create/Edit Task" section="Mentor" />;
+  return <TaskEditor />;
 }

@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "./PlaceholderPage.tsx";
+import { NotFound } from "../../features/shared/NotFound/NotFound.tsx";
 
 export default function NotFoundPage() {
-  return <PlaceholderPage title="404 Not Found" section="Shared" />;
+  return <NotFound />;
 }

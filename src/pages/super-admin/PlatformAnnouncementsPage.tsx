@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { PlatformAnnouncements } from "../../features/super-admin/PlatformAnnouncements/PlatformAnnouncements.tsx";
 
 export default function PlatformAnnouncementsPage() {
-  return (
-    <PlaceholderPage title="Platform Announcements" section="Super Admin" />
-  );
+  return <PlatformAnnouncements />;
 }

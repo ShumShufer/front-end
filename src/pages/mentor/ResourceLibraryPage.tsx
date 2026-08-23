@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { ResourceLibrary } from "../../features/mentor/ResourceLibrary/ResourceLibrary.tsx";
 
 export default function ResourceLibraryPage() {
-  return <PlaceholderPage title="Resource Library" section="Mentor" />;
+  return <ResourceLibrary />;
 }

@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { SystemSettings } from "../../features/super-admin/SystemSettings/SystemSettings.tsx";
 
 export default function SystemSettingsPage() {
-  return <PlaceholderPage title="System Settings" section="Super Admin" />;
+  return <SystemSettings />;
 }

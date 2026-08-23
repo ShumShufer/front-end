@@ -26,8 +26,12 @@ export default function SchoolApplicationPage() {
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    await enrollment.submitApplication(user.id, schoolId, String(data.get("mode")) as ApplicationMode, { fullName: String(data.get("fullName") || ""), phone: String(data.get("phone") || ""), note: String(data.get("note") || "") });
-    navigate(ROUTES.student.applications);
+    try {
+      await enrollment.submitApplication(user.id, schoolId, String(data.get("mode")) as ApplicationMode, { fullName: String(data.get("fullName") || ""), phone: String(data.get("phone") || ""), note: String(data.get("note") || "") });
+      navigate(ROUTES.student.applications);
+    } catch {
+      // The context records the failure; the inline error below explains it.
+    }
   };
   return <main className={styles.page}><div className={styles.inner}><header className={styles.header}><div><p className={styles.eyebrow}>School enrollment</p><h1>Apply to {school.activeSchool.name}</h1><p>Send your enrollment request directly to the school administrator.</p></div></header><div className={styles.grid}><form className={[styles.card, styles.form].join(" ")} onSubmit={(event) => void submit(event)}><Input name="fullName" label="Full name" defaultValue={`${user.firstName} ${user.lastName}`} required /><Input name="phone" label="Phone number" defaultValue={user.phone || ""} required /><label className={styles.field}>Learning format<select name="mode" defaultValue={ApplicationMode.IN_PERSON}><option value={ApplicationMode.IN_PERSON}>In person</option><option value={ApplicationMode.ONLINE}>Online</option></select></label><label className={styles.field}>A note for the admissions team<textarea name="note" rows={4} placeholder="Tell the school your preferred start time or anything they should know." /></label>{enrollment.error ? <p className={styles.error}>{enrollment.error}</p> : null}<Button type="submit" disabled={enrollment.isLoading}>{enrollment.isLoading ? "Sending application…" : "Send enrollment request"}</Button></form><aside className={[styles.card, styles.aside].join(" ")}><Building2 size={24} /><h2>What happens next</h2><p>The school administrator reviews your request. Once approved, the school and its classroom workspaces become part of your portal.</p><FileText size={24} /><h2>Track every step</h2><p>Your application status is always visible in your student portal.</p></aside></div></div></main>;
 }

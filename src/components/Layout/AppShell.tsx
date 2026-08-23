@@ -1,19 +1,28 @@
 import {
   type LucideIcon,
   Bell,
+  Briefcase,
   Building2,
   Calendar,
+  ClipboardCheck,
   ClipboardList,
+  CreditCard,
   FileCheck2,
+  FingerprintPattern,
+  Flag,
   GraduationCap,
   LayoutDashboard,
   LogOut,
   MapPinned,
+  Megaphone,
   School,
+  Settings,
+  ShieldUser,
   UserRound,
   Users,
 } from "lucide-react";
 import { Link, NavLink, Outlet } from "react-router-dom";
+import { BrandLogo } from "../BrandLogo/BrandLogo.tsx";
 import { useAuth } from "../../context/auth/useAuth.ts";
 import { ROUTES } from "../../router/routes.config.ts";
 import styles from "./AppShell.module.css";
@@ -66,7 +75,8 @@ function linksFor(homePath: string): NavItem[] {
       { label: "Dashboard", to: homePath, icon: LayoutDashboard },
       { label: "My schools", to: ROUTES.student.applications, icon: School },
       { label: "Classrooms", to: ROUTES.student.classroom, icon: GraduationCap },
-      { label: "Courses", to: ROUTES.student.results, icon: ClipboardList },
+      { label: "Courses", to: ROUTES.student.courses, icon: ClipboardList },
+      { label: "My results", to: ROUTES.student.results, icon: ClipboardCheck },
       { label: "My profile", to: ROUTES.student.profile, icon: UserRound },
       { label: "Notifications", to: ROUTES.student.notifications, icon: Bell },
     ];
@@ -75,17 +85,36 @@ function linksFor(homePath: string): NavItem[] {
       { label: "Dashboard", to: homePath, icon: LayoutDashboard },
       { label: "My classrooms", to: ROUTES.mentor.classrooms, icon: GraduationCap },
       { label: "Course delivery", to: ROUTES.mentor.courses, icon: ClipboardList },
+      { label: "Job openings", to: ROUTES.mentor.openings, icon: Briefcase },
       { label: "My profile", to: ROUTES.mentor.profile, icon: UserRound },
       { label: "Notifications", to: ROUTES.mentor.notifications, icon: Bell },
     ];
-  return [
-    { label: "Dashboard", to: homePath, icon: LayoutDashboard },
-    { label: "Classrooms", to: ROUTES.educationHead.classrooms, icon: GraduationCap },
-    { label: "Mentor assignments", to: ROUTES.educationHead.mentors, icon: Users },
-    { label: "School calendar", to: ROUTES.educationHead.schedule, icon: Calendar },
-    { label: "Course oversight", to: ROUTES.educationHead.courses, icon: ClipboardList },
-    { label: "Notifications", to: ROUTES.educationHead.notifications, icon: Bell },
-  ];
+  if (homePath === ROUTES.educationHead.dashboard)
+    return [
+      { label: "Dashboard", to: homePath, icon: LayoutDashboard },
+      { label: "Classrooms", to: ROUTES.educationHead.classrooms, icon: GraduationCap },
+      { label: "Mentor assignments", to: ROUTES.educationHead.mentors, icon: Users },
+      { label: "School calendar", to: ROUTES.educationHead.schedule, icon: Calendar },
+      { label: "Course oversight", to: ROUTES.educationHead.courses, icon: ClipboardList },
+      { label: "Notifications", to: ROUTES.educationHead.notifications, icon: Bell },
+    ];
+  
+  if (homePath === ROUTES.superAdmin.dashboard)
+    return [
+      { label: "Dashboard", to: homePath, icon: LayoutDashboard },
+      { label: "Schools", to: ROUTES.superAdmin.schools, icon: School },
+      { label: "Admins", to: ROUTES.superAdmin.admins, icon: ShieldUser },
+      { label: "Announcements", to: ROUTES.superAdmin.announcements, icon: Megaphone },
+      { label: "Courses", to: ROUTES.superAdmin.courses, icon: ClipboardList },
+      { label: "Payments", to: ROUTES.superAdmin.payments, icon: CreditCard },
+      { label: "Reports", to: ROUTES.superAdmin.reports, icon: Flag },
+      { label: "Users", to: ROUTES.superAdmin.users, icon: Users },
+      { label: "Fayda Audit", to: ROUTES.superAdmin.faydaAudit, icon: FingerprintPattern },
+      { label: "Settings", to: ROUTES.superAdmin.settings, icon: Settings },
+      { label: "Notifications", to: ROUTES.superAdmin.notifications, icon: Bell },
+    ];
+  // Unknown home path: show a minimal nav rather than failing.
+  return [{ label: "Dashboard", to: homePath, icon: LayoutDashboard }];
 }
 export function AppShell({ roleLabel, homePath }: AppShellProps) {
   const { user, logout } = useAuth();
@@ -94,8 +123,7 @@ export function AppShell({ roleLabel, homePath }: AppShellProps) {
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
         <Link to={ROUTES.public.landing} className={styles.brand}>
-          <img src="/shumshufer-logo.jpg" alt="ShumShufer" />
-          <span>ShumShufer</span>
+          <BrandLogo markSize={38} />
         </Link>
         <p className={styles.role}>{roleLabel}</p>
         <nav>

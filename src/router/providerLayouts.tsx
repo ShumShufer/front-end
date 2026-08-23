@@ -62,20 +62,22 @@ export function StudentLayout() {
 export function MentorLayout() {
   return (
     <ProtectedRoute allowedRoles={[Role.MENTOR]}>
-      <ClassroomProvider>
-        <CourseProvider>
-          <TaskProvider>
-            <UserProvider>
-              <ScheduleProvider>
-                <AppShell
-                  roleLabel="Mentor"
-                  homePath={ROUTES.mentor.dashboard}
-                />
-              </ScheduleProvider>
-            </UserProvider>
-          </TaskProvider>
-        </CourseProvider>
-      </ClassroomProvider>
+      <SchoolProvider>
+        <ClassroomProvider>
+          <CourseProvider>
+            <TaskProvider>
+              <UserProvider>
+                <ScheduleProvider>
+                  <AppShell
+                    roleLabel="Mentor"
+                    homePath={ROUTES.mentor.dashboard}
+                  />
+                </ScheduleProvider>
+              </UserProvider>
+            </TaskProvider>
+          </CourseProvider>
+        </ClassroomProvider>
+      </SchoolProvider>
     </ProtectedRoute>
   );
 }
@@ -133,10 +135,14 @@ export function SuperAdminLayout() {
         <UserProvider>
           <PaymentProvider>
             <CourseProvider>
-              <AppShell
-                roleLabel="Super Admin"
-                homePath={ROUTES.superAdmin.dashboard}
-              />
+              <EnrollmentProvider>
+                <ClassroomProvider>
+                  <AppShell
+                    roleLabel="Super Admin"
+                    homePath={ROUTES.superAdmin.dashboard}
+                  />
+                </ClassroomProvider>
+              </EnrollmentProvider>
             </CourseProvider>
           </PaymentProvider>
         </UserProvider>

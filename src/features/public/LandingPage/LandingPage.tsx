@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { SchoolProvider } from "../../../context/school/SchoolProvider.tsx";
 import { useSchool } from "../../../context/school/useSchool.ts";
+import { schoolService } from "../../../services/schoolService.ts";
 import { Button } from "../../../components/Button/Button.tsx";
 import { PublicFooter } from "../../../components/Layout/PublicFooter.tsx";
 import { CiEthiopianStarIcon } from "../../../components/icons/CustomIcons.tsx";
@@ -19,9 +20,11 @@ import { useInView } from "../../../hooks/useInView.ts";
 import { ROUTES } from "../../../router/routes.config.ts";
 import styles from "./LandingPage.module.css";
 
-const FALLBACK_SCHOOL_COUNT = 240;
-const STUDENTS_ENROLLED = 38000;
-const AVG_RATING = 4.7;
+interface PlatformStats {
+  totalActiveSchools: number;
+  totalStudentsEnrolled: number;
+  avgSchoolRating: number | null;
+}
 
 const FEATURES = [
   {
@@ -54,7 +57,7 @@ const FEATURES = [
 ];
 
 interface StatProps {
-  value: number;
+  value: number | null;
   suffix?: string;
   label: string;
   decimals?: number;
@@ -62,13 +65,19 @@ interface StatProps {
 
 function Stat({ value, suffix, label, decimals = 0 }: StatProps) {
   const { ref, inView } = useInView<HTMLDivElement>();
-  const display = useCountUp(value, { start: inView, decimals });
+  const hasValue = value !== null && value > 0;
+  const display = useCountUp(value ?? 0, {
+    start: inView && hasValue,
+    decimals,
+  });
 
   return (
     <div ref={ref} className={styles.stat}>
       <div className={styles.statValue}>
-        {display}
-        {suffix ? <span className={styles.statSuffix}>{suffix}</span> : null}
+        {hasValue ? display : "—"}
+        {hasValue && suffix ? (
+          <span className={styles.statSuffix}>{suffix}</span>
+        ) : null}
       </div>
       <div className={styles.statLabel}>{label}</div>
     </div>
@@ -126,13 +135,28 @@ function LandingPageContent() {
   const navigate = useNavigate();
   const { schools, loadSchools, isLoading } = useSchool();
   const [searchQuery, setSearchQuery] = useState("");
+  const [stats, setStats] = useState<PlatformStats | null>(null);
 
   useEffect(() => {
     void loadSchools({ status: "ACTIVE" });
   }, [loadSchools]);
 
-  const topSchools = schools?.data.slice(0, 3) ?? [];
-  const schoolCount = schools?.meta.total ?? 0;
+  useEffect(() => {
+    let cancelled = false;
+    schoolService
+      .getPlatformStats()
+      .then((data) => {
+        if (!cancelled) setStats(data);
+      })
+      .catch(() => {
+        // Stats are non-critical; the hero simply shows dashes.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const topSchools = schools?.data?.slice(0, 3) ?? [];
 
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
@@ -179,16 +203,20 @@ function LandingPageContent() {
 
           <div className={styles.stats}>
             <Stat
-              value={schoolCount > 0 ? schoolCount : FALLBACK_SCHOOL_COUNT}
+              value={stats?.totalActiveSchools ?? null}
               suffix="+"
               label="Verified schools"
             />
             <Stat
-              value={STUDENTS_ENROLLED}
+              value={stats?.totalStudentsEnrolled ?? null}
               suffix="+"
               label="Students enrolled"
             />
-            <Stat value={AVG_RATING} decimals={1} label="Avg. school rating" />
+            <Stat
+              value={stats ? (stats.avgSchoolRating ?? 0) : null}
+              decimals={1}
+              label="Avg. school rating"
+            />
           </div>
         </div>
 

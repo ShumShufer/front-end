@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { ClassroomDetail } from "../../features/student/ClassroomDetail/ClassroomDetail.tsx";
 
 export default function ClassroomTasksPage() {
-  return <PlaceholderPage title="Tasks List" section="Student" />;
+  return <ClassroomDetail tab="tasks" />;
 }

@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { GradingConsole } from "../../features/mentor/GradingConsole/GradingConsole.tsx";
 
 export default function GradingPage() {
-  return <PlaceholderPage title="Grade Submissions" section="Mentor" />;
+  return <GradingConsole />;
 }

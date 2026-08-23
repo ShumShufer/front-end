@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { VerificationPending } from "../../features/auth/VerificationPending/VerificationPending.tsx";
 
 export default function VerificationPendingPage() {
-  return <PlaceholderPage title="Verification Pending" section="Auth" />;
+  return <VerificationPending />;
 }

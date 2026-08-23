@@ -1,156 +1,25 @@
 import type { IEnrollmentService } from "./interfaces/IEnrollmentService.ts";
-import type {
-  Enrollment,
-  PracticeElsewhereRequest,
-} from "../types/enrollment.types.ts";
+import type { Enrollment, PracticeElsewhereRequest } from "../types/enrollment.types.ts";
 import type { ApplicationMode, PaginatedData } from "../types/common.types.ts";
-import { ApplicationStatus } from "../types/common.types.ts";
-import { mockEnrollments, mockPracticeRequests } from "./mockData.ts";
-// import httpClient from './api/httpClient.ts';
+import httpClient from "./api/httpClient.ts";
 
-const delay = <T>(ms: number, value: T): Promise<T> =>
-  new Promise((resolve) => setTimeout(() => resolve(value), ms));
+type ApplicationsResponse = { applications: Enrollment[]; meta: PaginatedData<Enrollment>["meta"] };
 
 class EnrollmentService implements IEnrollmentService {
-  async getEnrollments(params?: {
-    schoolId?: string;
-    studentId?: string;
-    status?: string;
-  }): Promise<PaginatedData<Enrollment>> {
-    // return httpClient.get('/enrollments', { params });
-    let filtered = mockEnrollments;
-    if (params?.schoolId)
-      filtered = filtered.filter((e) => e.schoolId === params.schoolId);
-    if (params?.studentId)
-      filtered = filtered.filter((e) => e.studentId === params.studentId);
-    if (params?.status)
-      filtered = filtered.filter((e) => e.status === params.status);
-
-    return delay(500, {
-      data: filtered,
-      meta: { page: 1, pageSize: 10, total: filtered.length },
-    });
+  async getEnrollments(params?: { schoolId?: string; studentId?: string; status?: string }): Promise<PaginatedData<Enrollment>> {
+    if (params?.schoolId) { const response = await httpClient.get<ApplicationsResponse, ApplicationsResponse>(`/schools/${params.schoolId}/applications`, { params: { status: params.status } }); return { data: response.applications, meta: response.meta }; }
+    const response = await httpClient.get<ApplicationsResponse | Enrollment[], ApplicationsResponse | Enrollment[]>(params?.studentId ? `/students/${params.studentId}/applications` : "/applications/my");
+    return Array.isArray(response) ? { data: response, meta: { page: 1, pageSize: response.length, total: response.length } } : { data: response.applications ?? [], meta: response.meta };
   }
-
-  async getEnrollmentById(id: string): Promise<Enrollment> {
-    // return httpClient.get(`/enrollments/${id}`);
-    const enrollment = mockEnrollments.find((e) => e.id === id);
-    if (!enrollment) throw new Error("Enrollment not found");
-    return delay(400, enrollment);
-  }
-
-  async submitApplication(
-    studentId: string,
-    schoolId: string,
-    mode: ApplicationMode,
-    formResponses: Record<string, unknown>,
-  ): Promise<Enrollment> {
-    // return httpClient.post('/enrollments', { schoolId, mode, formResponses });
-    const newEnrollment: Enrollment = {
-      id: `enrollment-${Date.now()}`,
-      studentId,
-      schoolId,
-      classroomId: null,
-      mode,
-      status: ApplicationStatus.PENDING,
-      formResponses,
-      submittedAt: new Date().toISOString(),
-      reviewedAt: null,
-      reviewedById: null,
-    };
-    mockEnrollments.push(newEnrollment);
-    return delay(800, newEnrollment);
-  }
-
-  async acceptApplication(id: string): Promise<Enrollment> {
-    // return httpClient.patch(`/enrollments/${id}/accept`);
-    const index = mockEnrollments.findIndex((e) => e.id === id);
-    if (index === -1) throw new Error("Enrollment not found");
-    mockEnrollments[index] = {
-      ...mockEnrollments[index],
-      status: ApplicationStatus.ACCEPTED,
-      reviewedAt: new Date().toISOString(),
-    };
-    return delay(500, mockEnrollments[index]);
-  }
-
-  async acceptApplications(ids: string[]): Promise<Enrollment[]> {
-    // return httpClient.patch('/enrollments/accept-bulk', { ids });
-    const reviewedAt = new Date().toISOString();
-    const accepted: Enrollment[] = [];
-    ids.forEach((id) => {
-      const index = mockEnrollments.findIndex((item) => item.id === id);
-      if (index === -1) return;
-      mockEnrollments[index] = {
-        ...mockEnrollments[index],
-        status: ApplicationStatus.ACCEPTED,
-        reviewedAt,
-      };
-      accepted.push(mockEnrollments[index]);
-    });
-    if (!accepted.length) throw new Error("No enrollment applications were found");
-    return delay(550, accepted);
-  }
-
-  async rejectApplication(id: string): Promise<Enrollment> {
-    // return httpClient.patch(`/enrollments/${id}/reject`);
-    const index = mockEnrollments.findIndex((e) => e.id === id);
-    if (index === -1) throw new Error("Enrollment not found");
-    mockEnrollments[index] = {
-      ...mockEnrollments[index],
-      status: ApplicationStatus.REJECTED,
-      reviewedAt: new Date().toISOString(),
-    };
-    return delay(500, mockEnrollments[index]);
-  }
-
-  async getPracticeRequests(params?: {
-    schoolId?: string;
-    studentId?: string;
-  }): Promise<PracticeElsewhereRequest[]> {
-    // return httpClient.get('/practice-requests', { params });
-    let filtered = mockPracticeRequests;
-    if (params?.studentId)
-      filtered = filtered.filter((r) => r.studentId === params.studentId);
-    if (params?.schoolId) {
-      filtered = filtered.filter(
-        (r) =>
-          r.homeSchoolId === params.schoolId ||
-          r.hostSchoolId === params.schoolId,
-      );
-    }
-    return delay(400, filtered);
-  }
-
-  async submitPracticeRequest(
-    homeSchoolId: string,
-    hostSchoolId: string,
-    fee: number,
-  ): Promise<PracticeElsewhereRequest> {
-    // return httpClient.post('/practice-requests', { homeSchoolId, hostSchoolId, fee });
-    const newRequest: PracticeElsewhereRequest = {
-      id: `practice-${Date.now()}`,
-      studentId: "user-2", // mocked current user
-      homeSchoolId,
-      hostSchoolId,
-      fee,
-      status: ApplicationStatus.PENDING,
-      createdAt: new Date().toISOString(),
-    };
-    mockPracticeRequests.push(newRequest);
-    return delay(600, newRequest);
-  }
-
-  async approvePracticeRequest(id: string): Promise<PracticeElsewhereRequest> {
-    // return httpClient.patch(`/practice-requests/${id}/approve`);
-    const index = mockPracticeRequests.findIndex((r) => r.id === id);
-    if (index === -1) throw new Error("Practice request not found");
-    mockPracticeRequests[index] = {
-      ...mockPracticeRequests[index],
-      status: ApplicationStatus.ACCEPTED,
-    };
-    return delay(500, mockPracticeRequests[index]);
-  }
+  async getEnrollmentById(id: string): Promise<Enrollment> { const applications = await this.getEnrollments(); const application = applications.data.find((item) => item.id === id); if (!application) throw new Error("Application not found"); return application; }
+  async submitApplication(_studentId: string, schoolId: string, mode: ApplicationMode, formResponses: Record<string, unknown>): Promise<Enrollment> { return httpClient.post<Enrollment, Enrollment>(`/schools/${schoolId}/applications`, { mode, formResponses }); }
+  async acceptApplication(id: string, classroomId?: string | null): Promise<Enrollment> { if (!classroomId) throw new Error("Select a classroom before accepting an application"); return httpClient.patch<Enrollment, Enrollment>(`/applications/${id}/accept`, { classroomId }); }
+  async acceptApplications(ids: string[]): Promise<Enrollment[]> { return Promise.all(ids.map((id) => this.acceptApplication(id))); }
+  async rejectApplication(id: string): Promise<Enrollment> { return httpClient.patch<Enrollment, Enrollment>(`/applications/${id}/reject`); }
+  async withdrawApplication(id: string): Promise<Enrollment> { return httpClient.post<Enrollment, Enrollment>(`/applications/${id}/withdraw`); }
+  async getPracticeRequests(params?: { schoolId?: string; studentId?: string }): Promise<PracticeElsewhereRequest[]> { return httpClient.get<PracticeElsewhereRequest[], PracticeElsewhereRequest[]>("/practice-requests", { params }); }
+  async submitPracticeRequest(homeSchoolId: string, hostSchoolId: string, fee: number): Promise<PracticeElsewhereRequest> { return httpClient.post<PracticeElsewhereRequest, PracticeElsewhereRequest>("/practice-requests", { homeSchoolId, hostSchoolId, fee }); }
+  async approvePracticeRequest(id: string): Promise<PracticeElsewhereRequest> { return httpClient.patch<PracticeElsewhereRequest, PracticeElsewhereRequest>(`/practice-requests/${id}/status`, { status: "ACCEPTED" }); }
+  async rejectPracticeRequest(id: string): Promise<PracticeElsewhereRequest> { return httpClient.patch<PracticeElsewhereRequest, PracticeElsewhereRequest>(`/practice-requests/${id}/status`, { status: "REJECTED" }); }
 }
-
 export const enrollmentService = new EnrollmentService();

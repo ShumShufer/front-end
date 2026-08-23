@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { StudentPayments } from "../../features/student/StudentPayments/StudentPayments.tsx";
 
 export default function StudentPaymentsPage() {
-  return (
-    <PlaceholderPage title="Payments / Billing History" section="Student" />
-  );
+  return <StudentPayments />;
 }

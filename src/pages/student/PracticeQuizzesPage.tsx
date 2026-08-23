@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { PracticeQuizzes } from "../../features/student/PracticeQuizzes/PracticeQuizzes.tsx";
 
 export default function PracticeQuizzesPage() {
-  return <PlaceholderPage title="Daily Practice Quizzes" section="Student" />;
+  return <PracticeQuizzes />;
 }

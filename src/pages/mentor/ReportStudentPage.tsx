@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { StudentReporter } from "../../features/mentor/StudentReporter/StudentReporter.tsx";
 
 export default function ReportStudentPage() {
-  return <PlaceholderPage title="Report a Student" section="Mentor" />;
+  return <StudentReporter />;
 }

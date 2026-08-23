@@ -4,8 +4,10 @@ import { schoolService } from "../../services/index.ts";
 import type {
   School,
   Branch,
+  SchoolAgreement,
   StaffApplication,
   StaffApplicationPost,
+  Review,
 } from "../../types/school.types.ts";
 import type {
   Classroom,
@@ -13,6 +15,7 @@ import type {
 } from "../../types/classroom.types.ts";
 import type { ApplicationStatus, Role } from "../../types/common.types.ts";
 import type { PaginatedData } from "../../types/common.types.ts";
+import type { ApplicationFormTemplate } from "../../types/enrollment.types.ts";
 import { getErrorMessage } from "../../utils/errors.ts";
 
 type SchoolAction =
@@ -35,10 +38,24 @@ type SchoolAction =
   | { type: "REMOVE_CLASSROOM_MENTOR_SUCCESS"; payload: ClassroomMentor }
   | { type: "FETCH_STAFF_POSTS_SUCCESS"; payload: StaffApplicationPost[] }
   | { type: "ADD_STAFF_POST_SUCCESS"; payload: StaffApplicationPost }
+  | { type: "ADD_STAFF_APPLICATION_SUCCESS"; payload: StaffApplication }
   | { type: "UPDATE_STAFF_POST_SUCCESS"; payload: StaffApplicationPost }
   | { type: "REMOVE_STAFF_POST_SUCCESS"; payload: string }
   | { type: "FETCH_STAFF_APPLICATIONS_SUCCESS"; payload: StaffApplication[] }
   | { type: "UPDATE_STAFF_APPLICATION_SUCCESS"; payload: StaffApplication }
+  | { type: "FETCH_AGREEMENTS_SUCCESS"; payload: SchoolAgreement[] }
+  | { type: "ADD_AGREEMENT_SUCCESS"; payload: SchoolAgreement }
+  | { type: "UPDATE_AGREEMENT_SUCCESS"; payload: SchoolAgreement }
+  | { type: "FETCH_REVIEWS_SUCCESS"; payload: Review[] }
+  | { type: "ADD_REVIEW_SUCCESS"; payload: Review }
+  | {
+      type: "FETCH_APPLICATION_FORM_SUCCESS";
+      payload: ApplicationFormTemplate["fields"];
+    }
+  | {
+      type: "SAVE_APPLICATION_FORM_SUCCESS";
+      payload: ApplicationFormTemplate["fields"];
+    }
   | { type: "FETCH_ERROR"; payload: string };
 
 function schoolReducer(state: SchoolState, action: SchoolAction): SchoolState {
@@ -153,6 +170,12 @@ function schoolReducer(state: SchoolState, action: SchoolAction): SchoolState {
       };
     case "FETCH_STAFF_APPLICATIONS_SUCCESS":
       return { ...state, isLoading: false, staffApplications: action.payload };
+    case "ADD_STAFF_APPLICATION_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        staffApplications: [...state.staffApplications, action.payload],
+      };
     case "UPDATE_STAFF_APPLICATION_SUCCESS":
       return {
         ...state,
@@ -161,6 +184,29 @@ function schoolReducer(state: SchoolState, action: SchoolAction): SchoolState {
           application.id === action.payload.id ? action.payload : application,
         ),
       };
+    case "FETCH_AGREEMENTS_SUCCESS":
+      return { ...state, isLoading: false, agreements: action.payload };
+    case "ADD_AGREEMENT_SUCCESS":
+      return { ...state, isLoading: false, agreements: [...state.agreements, action.payload] };
+    case "UPDATE_AGREEMENT_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        agreements: state.agreements.map((agreement) =>
+          agreement.id === action.payload.id ? action.payload : agreement,
+        ),
+      };
+    case "FETCH_REVIEWS_SUCCESS":
+      return { ...state, isLoading: false, reviews: action.payload };
+    case "ADD_REVIEW_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        reviews: [action.payload, ...state.reviews],
+      };
+    case "FETCH_APPLICATION_FORM_SUCCESS":
+    case "SAVE_APPLICATION_FORM_SUCCESS":
+      return { ...state, isLoading: false, applicationForm: action.payload };
     case "FETCH_ERROR":
       return { ...state, isLoading: false, error: action.payload };
     default:
@@ -179,6 +225,9 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({
     classroomMentors: [],
     staffPosts: [],
     staffApplications: [],
+    agreements: [],
+    reviews: [],
+    applicationForm: [],
     isLoading: false,
     error: null,
   });
@@ -393,7 +442,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({
     [],
   );
 
-  const loadStaffPosts = useCallback(async (schoolId: string) => {
+  const loadStaffPosts = useCallback(async (schoolId?: string) => {
     dispatch({ type: "FETCH_START" });
     try {
       dispatch({
@@ -463,20 +512,42 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  const loadStaffApplications = useCallback(async (schoolId: string) => {
-    dispatch({ type: "FETCH_START" });
-    try {
-      dispatch({
-        type: "FETCH_STAFF_APPLICATIONS_SUCCESS",
-        payload: await schoolService.getStaffApplications(schoolId),
-      });
-    } catch (error: unknown) {
-      dispatch({
-        type: "FETCH_ERROR",
-        payload: getErrorMessage(error, "Failed to load staff applications"),
-      });
-    }
-  }, []);
+  const loadStaffApplications = useCallback(
+    async (params?: { schoolId?: string; applicantId?: string }) => {
+      dispatch({ type: "FETCH_START" });
+      try {
+        dispatch({
+          type: "FETCH_STAFF_APPLICATIONS_SUCCESS",
+          payload: await schoolService.getStaffApplications(params),
+        });
+      } catch (error: unknown) {
+        dispatch({
+          type: "FETCH_ERROR",
+          payload: getErrorMessage(error, "Failed to load staff applications"),
+        });
+      }
+    },
+    [],
+  );
+
+  const applyToStaffPost = useCallback(
+    async (postId: string, applicantId: string) => {
+      dispatch({ type: "FETCH_START" });
+      try {
+        dispatch({
+          type: "ADD_STAFF_APPLICATION_SUCCESS",
+          payload: await schoolService.applyToStaffPost(postId, applicantId),
+        });
+      } catch (error: unknown) {
+        dispatch({
+          type: "FETCH_ERROR",
+          payload: getErrorMessage(error, "Failed to submit application"),
+        });
+        throw error;
+      }
+    },
+    [],
+  );
 
   const updateStaffApplication = useCallback(
     async (id: string, status: ApplicationStatus) => {
@@ -537,6 +608,140 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({
     [state.classrooms],
   );
 
+  const loadAgreements = useCallback(
+    async (params?: { schoolId?: string }) => {
+      dispatch({ type: "FETCH_START" });
+      try {
+        const data = await schoolService.getAgreements(params);
+        dispatch({ type: "FETCH_AGREEMENTS_SUCCESS", payload: data });
+      } catch (error: unknown) {
+        dispatch({
+          type: "FETCH_ERROR",
+          payload: getErrorMessage(error, "Failed to load agreements"),
+        });
+      }
+    },
+    [],
+  );
+
+  const proposeAgreement = useCallback(
+    async (proposerSchoolId: string, partnerSchoolId: string) => {
+      dispatch({ type: "FETCH_START" });
+      try {
+        const agreement = await schoolService.proposeAgreement(
+          proposerSchoolId,
+          partnerSchoolId,
+        );
+        dispatch({ type: "ADD_AGREEMENT_SUCCESS", payload: agreement });
+      } catch (error: unknown) {
+        dispatch({
+          type: "FETCH_ERROR",
+          payload: getErrorMessage(error, "Failed to propose agreement"),
+        });
+        throw error;
+      }
+    },
+    [],
+  );
+
+  const respondToAgreement = useCallback(async (id: string, accept: boolean) => {
+    dispatch({ type: "FETCH_START" });
+    try {
+      const agreement = await schoolService.respondToAgreement(id, accept);
+      dispatch({ type: "UPDATE_AGREEMENT_SUCCESS", payload: agreement });
+    } catch (error: unknown) {
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: getErrorMessage(error, "Failed to update agreement"),
+      });
+      throw error;
+    }
+  }, []);
+
+  const terminateAgreement = useCallback(async (id: string) => {
+    dispatch({ type: "FETCH_START" });
+    try {
+      const agreement = await schoolService.terminateAgreement(id);
+      dispatch({ type: "UPDATE_AGREEMENT_SUCCESS", payload: agreement });
+    } catch (error: unknown) {
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: getErrorMessage(error, "Failed to terminate agreement"),
+      });
+      throw error;
+    }
+  }, []);
+
+  const loadReviews = useCallback(async (params?: { schoolId?: string }) => {
+    dispatch({ type: "FETCH_START" });
+    try {
+      const data = await schoolService.getReviews(params);
+      dispatch({ type: "FETCH_REVIEWS_SUCCESS", payload: data });
+    } catch (error: unknown) {
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: getErrorMessage(error, "Failed to load reviews"),
+      });
+    }
+  }, []);
+
+  const addReview = useCallback(
+    async (
+      schoolId: string,
+      studentId: string,
+      rating: number,
+      comment: string,
+    ) => {
+      dispatch({ type: "FETCH_START" });
+      try {
+        const review = await schoolService.addReview(
+          schoolId,
+          studentId,
+          rating,
+          comment,
+        );
+        dispatch({ type: "ADD_REVIEW_SUCCESS", payload: review });
+      } catch (error: unknown) {
+        dispatch({
+          type: "FETCH_ERROR",
+          payload: getErrorMessage(error, "Failed to submit your review"),
+        });
+        throw error;
+      }
+    },
+    [],
+  );
+
+  const loadApplicationForm = useCallback(async (schoolId: string) => {
+    dispatch({ type: "FETCH_START" });
+    try {
+      const fields = await schoolService.getApplicationForm(schoolId);
+      dispatch({ type: "FETCH_APPLICATION_FORM_SUCCESS", payload: fields });
+    } catch (error: unknown) {
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: getErrorMessage(error, "Failed to load the application form"),
+      });
+    }
+  }, []);
+
+  const saveApplicationForm = useCallback(
+    async (schoolId: string, fields: ApplicationFormTemplate["fields"]) => {
+      dispatch({ type: "FETCH_START" });
+      try {
+        const saved = await schoolService.saveApplicationForm(schoolId, fields);
+        dispatch({ type: "SAVE_APPLICATION_FORM_SUCCESS", payload: saved });
+      } catch (error: unknown) {
+        dispatch({
+          type: "FETCH_ERROR",
+          payload: getErrorMessage(error, "Failed to save the application form"),
+        });
+        throw error;
+      }
+    },
+    [],
+  );
+
   return (
     <SchoolContext.Provider
       value={{
@@ -559,9 +764,18 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({
         updateStaffPost,
         removeStaffPost,
         loadStaffApplications,
+        applyToStaffPost,
         updateStaffApplication,
         assignEducationHead,
         removeEducationHead,
+        loadAgreements,
+        proposeAgreement,
+        respondToAgreement,
+        terminateAgreement,
+        loadReviews,
+        addReview,
+        loadApplicationForm,
+        saveApplicationForm,
       }}
     >
       {children}

@@ -2,9 +2,12 @@ import { createContext } from "react";
 import type {
   School,
   Branch,
+  SchoolAgreement,
   StaffApplication,
   StaffApplicationPost,
+  Review,
 } from "../../types/school.types.ts";
+import type { ApplicationFormTemplate } from "../../types/enrollment.types.ts";
 import type {
   Classroom,
   ClassroomMentor,
@@ -20,6 +23,9 @@ export interface SchoolState {
   classroomMentors: ClassroomMentor[];
   staffPosts: StaffApplicationPost[];
   staffApplications: StaffApplication[];
+  agreements: SchoolAgreement[];
+  reviews: Review[];
+  applicationForm: ApplicationFormTemplate["fields"];
   isLoading: boolean;
   error: string | null;
 }
@@ -44,7 +50,7 @@ export interface SchoolContextType extends SchoolState {
     classroomId: string,
     mentorId: string,
   ) => Promise<void>;
-  loadStaffPosts: (schoolId: string) => Promise<void>;
+  loadStaffPosts: (schoolId?: string) => Promise<void>;
   addStaffPost: (
     schoolId: string,
     role: Role,
@@ -55,13 +61,36 @@ export interface SchoolContextType extends SchoolState {
     data: Partial<StaffApplicationPost>,
   ) => Promise<void>;
   removeStaffPost: (id: string) => Promise<void>;
-  loadStaffApplications: (schoolId: string) => Promise<void>;
+  loadStaffApplications: (params?: {
+    schoolId?: string;
+    applicantId?: string;
+  }) => Promise<void>;
+  applyToStaffPost: (postId: string, applicantId: string) => Promise<void>;
   updateStaffApplication: (
     id: string,
     status: ApplicationStatus,
   ) => Promise<void>;
   assignEducationHead: (schoolId: string, userId: string) => Promise<void>;
   removeEducationHead: (schoolId: string, userId: string) => Promise<void>;
+  loadAgreements: (params?: { schoolId?: string }) => Promise<void>;
+  proposeAgreement: (
+    proposerSchoolId: string,
+    partnerSchoolId: string,
+  ) => Promise<void>;
+  respondToAgreement: (id: string, accept: boolean) => Promise<void>;
+  terminateAgreement: (id: string) => Promise<void>;
+  loadReviews: (params?: { schoolId?: string }) => Promise<void>;
+  addReview: (
+    schoolId: string,
+    studentId: string,
+    rating: number,
+    comment: string,
+  ) => Promise<void>;
+  loadApplicationForm: (schoolId: string) => Promise<void>;
+  saveApplicationForm: (
+    schoolId: string,
+    fields: ApplicationFormTemplate["fields"],
+  ) => Promise<void>;
 }
 
 export const SchoolContext = createContext<SchoolContextType | null>(null);
