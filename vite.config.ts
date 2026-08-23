@@ -10,4 +10,14 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss(),
   ],
+  server: {
+    proxy: {
+      // Forward API calls to the Express backend during development
+      // (backend default port from back-end/.env)
+      "/api": {
+        target: process.env.VITE_API_TARGET || "http://localhost:3000",
+        changeOrigin: true,
+      },
+    },
+  },
 });

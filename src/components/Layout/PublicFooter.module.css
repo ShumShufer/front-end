@@ -20,34 +20,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-}
-
-.brandRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.logoWrap {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  background: var(--color-primary);
-  flex-shrink: 0;
-}
-
-.logoWrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.brandName {
   color: var(--color-text-inverse);
-  font-size: var(--text-lg);
-  font-weight: var(--font-weight-extrabold);
-  letter-spacing: var(--letter-spacing-snug);
 }
 
 .brandDesc {

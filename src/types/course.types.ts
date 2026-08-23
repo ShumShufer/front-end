@@ -27,6 +27,13 @@ export interface ClassroomCourse {
   mandatory: boolean;
 }
 
+/** Classroom course joined with its course details for UI consumption. */
+export interface ClassroomCourseLink {
+  course: Course;
+  order: number;
+  mandatory: boolean;
+}
+
 export interface CourseResult {
   id: string;
   studentId: string;

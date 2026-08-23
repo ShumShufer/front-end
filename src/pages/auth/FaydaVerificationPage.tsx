@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { FaydaVerification } from "../../features/auth/FaydaVerification/FaydaVerification.tsx";
 
 export default function FaydaVerificationPage() {
-  return <PlaceholderPage title="Fayda Verification" section="Auth" />;
+  return <FaydaVerification />;
 }

@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { CourseManager } from "../../features/admin/CourseManager/CourseManager.tsx";
 
 export default function AdminCoursesPage() {
-  return (
-    <PlaceholderPage title="Course & Pricing Management" section="Admin" />
-  );
+  return <CourseManager />;
 }

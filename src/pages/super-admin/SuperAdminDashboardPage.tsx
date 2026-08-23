@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { SuperAdminDashboard } from "../../features/super-admin/SuperAdminDashboard/SuperAdminDashboard.tsx";
 
 export default function SuperAdminDashboardPage() {
-  return (
-    <PlaceholderPage title="Super Admin Dashboard" section="Super Admin" />
-  );
+  return <SuperAdminDashboard />;
 }

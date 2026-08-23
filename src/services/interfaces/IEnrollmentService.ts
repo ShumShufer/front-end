@@ -20,9 +20,13 @@ export interface IEnrollmentService {
     mode: ApplicationMode,
     formResponses: Record<string, unknown>,
   ): Promise<Enrollment>;
-  acceptApplication(id: string): Promise<Enrollment>;
+  acceptApplication(
+    id: string,
+    classroomId?: string | null,
+  ): Promise<Enrollment>;
   acceptApplications(ids: string[]): Promise<Enrollment[]>;
   rejectApplication(id: string): Promise<Enrollment>;
+  withdrawApplication(id: string): Promise<Enrollment>;
 
   getPracticeRequests(params?: {
     schoolId?: string;
@@ -34,4 +38,5 @@ export interface IEnrollmentService {
     fee: number,
   ): Promise<PracticeElsewhereRequest>;
   approvePracticeRequest(id: string): Promise<PracticeElsewhereRequest>;
+  rejectPracticeRequest(id: string): Promise<PracticeElsewhereRequest>;
 }

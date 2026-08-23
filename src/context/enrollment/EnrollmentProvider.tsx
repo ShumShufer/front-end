@@ -75,7 +75,13 @@ function enrollmentReducer(
         practiceRequests: [...state.practiceRequests, action.payload],
       };
     case "PRACTICE_UPDATE_SUCCESS":
-      return { ...state, isLoading: false };
+      return {
+        ...state,
+        isLoading: false,
+        practiceRequests: state.practiceRequests.map((item) =>
+          item.id === action.payload.id ? action.payload : item,
+        ),
+      };
     case "FETCH_ERROR":
       return { ...state, isLoading: false, error: action.payload };
     default:
@@ -140,19 +146,22 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
     [],
   );
 
-  const acceptApplication = useCallback(async (id: string) => {
-    dispatch({ type: "FETCH_START" });
-    try {
-      const data = await enrollmentService.acceptApplication(id);
-      dispatch({ type: "UPDATE_SUCCESS", payload: data });
-    } catch (error: unknown) {
-      dispatch({
-        type: "FETCH_ERROR",
-        payload: getErrorMessage(error, "Failed to accept application"),
-      });
-      throw error;
-    }
-  }, []);
+  const acceptApplication = useCallback(
+    async (id: string, classroomId?: string | null) => {
+      dispatch({ type: "FETCH_START" });
+      try {
+        const data = await enrollmentService.acceptApplication(id, classroomId);
+        dispatch({ type: "UPDATE_SUCCESS", payload: data });
+      } catch (error: unknown) {
+        dispatch({
+          type: "FETCH_ERROR",
+          payload: getErrorMessage(error, "Failed to accept application"),
+        });
+        throw error;
+      }
+    },
+    [],
+  );
 
   const rejectApplication = useCallback(async (id: string) => {
     dispatch({ type: "FETCH_START" });
@@ -163,6 +172,20 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch({
         type: "FETCH_ERROR",
         payload: getErrorMessage(error, "Failed to reject application"),
+      });
+      throw error;
+    }
+  }, []);
+
+  const withdrawApplication = useCallback(async (id: string) => {
+    dispatch({ type: "FETCH_START" });
+    try {
+      const data = await enrollmentService.withdrawApplication(id);
+      dispatch({ type: "UPDATE_SUCCESS", payload: data });
+    } catch (error: unknown) {
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: getErrorMessage(error, "Failed to withdraw application"),
       });
       throw error;
     }
@@ -236,6 +259,20 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
+  const rejectPracticeRequest = useCallback(async (id: string) => {
+    dispatch({ type: "FETCH_START" });
+    try {
+      const data = await enrollmentService.rejectPracticeRequest(id);
+      dispatch({ type: "PRACTICE_UPDATE_SUCCESS", payload: data });
+    } catch (error: unknown) {
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: getErrorMessage(error, "Failed to reject practice request"),
+      });
+      throw error;
+    }
+  }, []);
+
   return (
     <EnrollmentContext.Provider
       value={{
@@ -245,9 +282,11 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
         acceptApplication,
         acceptApplications,
         rejectApplication,
+        withdrawApplication,
         loadPracticeRequests,
         submitPracticeRequest,
         approvePracticeRequest,
+        rejectPracticeRequest,
       }}
     >
       {children}

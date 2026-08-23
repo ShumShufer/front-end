@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { BrowseMentors } from "../../features/public/BrowseMentors/BrowseMentors.tsx";
 
 export default function BrowseMentorsPage() {
-  return <PlaceholderPage title="Browse Mentors" section="Public" />;
+  return <BrowseMentors />;
 }

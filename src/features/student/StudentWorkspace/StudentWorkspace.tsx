@@ -63,80 +63,86 @@ export function StudentWorkspace({
   if (view === "classrooms")
     return (
       <main className={styles.page}>
-        <h1>My classrooms</h1>
-        {classroom.classrooms.length ? (
-          <div className={styles.grid}>
-            {classroom.classrooms.map((item) => (
-              <Link
-                key={item.id}
-                to={ROUTES.student.classroomHub(item.id)}
-                className={styles.card}
-              >
-                <GraduationCap size={20} />
-                <h2>{item.name}</h2>
-                <p>Open classroom learning, resources, tasks, and schedule.</p>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <EmptyState
-            title="No classrooms assigned"
-            description="Accepted school applications will place you into a classroom."
-          />
-        )}
+        <div className={styles.inner}>
+          <h1>My classrooms</h1>
+          {classroom.classrooms.length ? (
+            <div className={styles.grid}>
+              {classroom.classrooms.map((item) => (
+                <Link
+                  key={item.id}
+                  to={ROUTES.student.classroomHub(item.id)}
+                  className={styles.card}
+                >
+                  <GraduationCap size={20} />
+                  <h2>{item.name}</h2>
+                  <p>Open classroom learning, resources, tasks, and schedule.</p>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="No classrooms assigned"
+              description="Accepted school applications will place you into a classroom."
+            />
+          )}
+        </div>
       </main>
     );
   if (view === "courses")
     return (
       <main className={styles.page}>
-        <h1>Course progress</h1>
-        {course.progress.length ? (
-          <div className={styles.grid}>
-            {course.progress.map((item) => (
-              <article key={item.id} className={styles.card}>
-                <BookOpen size={20} />
-                <h2>Course progress</h2>
-                <p>{item.status.replaceAll("_", " ")}</p>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <EmptyState
-            title="No course progress yet"
-            description="Your classroom courses and progress will appear here."
-          />
-        )}
+        <div className={styles.inner}>
+          <h1>Course progress</h1>
+          {course.progress.length ? (
+            <div className={styles.grid}>
+              {course.progress.map((item) => (
+                <article key={item.id} className={styles.card}>
+                  <BookOpen size={20} />
+                  <h2>Course progress</h2>
+                  <p>{item.status.replaceAll("_", " ")}</p>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="No course progress yet"
+              description="Your classroom courses and progress will appear here."
+            />
+          )}
+        </div>
       </main>
     );
   return (
     <main className={styles.page}>
-      <header>
-        <p>Student workspace</p>
-        <h1>Keep your road to readiness moving.</h1>
-      </header>
-      <div className={styles.grid}>
-        <section className={styles.card}>
-          <Building2 size={20} />
-          <h2>
-            {schools.length} enrolled school{schools.length === 1 ? "" : "s"}
-          </h2>
-          <p>
-            {schools.map((item) => item.name).join(", ") ||
-              "Your enrolled schools appear here."}
-          </p>
-        </section>
-        <Link to={ROUTES.student.classroom} className={styles.card}>
-          <GraduationCap size={20} />
-          <h2>{classroom.classrooms.length} classrooms</h2>
-          <p>Continue learning and view your classroom hub.</p>
-        </Link>
-        <Link to={ROUTES.student.results} className={styles.card}>
-          <ClipboardCheck size={20} />
-          <h2>{course.progress.length} course records</h2>
-          <p>See results and learning progress.</p>
-        </Link>
+      <div className={styles.inner}>
+        <header>
+          <p>Student workspace</p>
+          <h1>Keep your road to readiness moving.</h1>
+        </header>
+        <div className={styles.grid}>
+          <section className={styles.card}>
+            <Building2 size={20} />
+            <h2>
+              {schools.length} enrolled school{schools.length === 1 ? "" : "s"}
+            </h2>
+            <p>
+              {schools.map((item) => item.name).join(", ") ||
+                "Your enrolled schools appear here."}
+            </p>
+          </section>
+          <Link to={ROUTES.student.classroom} className={styles.card}>
+            <GraduationCap size={20} />
+            <h2>{classroom.classrooms.length} classrooms</h2>
+            <p>Continue learning and view your classroom hub.</p>
+          </Link>
+          <Link to={ROUTES.student.results} className={styles.card}>
+            <ClipboardCheck size={20} />
+            <h2>{course.progress.length} course records</h2>
+            <p>See results and learning progress.</p>
+          </Link>
+        </div>
+        {schools[0] && <SchoolCalendar schoolId={schools[0].id} role="STUDENT" />}
       </div>
-      {schools[0] && <SchoolCalendar schoolId={schools[0].id} role="STUDENT" />}
     </main>
   );
 }

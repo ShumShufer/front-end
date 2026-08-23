@@ -1,10 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { PaymentsOverview } from "../../features/super-admin/PaymentsOverview/PaymentsOverview.tsx";
 
 export default function PaymentsOverviewPage() {
-  return (
-    <PlaceholderPage
-      title="Payments & Commission Overview"
-      section="Super Admin"
-    />
-  );
+  return <PaymentsOverview />;
 }
