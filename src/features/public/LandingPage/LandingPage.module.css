@@ -1,0 +1,684 @@
+.page {
+  background-color: var(--color-bg);
+  background-image: url("/shumshufer-pattern.svg");
+}
+
+/* ─── Hero ────────────────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.heroImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroScrim {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-scrim-hero);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  width: 100%;
+  max-width: var(--max-width-content);
+  margin: 0 auto;
+  padding: calc(var(--nav-height) + var(--space-12)) var(--space-8)
+    var(--space-10);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.heroContent > * {
+  animation: riseIn 700ms ease-out backwards;
+}
+
+.heroContent > :nth-child(1) {
+  animation-delay: 120ms;
+}
+
+.heroContent > :nth-child(2) {
+  animation-delay: 240ms;
+}
+
+.heroContent > :nth-child(3) {
+  animation-delay: 360ms;
+}
+
+.heroContent > :nth-child(4) {
+  animation-delay: 480ms;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-primary-bright);
+  margin-bottom: var(--space-5);
+}
+
+.heroTitle {
+  color: var(--color-text-inverse);
+  font-size: clamp(var(--text-5xl), 9vw, var(--text-hero));
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  font-weight: var(--font-weight-black);
+  margin-bottom: var(--space-8);
+}
+
+.heroAccent {
+  color: var(--color-primary-bright);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-10);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-10);
+}
+
+.stat {
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--color-border-dark);
+}
+
+.statValue {
+  color: var(--color-text-inverse);
+  font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: var(--letter-spacing-snug);
+  line-height: var(--line-height-snug);
+  font-variant-numeric: tabular-nums;
+}
+
+.statSuffix {
+  color: var(--color-primary-bright);
+}
+
+.statLabel {
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-text-inverse-muted);
+  margin-top: var(--space-2);
+}
+
+.searchBox {
+  position: relative;
+  z-index: 1;
+  width: min(42rem, calc(100% - var(--space-16)));
+  margin: 0 auto var(--space-10);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-auth);
+  animation: riseIn 700ms ease-out 600ms backwards;
+}
+
+.searchIcon {
+  color: var(--color-text-inverse-muted);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: var(--text-base);
+  color: var(--color-text-inverse);
+  min-width: 0;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-inverse-muted);
+}
+
+.searchSubmit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--btn-height-md);
+  padding: 0 var(--space-6);
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.searchSubmit:hover {
+  background: var(--color-primary-hover);
+  box-shadow: var(--shadow-glow-primary-sm);
+  transform: translateY(-1px);
+}
+
+/* ─── Sections ────────────────────────────────────────────────────────────── */
+.section {
+  padding: var(--space-20) var(--space-8);
+}
+
+.sectionInner {
+  max-width: var(--max-width-content);
+  margin: 0 auto;
+}
+
+.sectionEyebrow {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+
+.sectionTitle {
+  font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
+  line-height: var(--line-height-snug);
+  letter-spacing: var(--letter-spacing-tight);
+  font-weight: var(--font-weight-extrabold);
+  margin-bottom: var(--space-12);
+  max-width: 36rem;
+}
+
+/* ─── Why choose us ───────────────────────────────────────────────────────── */
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.featureCard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 400px;
+  border-radius: var(--radius-3xl);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow:
+    var(--shadow-card-hover),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  opacity: 0;
+  transform: translateY(48px);
+  transition:
+    opacity 700ms ease,
+    transform 700ms ease;
+}
+
+.featureList > :nth-child(2) {
+  transition-delay: 120ms;
+}
+
+.featureList > :nth-child(3) {
+  transition-delay: 240ms;
+}
+
+.featureCardVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.featureCardReverse .featureMedia {
+  order: 2;
+}
+
+.featureMedia {
+  position: relative;
+  overflow: hidden;
+}
+
+.featureMedia img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.featureCard:hover .featureMedia img {
+  transform: scale(1.05);
+}
+
+.featureBody {
+  padding: var(--space-12);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.featureIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  margin-bottom: var(--space-2);
+}
+
+.featureSubtitle {
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.featureTitle {
+  font-size: clamp(var(--text-2xl), 3vw, var(--text-3xl));
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: var(--letter-spacing-snug);
+}
+
+.featureDesc {
+  font-size: var(--text-lg);
+  color: var(--color-text-body);
+  line-height: var(--line-height-normal);
+  max-width: 30rem;
+}
+
+/* ─── Top schools ─────────────────────────────────────────────────────────── */
+.schoolsSection {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+  background-color: var(--color-surface-dim);
+}
+
+.schoolsInner {
+  max-width: var(--max-width-content);
+  margin: 0 auto;
+  padding: 0 var(--space-8);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.sectionHeaderTitle {
+  font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl));
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: var(--letter-spacing-snug);
+}
+
+.sectionHeaderLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.sectionHeaderLink:hover {
+  color: var(--color-primary-hover);
+}
+
+.schoolGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+
+.schoolCard {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  box-shadow:
+    var(--shadow-card-hover),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.schoolCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-brand);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--transition-base);
+}
+
+.schoolCard:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card-hover), var(--shadow-glow-primary-sm);
+}
+
+/* "View School" fills with the primary button color on hover */
+.schoolCard a[class*="tertiary"]:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  color: var(--color-text-inverse);
+}
+
+.schoolCard:hover::before {
+  transform: scaleX(1);
+}
+
+.schoolBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.badgeSuccess {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.badgeNeutral {
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.schoolName {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: var(--letter-spacing-snug);
+}
+
+.schoolMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ratingChip,
+.locationChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.ratingChip {
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+}
+
+.locationChip {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.schoolDesc {
+  font-size: var(--text-sm);
+  color: var(--color-text-body);
+  flex: 1;
+}
+
+.emptySchools {
+  padding: var(--space-8);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-xl);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/* ─── CTA band ────────────────────────────────────────────────────────────── */
+.ctaBand {
+  padding: var(--space-16) var(--space-8);
+  max-width: var(--max-width-content);
+  margin: 0 auto;
+}
+
+.ctaInner {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    var(--color-text) 0%,
+    var(--color-text) 50%,
+    var(--color-primary) 125%
+  );
+  border-radius: var(--radius-2xl);
+  padding: var(--space-12);
+  display: grid;
+  grid-template-columns: 1.3fr auto;
+  gap: var(--space-8);
+  align-items: center;
+  box-shadow:
+    var(--shadow-glow-primary-sm),
+    var(--shadow-auth);
+}
+
+.ctaGlowOne,
+.ctaGlowTwo {
+  position: absolute;
+  border-radius: var(--radius-full);
+  filter: blur(90px);
+  pointer-events: none;
+}
+
+.ctaGlowOne {
+  width: 300px;
+  height: 300px;
+  top: -140px;
+  right: -80px;
+  background: rgba(255, 255, 255, 0.08);
+  animation: ctaDrift 9s ease-in-out infinite alternate;
+}
+
+.ctaGlowTwo {
+  width: 280px;
+  height: 280px;
+  bottom: -160px;
+  left: -60px;
+  background: var(--color-primary-glow);
+  animation: ctaDrift 11s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes ctaDrift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-30px, 30px, 0) scale(1.15);
+  }
+}
+
+.ctaCopy {
+  position: relative;
+  z-index: 1;
+}
+
+.ctaEyebrow {
+  color: var(--color-cta-accent);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+
+.ctaTitle {
+  color: var(--color-text-inverse);
+  font-size: clamp(var(--text-xl), 3vw, var(--text-3xl));
+  letter-spacing: var(--letter-spacing-snug);
+  line-height: var(--line-height-snug);
+  font-weight: var(--font-weight-extrabold);
+  margin-bottom: var(--space-3);
+}
+
+.ctaDesc {
+  color: var(--color-footer-text);
+  font-size: var(--text-sm);
+  max-width: 30rem;
+  line-height: var(--line-height-normal);
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .heroContent {
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+
+  .searchBox {
+    width: calc(100% - var(--space-12));
+  }
+
+  .featureCard {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .featureCardReverse .featureMedia {
+    order: 0;
+  }
+
+  .featureMedia {
+    aspect-ratio: 16 / 9;
+  }
+
+  .featureBody {
+    padding: var(--space-8);
+  }
+
+  .schoolGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ctaInner {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroContent {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .stats {
+    gap: var(--space-6);
+  }
+
+  .searchBox {
+    width: calc(100% - var(--space-8));
+    margin-bottom: var(--space-6);
+  }
+
+  .heroActions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .heroActions a,
+  .heroActions button {
+    width: 100%;
+  }
+
+  .section,
+  .ctaBand {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .schoolsInner {
+    padding: 0 var(--space-4);
+  }
+
+  .schoolGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .featureBody {
+    padding: var(--space-6);
+  }
+}

@@ -1,0 +1,385 @@
+/* src/features/public/DiscoverSchoolsPage/DiscoverSchoolsPage.module.css */
+
+.page {
+  min-height: 100vh;
+  padding-top: var(--nav-height);
+  background-color: var(--color-bg);
+  background-image: url("/shumshufer-pattern.svg");
+}
+
+/* Map */
+.mapSection {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mapContainer {
+  width: 100%;
+}
+
+.mapContainer .mapFull {
+  border: none;
+  border-radius: 0;
+}
+
+.mapContainer .mapFull :global(.leaflet-container) {
+  border-radius: 0;
+}
+
+/* Header + Search + Filters */
+.header {
+  padding: var(--space-12) var(--space-8) 0;
+}
+
+.headerContent {
+  max-width: var(--max-width-content);
+  margin: 0 auto var(--space-8);
+  text-align: center;
+}
+
+.title {
+  font-size: clamp(var(--text-3xl), 4vw, var(--text-4xl));
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-text);
+  margin: 0 0 var(--space-4);
+}
+
+.subtitle {
+  font-size: var(--text-lg);
+  color: var(--color-text-body);
+  margin: 0;
+  max-width: 600px;
+  margin-inline: auto;
+}
+
+/* Search Bar */
+.searchBar {
+  max-width: var(--max-width-content);
+  margin: 0 auto;
+  display: flex;
+  gap: var(--space-3);
+  position: relative;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3);
+  align-items: center;
+  box-shadow:
+    var(--shadow-card-hover),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.searchIcon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: var(--text-base);
+  color: var(--color-text);
+  padding: 0;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+.filterButton {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.filterButton:hover,
+.filterButtonActive {
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+/* Filter Panel */
+.filterPanel {
+  max-width: var(--max-width-content);
+  margin: var(--space-6) auto 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-6);
+  box-shadow: var(--shadow-card);
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.filterLabel {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+}
+
+.filterSelect {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.filterSelect:hover {
+  border-color: var(--color-primary);
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+/* Schools Grid */
+.content {
+  padding: var(--space-12) var(--space-8) var(--space-16);
+}
+
+.schoolsList {
+  max-width: var(--max-width-content);
+  margin: 0 auto;
+  min-height: 300px;
+}
+
+.loadingState,
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.emptyState h3 {
+  font-size: var(--text-lg);
+  color: var(--color-text);
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.emptyState p {
+  color: var(--color-text-body);
+  margin: 0;
+}
+
+.schoolsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-6);
+}
+
+.schoolCard {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  box-shadow:
+    var(--shadow-card-hover),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.schoolCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-brand);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--transition-base);
+}
+
+.schoolCard:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  box-shadow:
+    var(--shadow-modal),
+    var(--shadow-glow-primary-sm),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.schoolCard:hover::before {
+  transform: scaleX(1);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-4);
+  gap: var(--space-4);
+}
+
+.schoolTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.schoolTitle h3 {
+  margin: 0;
+  font-size: var(--text-lg);
+  color: var(--color-text);
+}
+
+.verifiedBadge {
+  color: var(--color-success);
+  flex-shrink: 0;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-full);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+.starIcon {
+  flex-shrink: 0;
+}
+
+.description {
+  color: var(--color-text-body);
+  font-size: var(--text-sm);
+  margin: 0 0 var(--space-4);
+  line-height: var(--line-height-normal);
+  flex: 1;
+}
+
+.cardMeta {
+  display: flex;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-body);
+}
+
+.metaItem svg {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.cardActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .filterPanel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding-top: var(--nav-height);
+  }
+
+  .mapContainer .mapFull {
+    height: 18rem;
+  }
+
+  .header {
+    padding: var(--space-8) var(--space-4) 0;
+  }
+
+  .title {
+    font-size: var(--text-2xl);
+  }
+
+  .subtitle {
+    font-size: var(--text-base);
+  }
+
+  .content {
+    padding: var(--space-8) var(--space-4) var(--space-12);
+  }
+
+  .schoolsGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .schoolCard {
+    padding: var(--space-5);
+  }
+
+  .cardActions {
+    grid-template-columns: 1fr;
+  }
+
+  .cardMeta {
+    gap: var(--space-4);
+    flex-direction: column;
+  }
+
+  .metaItem {
+    flex-direction: row;
+  }
+
+  .searchBar {
+    flex-wrap: wrap;
+  }
+
+  .searchInput {
+    order: 1;
+    flex-basis: 100%;
+  }
+}
