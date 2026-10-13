@@ -76,6 +76,7 @@ function linksFor(homePath: string): NavItem[] {
       { label: "My schools", to: ROUTES.student.applications, icon: School },
       { label: "Classrooms", to: ROUTES.student.classroom, icon: GraduationCap },
       { label: "Courses", to: ROUTES.student.courses, icon: ClipboardList },
+      { label: "Payments (Chapa)", to: ROUTES.student.payments, icon: CreditCard },
       { label: "My results", to: ROUTES.student.results, icon: ClipboardCheck },
       { label: "My profile", to: ROUTES.student.profile, icon: UserRound },
       { label: "Notifications", to: ROUTES.student.notifications, icon: Bell },

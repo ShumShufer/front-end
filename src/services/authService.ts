@@ -1,4 +1,10 @@
-import type { IAuthService, LoginCredentials, RegisterPayload, AuthResponse } from "./interfaces/IAuthService.ts";
+import type {
+  IAuthService,
+  LoginCredentials,
+  RegisterPayload,
+  AuthResponse,
+  VerifyFaydaPayload,
+} from "./interfaces/IAuthService.ts";
 import type { User } from "../types/user.types.ts";
 import httpClient from "./api/httpClient.ts";
 
@@ -27,6 +33,22 @@ class AuthService implements IAuthService {
   async getCurrentUser(): Promise<User> { return httpClient.get<User, User>("/auth/me"); }
   async requestPasswordReset(email: string): Promise<void> { await httpClient.post<void, void>("/auth/forgot-password", { email }); }
   async resetPassword(token: string, password: string): Promise<void> { await httpClient.post<void, void>("/auth/reset-password", { token, password, passwordConfirm: password }); }
+
+  async verifyFayda(payload: VerifyFaydaPayload): Promise<{ user: User; message: string }> {
+    type VerifyApiResponse = {
+      user: User;
+      message: string;
+      verificationStatus: string;
+    };
+    const response = await httpClient.post<VerifyApiResponse, VerifyApiResponse>(
+      "/auth/verify-fayda",
+      payload,
+    );
+    return {
+      user: response.user,
+      message: response.message || "Fayda verification successful",
+    };
+  }
 
   async updateCurrentUser(id: string, data: Partial<User>): Promise<User> {
     return httpClient.patch<User, User>(`/users/${id}`, data);

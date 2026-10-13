@@ -3,6 +3,7 @@ import type { User } from "../../types/user.types.ts";
 import type {
   LoginCredentials,
   RegisterPayload,
+  VerifyFaydaPayload,
 } from "../../services/interfaces/IAuthService.ts";
 
 export interface AuthState {
@@ -20,6 +21,7 @@ export interface AuthContextType extends AuthState {
   requestPasswordReset: (email: string) => Promise<void>;
   resetPassword: (token: string, password: string) => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
+  verifyFayda: (payload: VerifyFaydaPayload) => Promise<{ user: User; message: string }>;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);

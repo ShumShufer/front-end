@@ -36,6 +36,18 @@ function MapFitBounds({ branches }: { branches: Branch[] }) {
   return null;
 }
 
+function MapResizeHandler() {
+  const map = useMap();
+  useEffect(() => {
+    map.invalidateSize();
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+}
+
 export function SchoolsMap({
   schools,
   branches,
@@ -57,8 +69,9 @@ export function SchoolsMap({
         className={styles.map}
         scrollWheelZoom
       >
+        <MapResizeHandler />
         <TileLayer
-          attribution="© OpenStreetMap contributors"
+          attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <MapFitBounds branches={branches} />
