@@ -5,6 +5,7 @@ import type {
   LoginCredentials,
   RegisterPayload,
   AuthResponse,
+  VerifyFaydaPayload,
 } from "../../services/interfaces/IAuthService.ts";
 import type { User } from "../../types/user.types.ts";
 import { getErrorMessage } from "../../utils/errors.ts";
@@ -28,17 +29,25 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
     case "LOGIN_SUCCESS":
       return {
         ...state,
-        isLoading: false,
         user: action.payload.user,
         token: action.payload.token,
+        isLoading: false,
+        error: null,
         isInitialized: true,
       };
     case "INIT_ERROR":
-      return { ...state, isLoading: false, isInitialized: true };
+      return {
+        ...state,
+        user: null,
+        token: null,
+        isLoading: false,
+        error: null,
+        isInitialized: true,
+      };
     case "LOGIN_ERROR":
       return { ...state, isLoading: false, error: action.payload };
     case "PROFILE_SUCCESS":
-      return { ...state, isLoading: false, error: null, user: action.payload };
+      return { ...state, user: action.payload, isLoading: false, error: null };
     case "LOGOUT":
       return {
         ...state,
@@ -46,6 +55,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         token: null,
         isLoading: false,
         error: null,
+        isInitialized: true,
       };
     default:
       return state;
@@ -142,6 +152,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch({ type: "LOGIN_START" });
       try {
         const user = await authService.updateCurrentUser(state.user.id, data);
+        localStorage.setItem("user", JSON.stringify(user));
         dispatch({ type: "PROFILE_SUCCESS", payload: user });
       } catch (error: unknown) {
         dispatch({
@@ -154,6 +165,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     [state.user],
   );
 
+  const verifyFayda = useCallback(
+    async (payload: VerifyFaydaPayload) => {
+      dispatch({ type: "LOGIN_START" });
+      try {
+        const result = await authService.verifyFayda(payload);
+        if (result.user) {
+          localStorage.setItem("user", JSON.stringify(result.user));
+          dispatch({ type: "PROFILE_SUCCESS", payload: result.user });
+        }
+        return result;
+      } catch (error: unknown) {
+        dispatch({
+          type: "LOGIN_ERROR",
+          payload: getErrorMessage(error, "Fayda verification failed"),
+        });
+        throw error;
+      }
+    },
+    [],
+  );
+
   return (
     <AuthContext.Provider
       value={{
@@ -164,6 +196,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         requestPasswordReset,
         resetPassword,
         updateProfile,
+        verifyFayda,
       }}
     >
       {children}

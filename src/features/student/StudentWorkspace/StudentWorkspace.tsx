@@ -1,9 +1,12 @@
 import { useEffect } from "react";
 import {
+  AlertCircle,
   BookOpen,
   Building2,
   ClipboardCheck,
+  CreditCard,
   GraduationCap,
+  ShieldCheck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { EmptyState } from "../../../components/EmptyState/EmptyState.tsx";
@@ -13,6 +16,7 @@ import { useAuth } from "../../../context/auth/useAuth.ts";
 import { useClassroom } from "../../../context/classroom/useClassroom.ts";
 import { useCourse } from "../../../context/course/useCourse.ts";
 import { useEnrollment } from "../../../context/enrollment/useEnrollment.ts";
+import { usePayment } from "../../../context/payment/usePayment.ts";
 import { useSchool } from "../../../context/school/useSchool.ts";
 import { ROUTES } from "../../../router/routes.config.ts";
 import styles from "./StudentWorkspace.module.css";
@@ -27,22 +31,26 @@ export function StudentWorkspace({
   const classroom = useClassroom();
   const course = useCourse();
   const school = useSchool();
+  const payment = usePayment();
   const { loadEnrollments } = enrollment;
   const { loadStudentClassrooms } = classroom;
   const { loadStudentProgress } = course;
   const { loadSchools } = school;
+  const { loadPayments } = payment;
   useEffect(() => {
     if (!user) return;
     void loadEnrollments({ studentId: user.id });
     void loadStudentClassrooms(user.id);
     void loadStudentProgress(user.id);
     void loadSchools({ status: "ACTIVE" });
+    void loadPayments({ userId: user.id });
   }, [
     user?.id,
     loadEnrollments,
     loadStudentClassrooms,
     loadStudentProgress,
     loadSchools,
+    loadPayments,
   ]);
   if (!user) return null;
   const schoolIds =
@@ -112,6 +120,10 @@ export function StudentWorkspace({
         </div>
       </main>
     );
+  const paidPayment = payment.payments?.data.find((p) => p.status === "SUCCESS");
+  const hasPaid = Boolean(paidPayment || schools.length > 0);
+  const studentTraineeId = `STU-2026-${user.id.replace(/-/g, "").slice(0, 8).toUpperCase()}`;
+
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
@@ -119,6 +131,54 @@ export function StudentWorkspace({
           <p>Student workspace</p>
           <h1>Keep your road to readiness moving.</h1>
         </header>
+
+        {hasPaid ? (
+          <section className={styles.idCard} aria-label="Official Student Trainee ID">
+            <div className={styles.idCardHeader}>
+              <div className={styles.idCardTitle}>
+                <ShieldCheck size={20} />
+                <span>Official Trainee Identification</span>
+              </div>
+              <span className={styles.idBadge}>{studentTraineeId}</span>
+            </div>
+            <div className={styles.idDetails}>
+              <div className={styles.idDetailItem}>
+                <span>Trainee Name</span>
+                <strong>{user.firstName} {user.lastName}</strong>
+              </div>
+              <div className={styles.idDetailItem}>
+                <span>Enrolled Academy</span>
+                <strong>{schools[0]?.name || "Verified Driving Academy"}</strong>
+              </div>
+              <div className={styles.idDetailItem}>
+                <span>Payment & Tuition</span>
+                <strong style={{ color: "#16a34a" }}>
+                  Verified Paid {paidPayment?.chapaTxRef ? `(${paidPayment.chapaTxRef.slice(0, 14)}...)` : "(Chapa)"}
+                </strong>
+              </div>
+              <div className={styles.idDetailItem}>
+                <span>Registration Term</span>
+                <strong>Batch 2026</strong>
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className={styles.idCardPending} aria-label="Student ID Pending Payment">
+            <div className={styles.idCardPendingContent}>
+              <AlertCircle size={24} />
+              <div>
+                <h3>Student Trainee ID: Pending Payment</h3>
+                <p>
+                  Your unique Trainee ID ({studentTraineeId}) will be officially activated as soon as tuition fee payment is completed.
+                </p>
+              </div>
+            </div>
+            <Link to={ROUTES.student.payments} className={styles.payButton}>
+              <CreditCard size={16} /> Pay Tuition (Chapa)
+            </Link>
+          </section>
+        )}
+
         <div className={styles.grid}>
           <section className={styles.card}>
             <Building2 size={20} />

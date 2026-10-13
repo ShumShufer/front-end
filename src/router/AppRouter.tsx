@@ -299,16 +299,18 @@ export function AppRouter() {
               element={<ForgotPasswordPage />}
             />
             <Route path="auth/reset-password" element={<ResetPasswordPage />} />
-            <Route
-              path="auth/verify-fayda"
-              element={<FaydaVerificationPage />}
-            />
-            <Route
-              path="auth/verification-pending"
-              element={<VerificationPendingPage />}
-            />
-            <Route path="auth/onboarding" element={<OnboardingPage />} />
           </Route>
+
+          {/* Verification & Onboarding routes */}
+          <Route
+            path="auth/verify-fayda"
+            element={<FaydaVerificationPage />}
+          />
+          <Route
+            path="auth/verification-pending"
+            element={<VerificationPendingPage />}
+          />
+          <Route path="auth/onboarding" element={<OnboardingPage />} />
         </Route>
 
         {/* Shared authenticated routes */}
