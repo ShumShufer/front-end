@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { GlobalReports } from "../../features/super-admin/GlobalReports/GlobalReports.tsx";
 
 export default function GlobalReportsPage() {
-  return (
-    <PlaceholderPage title="Global Reports / Analytics" section="Super Admin" />
-  );
+  return <GlobalReports />;
 }

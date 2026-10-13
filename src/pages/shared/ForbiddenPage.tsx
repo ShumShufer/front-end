@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "./PlaceholderPage.tsx";
+import { Forbidden } from "../../features/shared/Forbidden/Forbidden.tsx";
 
 export default function ForbiddenPage() {
-  return <PlaceholderPage title="403 Forbidden" section="Shared" />;
+  return <Forbidden />;
 }

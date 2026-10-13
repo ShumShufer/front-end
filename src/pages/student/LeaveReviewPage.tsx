@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { LeaveReview } from "../../features/student/LeaveReview/LeaveReview.tsx";
 
 export default function LeaveReviewPage() {
-  return <PlaceholderPage title="Leave Review" section="Student" />;
+  return <LeaveReview />;
 }

@@ -2,6 +2,8 @@ export { authService } from "./authService.ts";
 export { schoolService } from "./schoolService.ts";
 export { classroomService } from "./classroomService.ts";
 export { courseService } from "./courseService.ts";
+export { quizService } from "./quizService.ts";
+export type { QuizAttemptResult } from "./interfaces/IQuizService.ts";
 export { taskService } from "./taskService.ts";
 export { enrollmentService } from "./enrollmentService.ts";
 export { paymentService } from "./paymentService.ts";

@@ -4,15 +4,19 @@ import { ArrowRight, ArrowUpRight, Menu, X } from "lucide-react";
 import { useAuth } from "../../context/auth/useAuth.ts";
 import { getDashboardPathForRole } from "../../utils/permissions.ts";
 import { ROUTES } from "../../router/routes.config.ts";
+import { BrandLogo } from "../BrandLogo/BrandLogo.tsx";
 import styles from "./PublicLayout.module.css";
 
-const NAV_LINKS = [
+const NAV_LINKS: Array<{
+  to: string;
+  label: string;
+  end?: boolean;
+}> = [
+  { to: ROUTES.public.landing, label: "Home", end: true },
   { to: ROUTES.public.schools, label: "Find Schools" },
   { to: ROUTES.public.courses, label: "Learn Online" },
-  { to: ROUTES.public.mentors, label: "Mentors" },
-  { to: ROUTES.public.drivers, label: "Verify a Driver" },
-  { to: ROUTES.public.about, label: "How it works" },
-  { to: ROUTES.public.pricing, label: "Pricing" },
+  { to: ROUTES.public.applications, label: "Applications" },
+  { to: ROUTES.public.announcements, label: "Announcements" },
 ];
 
 const LANDING_HERO_SELECTOR = "[data-landing-hero]";
@@ -43,9 +47,13 @@ export function PublicLayout() {
   const authRoute = isAuthRoute(location.pathname);
   const landingRoute = isLandingRoute(location.pathname);
 
-  useEffect(() => {
+  // Close the mobile menu whenever the route changes (render-phase
+  // adjustment, per React docs).
+  const [prevPathname, setPrevPathname] = useState(location.pathname);
+  if (location.pathname !== prevPathname) {
+    setPrevPathname(location.pathname);
     setMenuOpen(false);
-  }, [location.pathname]);
+  }
 
   useEffect(() => {
     const onScroll = () => {
@@ -72,13 +80,10 @@ export function PublicLayout() {
       {!authRoute && (
         <header className={navClass}>
           <Link to={ROUTES.public.landing} className={styles.brand}>
-            <div className={styles.logoWrap}>
-              <img src="/shumshufer-logo.jpg" alt="ShumShufer logo" />
-            </div>
-            <div className={styles.brandText}>
-              <span className={styles.brandName}>ShumShufer</span>
-              <span className={styles.brandSub}>Ethiopia</span>
-            </div>
+            <BrandLogo
+              markSize={40}
+              tone={landingRoute && !scrolled ? "inverse" : "auto"}
+            />
           </Link>
 
           <nav className={styles.navLinks} aria-label="Main navigation">
@@ -86,6 +91,7 @@ export function PublicLayout() {
               <NavLink
                 key={link.to}
                 to={link.to}
+                end={link.end}
                 className={({ isActive }) =>
                   [styles.navLink, isActive ? styles.navLinkActive : ""]
                     .filter(Boolean)
@@ -142,6 +148,7 @@ export function PublicLayout() {
             <NavLink
               key={link.to}
               to={link.to}
+              end={link.end}
               className={({ isActive }) =>
                 [
                   styles.mobileNavLink,

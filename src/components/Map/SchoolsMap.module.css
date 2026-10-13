@@ -7,19 +7,23 @@
   overflow: hidden;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
+  min-height: 420px;
 }
 
 .browse {
-  height: var(--map-height-browse);
+  height: var(--map-height-browse, 500px);
+  min-height: 420px;
 }
 
 .profile {
-  height: var(--map-height-profile);
+  height: var(--map-height-profile, 420px);
+  min-height: 350px;
 }
 
 .map {
   width: 100%;
   height: 100%;
+  min-height: 420px;
   border-radius: var(--radius-lg);
 }
 

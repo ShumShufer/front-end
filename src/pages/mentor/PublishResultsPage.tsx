@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { ResultPublisher } from "../../features/mentor/ResultPublisher/ResultPublisher.tsx";
 
 export default function PublishResultsPage() {
-  return <PlaceholderPage title="Publish Course Results" section="Mentor" />;
+  return <ResultPublisher />;
 }

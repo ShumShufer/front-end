@@ -1,3 +1,7 @@
+header {
+  padding-bottom: 30px;
+}
+
 .shell {
   display: grid;
   grid-template-columns: var(--app-sidebar-width) minmax(0, 1fr);
@@ -17,16 +21,7 @@
 .brand {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  font-size: var(--text-lg);
-  font-weight: var(--font-weight-extrabold);
-  letter-spacing: var(--letter-spacing-snug);
-}
-.brand img {
-  width: var(--space-8);
-  height: var(--space-8);
-  object-fit: cover;
-  border-radius: var(--radius-md);
+  color: var(--color-text);
 }
 .role {
   margin: var(--space-6) 0 var(--space-3);
@@ -109,9 +104,5 @@ nav {
   .link {
     white-space: nowrap;
     padding: var(--space-2) var(--space-3);
-  }
-  .brand img {
-    width: var(--space-6);
-    height: var(--space-6);
   }
 }

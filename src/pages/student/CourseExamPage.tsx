@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { CourseExam } from "../../features/student/CourseExam/CourseExam.tsx";
 
 export default function CourseExamPage() {
-  return <PlaceholderPage title="Course Final Exam" section="Student" />;
+  return <CourseExam />;
 }

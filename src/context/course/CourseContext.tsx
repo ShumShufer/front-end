@@ -1,10 +1,16 @@
 import { createContext } from "react";
-import type { Course, Topic, CourseResult } from "../../types/course.types.ts";
+import type {
+  Course,
+  Topic,
+  CourseResult,
+  ClassroomCourseLink,
+} from "../../types/course.types.ts";
 
 export interface CourseState {
   courses: Course[];
   activeCourse: Course | null;
   topics: Topic[];
+  classroomCourses: ClassroomCourseLink[];
   progress: CourseResult[];
   isLoading: boolean;
   error: string | null;
@@ -19,7 +25,20 @@ export interface CourseContextType extends CourseState {
   loadTopics: (courseId: string) => Promise<void>;
   createTopic: (courseId: string, data: Partial<Topic>) => Promise<void>;
   updateTopic: (id: string, data: Partial<Topic>) => Promise<void>;
+  loadClassroomCourses: (classroomId: string) => Promise<void>;
   loadStudentProgress: (studentId: string) => Promise<void>;
+  submitFinalExam: (
+    courseId: string,
+    studentId: string,
+    classroomId: string,
+    score: number,
+    passScore: number,
+  ) => Promise<void>;
+  publishResult: (
+    courseId: string,
+    studentId: string,
+    data: Partial<CourseResult>,
+  ) => Promise<void>;
 }
 
 export const CourseContext = createContext<CourseContextType | null>(null);

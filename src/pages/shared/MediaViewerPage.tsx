@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "./PlaceholderPage.tsx";
+import { MediaViewer } from "../../features/shared/MediaViewer/MediaViewer.tsx";
 
 export default function MediaViewerPage() {
-  return <PlaceholderPage title="File / Media Viewer" section="Shared" />;
+  return <MediaViewer />;
 }

@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { NotificationsCenter } from "../../features/shared/Notifications/NotificationsCenter.tsx";
 
 export default function EducationHeadNotificationsPage() {
-  return (
-    <PlaceholderPage title="Notifications Center" section="Education Head" />
-  );
+  return <NotificationsCenter section="Education Head" />;
 }

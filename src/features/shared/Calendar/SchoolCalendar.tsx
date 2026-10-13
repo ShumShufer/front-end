@@ -4,7 +4,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock3,
+  Pencil,
   Plus,
+  Trash2,
   X,
 } from "lucide-react";
 import { Button } from "../../../components/Button/Button.tsx";
@@ -12,6 +14,7 @@ import { EmptyState } from "../../../components/EmptyState/EmptyState.tsx";
 import { Input } from "../../../components/Form/Input.tsx";
 import { PageSkeleton } from "../../../components/Skeleton/PageSkeleton.tsx";
 import { useSchedule } from "../../../context/schedule/useSchedule.ts";
+import { canManageEvent } from "../../../utils/permissions.ts";
 import type { ScheduleEvent } from "../../../types/classroom.types.ts";
 import type { Role, ScheduleScope } from "../../../types/common.types.ts";
 import styles from "./SchoolCalendar.module.css";
@@ -37,6 +40,8 @@ export function SchoolCalendar({
     isLoading,
     error,
     createEvent,
+    updateEvent,
+    deleteEvent,
     loadSchoolEvents,
     loadClassroomEvents,
   } = useSchedule();
@@ -46,6 +51,7 @@ export function SchoolCalendar({
   );
   const [selectedDate, setSelectedDate] = useState(today);
   const [isDayDialogOpen, setIsDayDialogOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<ScheduleEvent | null>(null);
 
   useEffect(() => {
     void loadSchoolEvents(schoolId);
@@ -104,6 +110,18 @@ export function SchoolCalendar({
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const payload = {
+      title: String(form.get("title") || ""),
+      startTime: new Date(String(form.get("start") || "")).toISOString(),
+      endTime: new Date(String(form.get("end") || "")).toISOString(),
+      location: String(form.get("location") || "") || null,
+    };
+    if (editingEvent) {
+      await updateEvent(editingEvent.id, role, payload);
+      setEditingEvent(null);
+      event.currentTarget.reset();
+      return;
+    }
     await createEvent({
       schoolId,
       classroomId: classroomId || null,
@@ -111,12 +129,26 @@ export function SchoolCalendar({
         ? ("CLASSROOM" as ScheduleScope)
         : ("SCHOOL" as ScheduleScope),
       createdByRole: role,
-      title: String(form.get("title") || ""),
-      startTime: new Date(String(form.get("start") || "")).toISOString(),
-      endTime: new Date(String(form.get("end") || "")).toISOString(),
-      location: String(form.get("location") || "") || null,
+      ...payload,
     });
     event.currentTarget.reset();
+  };
+  const openEdit = (event: ScheduleEvent) => {
+    setSelectedDate(new Date(event.startTime));
+    setEditingEvent(event);
+    setIsDayDialogOpen(true);
+  };
+  const remove = async (id: string) => {
+    if (!window.confirm("Delete this calendar event?")) return;
+    try {
+      await deleteEvent(id, role);
+    } catch {
+      // Context records the failure; the inline error explains the lock.
+    }
+  };
+  const closeDialog = () => {
+    setIsDayDialogOpen(false);
+    setEditingEvent(null);
   };
 
   if (isLoading) return <PageSkeleton variant="calendar" />;
@@ -197,6 +229,11 @@ export function SchoolCalendar({
               onClick={() => selectDay(day)}
             >
               <span className={styles.dayNumber}>{day}</span>
+              <span className={styles.eventDots} aria-hidden="true">
+                {dayEvents.slice(0, 3).map((event) => (
+                  <span key={event.id} className={styles.eventDot} />
+                ))}
+              </span>
               {dayEvents.slice(0, 3).map((event) => (
                 <span key={event.id} className={styles.eventChip}>
                   {event.title}
@@ -217,12 +254,18 @@ export function SchoolCalendar({
           events={selectedEvents}
           emptyTitle="No events on this day"
           emptyDescription="Choose another date or add a schedule event."
+          canManage={(event) => editable && canManageEvent(role, event.createdByRole)}
+          onEdit={openEdit}
+          onDelete={(id) => void remove(id)}
         />{" "}
         <EventList
           title={`Events in ${visibleMonth.toLocaleDateString(undefined, { month: "long" })}`}
           events={monthEvents}
           emptyTitle="No events this month"
           emptyDescription="New events will be displayed in this calendar month."
+          canManage={(event) => editable && canManageEvent(role, event.createdByRole)}
+          onEdit={openEdit}
+          onDelete={(id) => void remove(id)}
         />
       </div>
       {isDayDialogOpen && (
@@ -246,7 +289,7 @@ export function SchoolCalendar({
               </div>
               <button
                 className={styles.close}
-                onClick={() => setIsDayDialogOpen(false)}
+                onClick={closeDialog}
                 aria-label="Close day details"
               >
                 <X size={18} />
@@ -258,34 +301,77 @@ export function SchoolCalendar({
               emptyTitle="The day is clear"
               emptyDescription="There are no schedule events on this date."
               compact
+              canManage={(event) => editable && canManageEvent(role, event.createdByRole)}
+              onEdit={openEdit}
+              onDelete={(id) => void remove(id)}
             />
             {editable && (
               <form
+                key={editingEvent?.id ?? "new-event"}
                 className={styles.eventForm}
                 onSubmit={(event) => void submit(event)}
               >
-                <h3>Add an event</h3>
-                <Input name="title" label="Event title" required />
+                <h3>{editingEvent ? "Edit event" : "Add an event"}</h3>
+                {editingEvent ? (
+                  <p className={styles.editingNote}>
+                    Editing “{editingEvent.title}”
+                  </p>
+                ) : null}
+                <Input
+                  name="title"
+                  label="Event title"
+                  required
+                  defaultValue={editingEvent?.title ?? ""}
+                />
                 <Input
                   name="start"
                   label="Starts"
                   type="datetime-local"
-                  defaultValue={datetimeInput(selectedDate)}
+                  defaultValue={
+                    editingEvent
+                      ? datetimeInput(new Date(editingEvent.startTime))
+                      : datetimeInput(selectedDate)
+                  }
                   required
                 />
                 <Input
                   name="end"
                   label="Ends"
                   type="datetime-local"
-                  defaultValue={datetimeInput(
-                    new Date(selectedDate.getTime() + 60 * 60 * 1000),
-                  )}
+                  defaultValue={
+                    editingEvent
+                      ? datetimeInput(new Date(editingEvent.endTime))
+                      : datetimeInput(
+                          new Date(selectedDate.getTime() + 60 * 60 * 1000),
+                        )
+                  }
                   required
                 />
-                <Input name="location" label="Location" />
-                <Button type="submit">
-                  <Plus size={16} /> Add to calendar
-                </Button>
+                <Input
+                  name="location"
+                  label="Location"
+                  defaultValue={editingEvent?.location ?? ""}
+                />
+                <div className={styles.formActions}>
+                  <Button type="submit">
+                    {editingEvent ? (
+                      "Save changes"
+                    ) : (
+                      <>
+                        <Plus size={16} /> Add to calendar
+                      </>
+                    )}
+                  </Button>
+                  {editingEvent ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setEditingEvent(null)}
+                    >
+                      Cancel
+                    </Button>
+                  ) : null}
+                </div>
               </form>
             )}
           </section>
@@ -301,12 +387,18 @@ function EventList({
   emptyTitle,
   emptyDescription,
   compact = false,
+  canManage,
+  onEdit,
+  onDelete,
 }: {
   title: string;
   events: ScheduleEvent[];
   emptyTitle: string;
   emptyDescription: string;
   compact?: boolean;
+  canManage?: (event: ScheduleEvent) => boolean;
+  onEdit?: (event: ScheduleEvent) => void;
+  onDelete?: (id: string) => void;
 }) {
   return (
     <section
@@ -317,20 +409,43 @@ function EventList({
       <h2>{title}</h2>
       {events.length ? (
         <div>
-          {events.map((event) => (
-            <article className={styles.eventRow} key={event.id}>
-              <Clock3 size={16} />
-              <div>
-                <strong>{event.title}</strong>
-                <span>
-                  {new Date(event.startTime).toLocaleString(undefined, {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  })}
-                </span>
-              </div>
-            </article>
-          ))}
+          {events.map((event) => {
+            const manageable = canManage?.(event) ?? false;
+            return (
+              <article className={styles.eventRow} key={event.id}>
+                <Clock3 size={16} />
+                <div>
+                  <strong>{event.title}</strong>
+                  <span>
+                    {new Date(event.startTime).toLocaleString(undefined, {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })}
+                  </span>
+                </div>
+                {manageable ? (
+                  <div className={styles.eventActions}>
+                    <button
+                      type="button"
+                      className={styles.iconBtn}
+                      aria-label={`Edit ${event.title}`}
+                      onClick={() => onEdit?.(event)}
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      className={[styles.iconBtn, styles.iconBtnDanger].join(" ")}
+                      aria-label={`Delete ${event.title}`}
+                      onClick={() => onDelete?.(event.id)}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                ) : null}
+              </article>
+            );
+          })}
         </div>
       ) : (
         <EmptyState title={emptyTitle} description={emptyDescription} />

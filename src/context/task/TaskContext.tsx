@@ -5,6 +5,7 @@ export interface TaskState {
   tasks: Task[];
   activeTask: Task | null;
   submissions: Submission[];
+  studentSubmissions: Submission[];
   isLoading: boolean;
   error: string | null;
 }
@@ -16,6 +17,8 @@ export interface TaskContextType extends TaskState {
   updateTask: (id: string, data: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   loadSubmissions: (taskId: string) => Promise<void>;
+  loadStudentSubmissions: (studentId: string) => Promise<void>;
+  loadSubmissionById: (id: string) => Promise<void>;
   submitTask: (
     taskId: string,
     studentId: string,

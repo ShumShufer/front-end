@@ -21,6 +21,7 @@ export interface ApplicationFormTemplate {
     label: string;
     type: string;
     required: boolean;
+    options?: string[];
   }>; // form field definitions
 }
 

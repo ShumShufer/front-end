@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { AttendanceRegister } from "../../features/mentor/AttendanceRegister/AttendanceRegister.tsx";
 
 export default function MentorAttendancePage() {
-  return <PlaceholderPage title="Attendance Tracking" section="Mentor" />;
+  return <AttendanceRegister />;
 }

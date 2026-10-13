@@ -27,9 +27,10 @@ export interface EnrollmentContextType extends EnrollmentState {
     mode: ApplicationMode,
     formResponses: Record<string, unknown>,
   ) => Promise<void>;
-  acceptApplication: (id: string) => Promise<void>;
+  acceptApplication: (id: string, classroomId?: string | null) => Promise<void>;
   acceptApplications: (ids: string[]) => Promise<void>;
   rejectApplication: (id: string) => Promise<void>;
+  withdrawApplication: (id: string) => Promise<void>;
   loadPracticeRequests: (params?: {
     schoolId?: string;
     studentId?: string;
@@ -40,6 +41,7 @@ export interface EnrollmentContextType extends EnrollmentState {
     fee: number,
   ) => Promise<void>;
   approvePracticeRequest: (id: string) => Promise<void>;
+  rejectPracticeRequest: (id: string) => Promise<void>;
 }
 
 export const EnrollmentContext = createContext<EnrollmentContextType | null>(

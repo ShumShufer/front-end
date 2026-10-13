@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { ClassroomDetail } from "../../features/student/ClassroomDetail/ClassroomDetail.tsx";
 
 export default function ClassroomAttendancePage() {
-  return <PlaceholderPage title="Attendance History" section="Student" />;
+  return <ClassroomDetail tab="attendance" />;
 }

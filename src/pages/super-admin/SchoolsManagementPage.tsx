@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { SchoolsManagement } from "../../features/super-admin/SchoolsManagement/SchoolsManagement.tsx";
 
 export default function SchoolsManagementPage() {
-  return <PlaceholderPage title="Schools Management" section="Super Admin" />;
+  return <SchoolsManagement />;
 }

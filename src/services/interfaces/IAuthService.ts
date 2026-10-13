@@ -18,6 +18,12 @@ export interface AuthResponse {
   token: string;
 }
 
+export interface VerifyFaydaPayload {
+  faydaId?: string;
+  phone?: string;
+  verificationCode?: string;
+}
+
 export interface IAuthService {
   login(credentials: LoginCredentials): Promise<AuthResponse>;
   register(payload: RegisterPayload): Promise<AuthResponse>;
@@ -25,5 +31,6 @@ export interface IAuthService {
   getCurrentUser(): Promise<User>;
   requestPasswordReset(email: string): Promise<void>;
   resetPassword(token: string, password: string): Promise<void>;
+  verifyFayda(payload: VerifyFaydaPayload): Promise<{ user: User; message: string }>;
   updateCurrentUser(id: string, data: Partial<User>): Promise<User>;
 }

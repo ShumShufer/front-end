@@ -57,7 +57,7 @@ export function SchoolAdminWorkspace({ view }: { view: WorkspaceView }) {
     void loadBranches(schoolId);
     void loadClassrooms(schoolId);
     void loadStaffPosts(schoolId);
-    void loadStaffApplications(schoolId);
+    void loadStaffApplications({ schoolId });
     void loadUsers();
   }, [
     schoolId,

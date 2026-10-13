@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { CoursePlayer } from "../../features/student/CoursePlayer/CoursePlayer.tsx";
 
 export default function CoursePlayerPage() {
-  return (
-    <PlaceholderPage title="Course Detail / Topic Player" section="Student" />
-  );
+  return <CoursePlayer />;
 }

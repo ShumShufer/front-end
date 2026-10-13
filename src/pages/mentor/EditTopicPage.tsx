@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { TopicEditor } from "../../features/mentor/TopicEditor/TopicEditor.tsx";
 
 export default function EditTopicPage() {
-  return <PlaceholderPage title="Create/Edit Topic" section="Mentor" />;
+  return <TopicEditor />;
 }

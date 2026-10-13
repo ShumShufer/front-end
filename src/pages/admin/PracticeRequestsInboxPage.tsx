@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { PracticeRequestsInbox } from "../../features/admin/PracticeRequestsInbox/PracticeRequestsInbox.tsx";
 
 export default function PracticeRequestsInboxPage() {
-  return (
-    <PlaceholderPage title="Practice-Elsewhere Requests" section="Admin" />
-  );
+  return <PracticeRequestsInbox />;
 }
