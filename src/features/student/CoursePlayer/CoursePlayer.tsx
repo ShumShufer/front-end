@@ -5,7 +5,6 @@ import {
   BookOpen,
   CheckCircle2,
   Circle,
-  ExternalLink,
   FileBadge,
 } from "lucide-react";
 import { Button } from "../../../components/Button/Button.tsx";
@@ -16,6 +15,22 @@ import { useCourse } from "../../../context/course/useCourse.ts";
 import { ROUTES } from "../../../router/routes.config.ts";
 import { CoursePassStatus } from "../../../types/common.types.ts";
 import styles from "./CoursePlayer.module.css";
+
+/** Converts any YouTube URL to the embed format required by <iframe>. */
+function toYouTubeEmbed(url: string): string {
+  // Already an embed URL
+  if (url.includes("youtube.com/embed/")) return url;
+
+  // youtu.be/VIDEO_ID
+  const shortMatch = url.match(/youtu\.be\/([^?&]+)/);
+  if (shortMatch?.[1]) return `https://www.youtube.com/embed/${shortMatch[1]}`;
+
+  // youtube.com/watch?v=VIDEO_ID
+  const watchMatch = url.match(/[?&]v=([^&]+)/);
+  if (watchMatch?.[1]) return `https://www.youtube.com/embed/${watchMatch[1]}`;
+
+  return url;
+}
 
 export function CoursePlayer() {
   const { courseId = "" } = useParams();
@@ -131,14 +146,26 @@ export function CoursePlayer() {
               <>
                 <h2>{activeTopic.title}</h2>
                 {activeTopic.videoUrl && (
-                  <a
-                    className={styles.videoLink}
-                    href={activeTopic.videoUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <ExternalLink size={14} /> Watch lesson video
-                  </a>
+                  <div className={styles.videoWrapper}>
+                    {activeTopic.videoUrl.includes("youtube.com") ||
+                    activeTopic.videoUrl.includes("youtu.be") ? (
+                      <iframe
+                        className={styles.videoPlayer}
+                        src={toYouTubeEmbed(activeTopic.videoUrl)}
+                        title={activeTopic.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        className={styles.videoPlayer}
+                        controls
+                        src={activeTopic.videoUrl}
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
+                  </div>
                 )}
                 <p>{activeTopic.content ?? "No lesson notes yet."}</p>
                 <div className={styles.viewerActions}>
