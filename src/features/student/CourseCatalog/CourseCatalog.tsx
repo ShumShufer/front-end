@@ -15,8 +15,7 @@ export function CourseCatalog() {
   const schoolId = user?.schoolId ?? "";
 
   useEffect(() => {
-    if (!schoolId) return;
-    void course.loadCourses({ schoolId });
+    void course.loadCourses(schoolId ? { schoolId } : undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [schoolId]);
 
@@ -25,10 +24,10 @@ export function CourseCatalog() {
       <div className={styles.inner}>
         <header className={styles.header}>
           <p>Courses</p>
-          <h1>Everything your school offers</h1>
+          <h1>{schoolId ? "Everything your school offers" : "Available driving courses"}</h1>
         </header>
 
-        {!schoolId || course.isLoading ? (
+        {course.isLoading && !course.courses.length ? (
           <PageSkeleton variant="list" />
         ) : course.courses.length ? (
           <section className={styles.grid} aria-label="Course list">

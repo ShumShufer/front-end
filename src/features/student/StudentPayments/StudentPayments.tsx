@@ -74,7 +74,7 @@ export function StudentPayments() {
     setPayingId(id);
     try {
       const data = await initiatePayment(target.type, target.amount, target.relatedEntityId ?? undefined);
-      const txRef = data?.payment?.chapaTxRef || data?.payment?.id || `tx_${Date.now()}`;
+      const txRef = data?.payment?.chapaTxRef || data?.payment?.id || `tx_${target.id}`;
       if (data?.payment || data?.checkoutUrl) {
         setActiveCheckout({
           txRef,

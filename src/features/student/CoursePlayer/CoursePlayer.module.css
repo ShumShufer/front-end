@@ -117,6 +117,22 @@
   color: var(--color-text-body);
   line-height: 1.7;
 }
+.videoWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #090d16;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  margin-bottom: var(--space-4);
+}
+.videoPlayer {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
 .videoLink {
   display: inline-flex;
   align-items: center;
