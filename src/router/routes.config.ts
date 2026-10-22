@@ -96,6 +96,7 @@ export const ROUTES = {
     schedule: "/app/education-head/schedule",
     classrooms: "/app/education-head/classrooms",
     courses: "/app/education-head/courses",
+    quizBuilder: "/app/education-head/quizzes/builder",
     notifications: "/app/education-head/notifications",
   },
   admin: {

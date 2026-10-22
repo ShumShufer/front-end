@@ -19,7 +19,19 @@ class SchoolService implements ISchoolService {
   async getSchoolById(id: string): Promise<School> { return httpClient.get<School, School>(`/schools/${id}`); }
   async getBranches(schoolId: string): Promise<Branch[]> { return httpClient.get<Branch[], Branch[]>(`/schools/${schoolId}/branches`); }
   async getAllBranches(): Promise<Branch[]> { return httpClient.get<Branch[], Branch[]>("/branches"); }
-  async updateSchool(id: string, data: Partial<School>): Promise<School> { return httpClient.patch<School, School>(`/schools/${id}`, data); }
+  async updateSchool(id: string, data: Partial<School>): Promise<School> {
+    if (data.status) {
+      const statusRes = await httpClient.patch<School, School>(`/schools/${id}/status`, {
+        status: data.status,
+      });
+      const { status: _status, ...rest } = data;
+      if (Object.keys(rest).length > 0) {
+        return httpClient.patch<School, School>(`/schools/${id}`, rest);
+      }
+      return statusRes;
+    }
+    return httpClient.patch<School, School>(`/schools/${id}`, data);
+  }
   async createSchool(data: Pick<School, "name" | "description">): Promise<School> { return httpClient.post<School, School>("/schools", data); }
   async createBranch(schoolId: string, data: Partial<Branch>): Promise<Branch> { return httpClient.post<Branch, Branch>(`/schools/${schoolId}/branches`, data); }
   async updateBranch(id: string, data: Partial<Branch>): Promise<Branch> { return httpClient.patch<Branch, Branch>(`/branches/${id}`, data); }

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Building2, CheckCircle2, PauseCircle, Plus, Search } from "lucide-react";
+import { Building2, CheckCircle2, Edit2, PauseCircle, Plus, Search, X } from "lucide-react";
 import { Button } from "../../../components/Button/Button.tsx";
 import { EmptyState } from "../../../components/EmptyState/EmptyState.tsx";
 import { PageSkeleton } from "../../../components/Skeleton/PageSkeleton.tsx";
@@ -11,7 +11,7 @@ import styles from "./SchoolsManagement.module.css";
 
 const STATUS_ACTIVE = "ACTIVE";
 const STATUS_SUSPENDED = "SUSPENDED";
-const STATUS_PENDING = "PENDING";
+const STATUS_PENDING = "PENDING_APPROVAL";
 
 interface SchoolDraft {
   name: string;
@@ -41,6 +41,12 @@ export function SchoolsManagement() {
   const [createError, setCreateError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+
+  // Edit school state
+  const [editingSchoolId, setEditingSchoolId] = useState<string | null>(null);
+  const [editSchoolName, setEditSchoolName] = useState("");
+  const [editSchoolDesc, setEditSchoolDesc] = useState("");
+  const [isSavingSchool, setIsSavingSchool] = useState(false);
 
   useEffect(() => {
     void school.loadSchools(
@@ -78,14 +84,14 @@ export function SchoolsManagement() {
       // A school cannot exist without an admin, so the two records are
       // created together; if the admin step fails we say so explicitly.
       const createdSchool = await schoolService.createSchool({
-        name: draft.name,
-        description: draft.description || null,
+        name: draft.name.trim(),
+        description: draft.description.trim() ? draft.description.trim() : null,
       });
       try {
         await userService.createUser({
           email,
-          firstName: draft.adminFirstName,
-          lastName: draft.adminLastName,
+          firstName: draft.adminFirstName.trim(),
+          lastName: draft.adminLastName.trim(),
           role: Role.ADMIN,
           schoolId: createdSchool.id,
         });
@@ -104,8 +110,12 @@ export function SchoolsManagement() {
       );
       setDraft(EMPTY_DRAFT);
       setShowCreateForm(false);
-    } catch {
-      setCreateError("The school could not be created. Please try again.");
+    } catch (err: unknown) {
+      const apiMsg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        (err as { message?: string })?.message ||
+        "The school could not be created. Please try again.";
+      setCreateError(apiMsg);
     } finally {
       setIsCreating(false);
     }
@@ -129,6 +139,45 @@ export function SchoolsManagement() {
       setActionError(`Could not ${verb}. Please try again.`);
     } finally {
       setBusyId(null);
+    }
+  }
+
+  function startEditSchool(s: { id: string; name: string; description?: string | null }) {
+    setEditingSchoolId(s.id);
+    setEditSchoolName(s.name);
+    setEditSchoolDesc(s.description || "");
+    setActionError(null);
+    setSuccessMessage(null);
+  }
+
+  function cancelEditSchool() {
+    setEditingSchoolId(null);
+    setEditSchoolName("");
+    setEditSchoolDesc("");
+  }
+
+  async function handleSaveSchool(schoolId: string) {
+    if (editSchoolName.trim().length < 2) {
+      setActionError("School name must be at least 2 characters.");
+      return;
+    }
+    setIsSavingSchool(true);
+    setActionError(null);
+    try {
+      await schoolService.updateSchool(schoolId, {
+        name: editSchoolName.trim(),
+        description: editSchoolDesc.trim() || null,
+      });
+      setSuccessMessage("School updated successfully.");
+      setEditingSchoolId(null);
+      await school.loadSchools(statusFilter ? { status: statusFilter } : undefined);
+    } catch (err: unknown) {
+      const apiMsg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Failed to update school. Please try again.";
+      setActionError(apiMsg);
+    } finally {
+      setIsSavingSchool(false);
     }
   }
 
@@ -254,49 +303,89 @@ export function SchoolsManagement() {
           <ul className={styles.list}>
             {schools.map((s) => (
               <li key={s.id} className={styles.item}>
-                <div className={styles.itemMain}>
-                  <strong>{s.name}</strong>
-                  {s.description && <p>{s.description}</p>}
-                </div>
-                <span className={`${styles.badge} ${styles.toneNeutral}`}>
-                  ★ {s.rating.toFixed(1)}
-                </span>
-                <span
-                  className={`${styles.badge} ${
-                    s.status === STATUS_ACTIVE
-                      ? styles.toneSuccess
-                      : s.status === STATUS_PENDING
-                        ? styles.toneWarning
-                        : styles.toneDanger
-                  }`}
-                >
-                  {s.status}
-                </span>
-                <div className={styles.itemActions}>
-                  {s.status !== STATUS_ACTIVE && (
-                    <Button
-                      size="sm"
-                      disabled={busyId === s.id}
-                      onClick={() =>
-                        void handleStatus(s.id, s.name, STATUS_ACTIVE)
-                      }
+                {editingSchoolId === s.id ? (
+                  <div style={{ display: "grid", gap: "0.75rem", width: "100%", padding: "0.5rem 0" }}>
+                    <label style={{ display: "grid", gap: "0.25rem", fontSize: "0.85rem", fontWeight: 600 }}>
+                      School Name *
+                      <input
+                        style={{ padding: "0.5rem", borderRadius: "6px", border: "1px solid #d1d5db", fontSize: "0.95rem" }}
+                        value={editSchoolName}
+                        onChange={(e) => setEditSchoolName(e.target.value)}
+                        placeholder="School name"
+                      />
+                    </label>
+                    <label style={{ display: "grid", gap: "0.25rem", fontSize: "0.85rem", fontWeight: 600 }}>
+                      Description
+                      <input
+                        style={{ padding: "0.5rem", borderRadius: "6px", border: "1px solid #d1d5db", fontSize: "0.9rem" }}
+                        value={editSchoolDesc}
+                        onChange={(e) => setEditSchoolDesc(e.target.value)}
+                        placeholder="School description"
+                      />
+                    </label>
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                      <Button size="sm" disabled={isSavingSchool} onClick={() => void handleSaveSchool(s.id)}>
+                        {isSavingSchool ? "Saving…" : "Save changes"}
+                      </Button>
+                      <Button size="sm" variant="secondary" onClick={cancelEditSchool}>
+                        <X size={14} /> Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className={styles.itemMain}>
+                      <strong>{s.name}</strong>
+                      {s.description && <p>{s.description}</p>}
+                    </div>
+                    <span className={`${styles.badge} ${styles.toneNeutral}`}>
+                      ★ {s.rating.toFixed(1)}
+                    </span>
+                    <span
+                      className={`${styles.badge} ${
+                        s.status === STATUS_ACTIVE
+                          ? styles.toneSuccess
+                          : s.status === STATUS_PENDING || s.status === "PENDING"
+                            ? styles.toneWarning
+                            : styles.toneDanger
+                      }`}
                     >
-                      <CheckCircle2 size={14} /> Activate
-                    </Button>
-                  )}
-                  {s.status !== STATUS_SUSPENDED && (
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      disabled={busyId === s.id}
-                      onClick={() =>
-                        void handleStatus(s.id, s.name, STATUS_SUSPENDED)
-                      }
-                    >
-                      <PauseCircle size={14} /> Suspend
-                    </Button>
-                  )}
-                </div>
+                      {s.status}
+                    </span>
+                    <div className={styles.itemActions}>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => startEditSchool(s)}
+                      >
+                        <Edit2 size={14} /> Edit
+                      </Button>
+                      {s.status !== STATUS_ACTIVE && (
+                        <Button
+                          size="sm"
+                          disabled={busyId === s.id}
+                          onClick={() =>
+                            void handleStatus(s.id, s.name, STATUS_ACTIVE)
+                          }
+                        >
+                          <CheckCircle2 size={14} /> Activate
+                        </Button>
+                      )}
+                      {s.status !== STATUS_SUSPENDED && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={busyId === s.id}
+                          onClick={() =>
+                            void handleStatus(s.id, s.name, STATUS_SUSPENDED)
+                          }
+                        >
+                          <PauseCircle size={14} /> Suspend
+                        </Button>
+                      )}
+                    </div>
+                  </>
+                )}
               </li>
             ))}
           </ul>

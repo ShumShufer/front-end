@@ -53,4 +53,6 @@ export interface IClassroomService {
   broadcastPlatformAnnouncement(
     data: { title: string; body: string; authorId: string },
   ): Promise<void>;
+  updateAnnouncement(id: string, data: { title?: string; body?: string }): Promise<void>;
+  deleteAnnouncement(id: string): Promise<void>;
 }

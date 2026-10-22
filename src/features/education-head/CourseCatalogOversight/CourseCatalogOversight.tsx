@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, Layers } from "lucide-react";
+import { BookOpen, Layers, ListChecks } from "lucide-react";
 import { Button } from "../../../components/Button/Button.tsx";
 import { EmptyState } from "../../../components/EmptyState/EmptyState.tsx";
 import { PageSkeleton } from "../../../components/Skeleton/PageSkeleton.tsx";
@@ -61,11 +61,20 @@ export function CourseCatalogOversight() {
     <main className={styles.page}>
       <div className={styles.inner}>
         <header className={styles.header}>
-          <p>
-            <Layers size={14} /> Catalog oversight
-          </p>
-          <h1>Course catalog</h1>
-          <span>Review the school's programs and shape their curricula.</span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", flexWrap: "wrap", gap: "1rem" }}>
+            <div>
+              <p>
+                <Layers size={14} /> Catalog oversight
+              </p>
+              <h1>Course catalog</h1>
+              <span>Review the school's programs and shape their curricula.</span>
+            </div>
+            <Link to={ROUTES.educationHead.quizBuilder}>
+              <Button size="sm">
+                <ListChecks size={16} /> Create Quiz
+              </Button>
+            </Link>
+          </div>
         </header>
 
         {(actionError || course.error) && (

@@ -21,5 +21,7 @@ class ClassroomService implements IClassroomService {
   async broadcastSchoolAnnouncement(schoolId: string, data: { title: string; body: string; authorId: string }): Promise<void> { await httpClient.post<void, void>(`/schools/${schoolId}/announcements`, data); }
   async getPlatformAnnouncements(): Promise<Announcement[]> { return httpClient.get<Announcement[], Announcement[]>("/announcements/platform"); }
   async broadcastPlatformAnnouncement(data: { title: string; body: string; authorId: string }): Promise<void> { await httpClient.post<void, void>("/announcements/platform", data); }
+  async updateAnnouncement(id: string, data: { title?: string; body?: string }): Promise<void> { await httpClient.patch<void, void>(`/announcements/${id}`, data); }
+  async deleteAnnouncement(id: string): Promise<void> { await httpClient.delete<void, void>(`/announcements/${id}`); }
 }
 export const classroomService = new ClassroomService();

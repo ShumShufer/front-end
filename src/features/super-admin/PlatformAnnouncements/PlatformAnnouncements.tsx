@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Megaphone, Send } from "lucide-react";
+import { Edit2, Megaphone, Send, Trash2, X } from "lucide-react";
 import { Button } from "../../../components/Button/Button.tsx";
 import { EmptyState } from "../../../components/EmptyState/EmptyState.tsx";
 import { PageSkeleton } from "../../../components/Skeleton/PageSkeleton.tsx";
 import { useAuth } from "../../../context/auth/useAuth.ts";
 import { useClassroom } from "../../../context/classroom/useClassroom.ts";
+import { classroomService } from "../../../services/index.ts";
 import { formatDateTime } from "../../../utils/formatters.ts";
 import styles from "./PlatformAnnouncements.module.css";
 
@@ -19,6 +20,12 @@ export function PlatformAnnouncements() {
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  // Edit modal / inline state
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editBody, setEditBody] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     void classroom.loadPlatformAnnouncements();
@@ -55,6 +62,60 @@ export function PlatformAnnouncements() {
       setFormError("The announcement could not be published. Please try again.");
     } finally {
       setIsSaving(false);
+    }
+  }
+
+  function startEdit(announcement: { id: string; title: string; body: string }) {
+    setEditingId(announcement.id);
+    setEditTitle(announcement.title);
+    setEditBody(announcement.body);
+    setFormError(null);
+    setSuccessMessage(null);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditTitle("");
+    setEditBody("");
+  }
+
+  async function handleSaveEdit(id: string) {
+    if (editTitle.trim().length < MIN_TITLE_LENGTH) {
+      setFormError("Announcement title must be at least 4 characters.");
+      return;
+    }
+    if (editBody.trim().length < MIN_BODY_LENGTH) {
+      setFormError("Announcement message must be at least 10 characters.");
+      return;
+    }
+    setIsUpdating(true);
+    setFormError(null);
+    try {
+      await classroomService.updateAnnouncement(id, {
+        title: editTitle.trim(),
+        body: editBody.trim(),
+      });
+      setSuccessMessage("Announcement updated successfully.");
+      setEditingId(null);
+      await classroom.loadPlatformAnnouncements();
+    } catch {
+      setFormError("Failed to update announcement. Please try again.");
+    } finally {
+      setIsUpdating(false);
+    }
+  }
+
+  async function handleDelete(id: string, announceTitle: string) {
+    if (!window.confirm(`Are you sure you want to delete "${announceTitle}"?`)) {
+      return;
+    }
+    setFormError(null);
+    try {
+      await classroomService.deleteAnnouncement(id);
+      setSuccessMessage("Announcement deleted successfully.");
+      await classroom.loadPlatformAnnouncements();
+    } catch {
+      setFormError("Failed to delete announcement. Please try again.");
     }
   }
 
@@ -112,9 +173,57 @@ export function PlatformAnnouncements() {
           <ul className={styles.list}>
             {classroom.announcements.map((announcement) => (
               <li key={announcement.id} className={styles.item}>
-                <strong>{announcement.title}</strong>
-                <p>{announcement.body}</p>
-                <small>{formatDateTime(announcement.createdAt)}</small>
+                {editingId === announcement.id ? (
+                  <div style={{ display: "grid", gap: "0.75rem", width: "100%", padding: "0.5rem 0" }}>
+                    <input
+                      style={{ padding: "0.5rem", borderRadius: "6px", border: "1px solid #d1d5db", fontSize: "0.95rem", fontWeight: 600 }}
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      placeholder="Announcement title"
+                    />
+                    <textarea
+                      rows={4}
+                      style={{ padding: "0.5rem", borderRadius: "6px", border: "1px solid #d1d5db", fontSize: "0.9rem", resize: "vertical" }}
+                      value={editBody}
+                      onChange={(e) => setEditBody(e.target.value)}
+                      placeholder="Announcement message"
+                    />
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                      <Button size="sm" disabled={isUpdating} onClick={() => void handleSaveEdit(announcement.id)}>
+                        {isUpdating ? "Saving…" : "Save changes"}
+                      </Button>
+                      <Button size="sm" variant="secondary" onClick={cancelEdit}>
+                        <X size={14} /> Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
+                      <strong>{announcement.title}</strong>
+                      <div style={{ display: "flex", gap: "0.5rem" }}>
+                        <button
+                          type="button"
+                          onClick={() => startEdit(announcement)}
+                          title="Edit announcement"
+                          style={{ background: "none", border: "none", cursor: "pointer", color: "#4f46e5", padding: "4px" }}
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => void handleDelete(announcement.id, announcement.title)}
+                          title="Delete announcement"
+                          style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", padding: "4px" }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                    <p>{announcement.body}</p>
+                    <small>{formatDateTime(announcement.createdAt)}</small>
+                  </>
+                )}
               </li>
             ))}
           </ul>
