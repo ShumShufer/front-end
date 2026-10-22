@@ -9,9 +9,16 @@ class QuizService implements IQuizService {
   async deleteQuiz(id: string): Promise<void> { await httpClient.delete<void, void>(`/quizzes/${id}`); }
 
   gradeAttempt(quiz: Quiz, answers: string[]): QuizAttemptResult {
-    const totalPoints = quiz.questions.reduce((total, question) => total + question.points, 0);
-    const earnedPoints = quiz.questions.reduce((total, question, index) => total + (question.correctAnswer === answers[index] ? question.points : 0), 0);
-    const score = totalPoints ? (earnedPoints / totalPoints) * 100 : 0;
+    const totalPoints = quiz.questions.reduce((total, question) => total + (question.points || 10), 0);
+    const earnedPoints = quiz.questions.reduce((total, question, index) => {
+      const expected =
+        question.correctOptionIndex !== undefined && question.options[question.correctOptionIndex] !== undefined
+          ? question.options[question.correctOptionIndex]
+          : question.correctAnswer;
+      const isCorrect = expected !== undefined && expected === answers[index];
+      return total + (isCorrect ? (question.points || 10) : 0);
+    }, 0);
+    const score = totalPoints ? Math.round((earnedPoints / totalPoints) * 100) : 0;
     return { score, passed: score >= quiz.passScore, totalPoints, earnedPoints };
   }
 }

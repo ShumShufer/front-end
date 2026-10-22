@@ -430,6 +430,7 @@ export function AppRouter() {
           <Route path="schedule" element={<GlobalSchedulePage />} />
           <Route path="classrooms" element={<ClassroomsOverviewPage />} />
           <Route path="courses" element={<CourseCatalogOversightPage />} />
+          <Route path="quizzes/builder" element={<QuizBuilderPage />} />
           <Route
             path="notifications"
             element={<EducationHeadNotificationsPage />}

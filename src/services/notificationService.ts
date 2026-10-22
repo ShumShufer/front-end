@@ -8,8 +8,25 @@ type NotificationResponse = { notifications: NotificationItem[]; meta: Paginated
 
 class NotificationService implements INotificationService {
   async getNotifications(params?: { unreadOnly?: boolean }): Promise<PaginatedData<Notification & NotificationRecipient>> {
-    const response = await httpClient.get<NotificationResponse, NotificationResponse>("/notifications", { params: { unreadOnly: params?.unreadOnly?.toString() } });
-    return { data: (response.notifications ?? []).map(({ recipientId, read, notification }) => ({ ...notification, id: recipientId, notificationId: notification.id, userId: "", read })), meta: response.meta };
+    const response = await httpClient.get<
+      NotificationItem[] | NotificationResponse,
+      NotificationItem[] | NotificationResponse
+    >("/notifications", { params: { unreadOnly: params?.unreadOnly?.toString() } });
+    const list: NotificationItem[] = Array.isArray(response)
+      ? response
+      : (response.notifications ?? []);
+    return {
+      data: list.map(({ recipientId, read, notification }) => ({
+        ...notification,
+        id: recipientId,
+        notificationId: notification.id,
+        userId: "",
+        read,
+      })),
+      meta: Array.isArray(response)
+        ? { page: 1, pageSize: list.length, total: list.length }
+        : response.meta ?? { page: 1, pageSize: list.length, total: list.length },
+    };
   }
   async markAsRead(id: string): Promise<void> { await httpClient.patch<void, void>(`/notifications/${id}/read`); }
   async markAllAsRead(): Promise<void> { await httpClient.patch<void, void>("/notifications/read-all"); }
