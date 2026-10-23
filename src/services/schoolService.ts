@@ -57,12 +57,20 @@ class SchoolService implements ISchoolService {
   async deleteStaffPost(id: string): Promise<void> { await httpClient.delete<void, void>(`/staff-posts/${id}`); }
   async getStaffApplications(params?: { schoolId?: string; applicantId?: string }): Promise<StaffApplication[]> {
     if (params?.schoolId) {
-      return httpClient.get<StaffApplication[], StaffApplication[]>(`/schools/${params.schoolId}/staff-applications`, { params });
+      const res = await httpClient.get<
+        StaffApplication[] | { applications: StaffApplication[] },
+        StaffApplication[] | { applications: StaffApplication[] }
+      >(`/schools/${params.schoolId}/staff-applications`, { params });
+      return Array.isArray(res) ? res : (res as { applications?: StaffApplication[] })?.applications ?? [];
     }
     // applicantId-only query (used by mentors to check their own applications)
-    return httpClient.get<StaffApplication[], StaffApplication[]>(`/staff-applications`, { params });
+    const res = await httpClient.get<
+      StaffApplication[] | { applications: StaffApplication[] },
+      StaffApplication[] | { applications: StaffApplication[] }
+    >(`/staff-applications`, { params });
+    return Array.isArray(res) ? res : (res as { applications?: StaffApplication[] })?.applications ?? [];
   }
-  async applyToStaffPost(postId: string, applicantId: string): Promise<StaffApplication> { void applicantId; return httpClient.post<StaffApplication, StaffApplication>(`/staff-posts/${postId}/apply`); }
+  async applyToStaffPost(postId: string, applicantId: string): Promise<StaffApplication> { void applicantId; return httpClient.post<StaffApplication, StaffApplication>(`/staff-posts/${postId}/apply`, {}); }
   async updateStaffApplicationStatus(id: string, status: ApplicationStatus): Promise<StaffApplication> { return httpClient.patch<StaffApplication, StaffApplication>(`/staff-applications/${id}/${status === "ACCEPTED" ? "accept" : "reject"}`); }
   async assignEducationHead(schoolId: string, userId: string): Promise<void> { await httpClient.patch<void, void>(`/users/${userId}/assign-role`, { role: "EDUCATION_HEAD", schoolId }); }
   async removeEducationHead(_schoolId: string, userId: string): Promise<void> { await httpClient.patch<void, void>(`/users/${userId}/assign-role`, { role: "MENTOR" }); }

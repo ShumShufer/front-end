@@ -43,6 +43,18 @@ export interface StaffApplication {
   status: ApplicationStatus;
   resumeUrl?: string | null;
   submittedAt: string;
+  applicant?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string | null;
+  } | null;
+  post?: {
+    id: string;
+    role: Role;
+    description: string;
+  } | null;
 }
 
 export interface Review {
