@@ -443,16 +443,22 @@ export function SchoolAdminWorkspace({ view }: { view: WorkspaceView }) {
                   school.staffApplications.map((application) => (
                     <article key={application.id} className={styles.row}>
                       <div>
-                        <strong>{userName(application.applicantId)}</strong>
+                        <strong>
+                          {application.applicant
+                            ? `${application.applicant.firstName} ${application.applicant.lastName}`
+                            : userName(application.applicantId)}
+                        </strong>
                         <span>
                           Applied for{" "}
                           {
                             roleNames[
+                              application.post?.role ||
                               school.staffPosts.find(
                                 (post) => post.id === application.postId,
                               )?.role || Role.MENTOR
                             ]
                           }
+                          {application.applicant?.email && ` · ${application.applicant.email}`}
                         </span>
                       </div>
                       <div className={styles.inlineAction}>
