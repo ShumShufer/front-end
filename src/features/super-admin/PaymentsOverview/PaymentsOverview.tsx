@@ -21,7 +21,8 @@ export function PaymentsOverview() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const payments = payment.payments?.data ?? [];
+  const rawPayments = payment.payments?.data;
+  const payments = useMemo(() => rawPayments ?? [], [rawPayments]);
   const successful = useMemo(
     () => payments.filter((p) => p.status === SUCCESS_STATUS),
     [payments],

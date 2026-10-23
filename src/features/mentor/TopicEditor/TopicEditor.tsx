@@ -86,9 +86,11 @@ function TopicForm({ initial }: TopicFormProps) {
       return;
     }
     if (videoUrl.trim()) {
-      const parsed = parseUrlOrNull(videoUrl.trim());
-      if (!parsed || !parsed.protocol.startsWith("http")) {
-        setFormError("The video link must start with http(s).");
+      const v = videoUrl.trim();
+      const isRelative = v.startsWith("/uploads/") || v.startsWith("./") || v.startsWith("/");
+      const parsed = parseUrlOrNull(v);
+      if (!isRelative && (!parsed || !parsed.protocol.startsWith("http"))) {
+        setFormError("The video link must start with http(s) or /uploads/.");
         return;
       }
     }

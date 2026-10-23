@@ -37,15 +37,16 @@ export function StudentWorkspace({
   const { loadStudentProgress } = course;
   const { loadSchools } = school;
   const { loadPayments } = payment;
+  const userId = user?.id;
   useEffect(() => {
-    if (!user) return;
-    void loadEnrollments({ studentId: user.id });
-    void loadStudentClassrooms(user.id);
-    void loadStudentProgress(user.id);
+    if (!userId) return;
+    void loadEnrollments({ studentId: userId });
+    void loadStudentClassrooms(userId);
+    void loadStudentProgress(userId);
     void loadSchools({ status: "ACTIVE" });
-    void loadPayments({ userId: user.id });
+    void loadPayments({ userId });
   }, [
-    user?.id,
+    userId,
     loadEnrollments,
     loadStudentClassrooms,
     loadStudentProgress,

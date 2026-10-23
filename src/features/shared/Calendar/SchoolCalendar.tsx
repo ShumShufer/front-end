@@ -166,6 +166,17 @@ export function SchoolCalendar({
           </h1>
         </div>
         <div className={styles.controls}>
+          {editable && (
+            <Button
+              size="sm"
+              onClick={() => {
+                setEditingEvent(null);
+                setIsDayDialogOpen(true);
+              }}
+            >
+              <Plus size={16} /> Add event
+            </Button>
+          )}
           <Button
             variant="secondary"
             size="sm"

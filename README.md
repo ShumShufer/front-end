@@ -31,7 +31,13 @@ The frontend is designed with decoupled data and UI layers:
    ```bash
    cp .env.example .env
    ```
-4. **Run the Application**:
+4. **Build and Quality Checks**:
+   ```bash
+   npm run lint  # Zero errors & warnings
+   npm run build # Production client build
+   ```
+
+5. **Run the Application**:
    Start the Vite development server:
    ```bash
    npm run dev
@@ -40,6 +46,6 @@ The frontend is designed with decoupled data and UI layers:
 ## The Team
 
 - **Zeamanuel Mebit** (ID: CTC-3498-26) - Lead, Code Reviewer
-- **Yonas** (ID: [id]) - Backend dev
-- **Yeabsra** (ID: [id]) - Frontend dev
-- **Yohannes** (ID: [id]) - UI/UX designer, frontend dev
+- **Yonas** (ID: CTC-3303-26) - Backend dev
+- **Yeabsra** (ID: CTC-2878-26) - Frontend dev
+- **Yohannes** (ID: CTC-7823-26) - UI/UX designer, frontend dev

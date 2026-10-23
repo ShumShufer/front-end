@@ -16,20 +16,78 @@ import { ROUTES } from "../../../router/routes.config.ts";
 import { CoursePassStatus } from "../../../types/common.types.ts";
 import styles from "./CoursePlayer.module.css";
 
-/** Converts any YouTube URL to the embed format required by <iframe>. */
-function toYouTubeEmbed(url: string): string {
-  // Already an embed URL
-  if (url.includes("youtube.com/embed/")) return url;
+interface VideoSource {
+  kind: "iframe" | "video";
+  url: string;
+}
 
+/** Resolves any video URL (YouTube, Vimeo, Google Drive, uploaded storage, direct mp4/webm) to an embeddable or playable source. */
+function resolveVideoSource(rawUrl: string): VideoSource {
+  const trimmed = rawUrl.trim();
+
+  // If it's a relative backend upload (e.g. /uploads/video.mp4)
+  if (trimmed.startsWith("/uploads/")) {
+    const apiBase = import.meta.env.VITE_API_BASE_URL;
+    if (apiBase && apiBase.startsWith("http")) {
+      try {
+        const origin = new URL(apiBase).origin;
+        return { kind: "video", url: `${origin}${trimmed}` };
+      } catch {
+        // fallback
+      }
+    }
+    return { kind: "video", url: trimmed };
+  }
+
+  // YouTube embed
+  if (trimmed.includes("youtube.com/embed/")) {
+    return { kind: "iframe", url: trimmed };
+  }
   // youtu.be/VIDEO_ID
-  const shortMatch = url.match(/youtu\.be\/([^?&]+)/);
-  if (shortMatch?.[1]) return `https://www.youtube.com/embed/${shortMatch[1]}`;
+  const youtuBeMatch = trimmed.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+  if (youtuBeMatch?.[1]) {
+    return { kind: "iframe", url: `https://www.youtube.com/embed/${youtuBeMatch[1]}` };
+  }
+  // youtube.com/shorts/VIDEO_ID
+  const shortsMatch = trimmed.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
+  if (shortsMatch?.[1]) {
+    return { kind: "iframe", url: `https://www.youtube.com/embed/${shortsMatch[1]}` };
+  }
+  // youtube.com/watch?v=VIDEO_ID or m.youtube.com
+  const watchMatch = trimmed.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+  if (watchMatch?.[1]) {
+    return { kind: "iframe", url: `https://www.youtube.com/embed/${watchMatch[1]}` };
+  }
 
-  // youtube.com/watch?v=VIDEO_ID
-  const watchMatch = url.match(/[?&]v=([^&]+)/);
-  if (watchMatch?.[1]) return `https://www.youtube.com/embed/${watchMatch[1]}`;
+  // Vimeo
+  const vimeoMatch = trimmed.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch?.[1]) {
+    return { kind: "iframe", url: `https://player.vimeo.com/video/${vimeoMatch[1]}` };
+  }
 
-  return url;
+  // Google Drive preview
+  const gDriveMatch = trimmed.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (gDriveMatch?.[1]) {
+    return { kind: "iframe", url: `https://drive.google.com/file/d/${gDriveMatch[1]}/preview` };
+  }
+
+  // Direct video file extensions
+  const cleanPath = trimmed.split("?")[0].toLowerCase();
+  if (
+    cleanPath.endsWith(".mp4") ||
+    cleanPath.endsWith(".webm") ||
+    cleanPath.endsWith(".mov") ||
+    cleanPath.endsWith(".ogg")
+  ) {
+    return { kind: "video", url: trimmed };
+  }
+
+  // Generic links with embed / player
+  if (trimmed.includes("embed") || trimmed.includes("player")) {
+    return { kind: "iframe", url: trimmed };
+  }
+
+  return { kind: "video", url: trimmed };
 }
 
 export function CoursePlayer() {
@@ -102,11 +160,11 @@ export function CoursePlayer() {
             <FileBadge size={18} />
             {passed
               ? `You passed this course with a final exam score of ${result?.finalExamScore}%.`
-              : `Final exam scored ${result?.finalExamScore}% — a retake is required.`}
+              : `Final exam completed with score ${result?.finalExamScore}%. Examination is a one-time assessment.`}
           </div>
         )}
 
-        {allDone && !passed && (
+        {allDone && !passed && result?.finalExamScore == null && (
           <div className={`${styles.banner} ${styles.bannerSuccess}`}>
             All topics completed. You are ready for the final exam.
             <Button size="sm" to={ROUTES.student.courseExam(courseId)}>
@@ -145,28 +203,32 @@ export function CoursePlayer() {
             {activeTopic ? (
               <>
                 <h2>{activeTopic.title}</h2>
-                {activeTopic.videoUrl && (
-                  <div className={styles.videoWrapper}>
-                    {activeTopic.videoUrl.includes("youtube.com") ||
-                    activeTopic.videoUrl.includes("youtu.be") ? (
-                      <iframe
-                        className={styles.videoPlayer}
-                        src={toYouTubeEmbed(activeTopic.videoUrl)}
-                        title={activeTopic.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <video
-                        className={styles.videoPlayer}
-                        controls
-                        src={activeTopic.videoUrl}
-                      >
-                        Your browser does not support the video tag.
-                      </video>
-                    )}
-                  </div>
-                )}
+                {activeTopic.videoUrl && (() => {
+                  const videoSource = resolveVideoSource(activeTopic.videoUrl);
+                  return (
+                    <div className={styles.videoWrapper}>
+                      {videoSource.kind === "iframe" ? (
+                        <iframe
+                          className={styles.videoPlayer}
+                          src={videoSource.url}
+                          title={activeTopic.title}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <video
+                          key={videoSource.url}
+                          className={styles.videoPlayer}
+                          controls
+                          playsInline
+                          src={videoSource.url}
+                        >
+                          Your browser does not support the video tag.
+                        </video>
+                      )}
+                    </div>
+                  );
+                })()}
                 <p>{activeTopic.content ?? "No lesson notes yet."}</p>
                 <div className={styles.viewerActions}>
                   <Button

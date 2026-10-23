@@ -15,7 +15,11 @@ export default defineConfig({
       // Forward API calls to the Express backend during development
       // (backend default port from back-end/.env)
       "/api": {
-        target: process.env.VITE_API_TARGET || "http://localhost:3000",
+        target: process.env.VITE_API_TARGET || "http://localhost:3005",
+        changeOrigin: true,
+      },
+      "/uploads": {
+        target: process.env.VITE_API_TARGET || "http://localhost:3005",
         changeOrigin: true,
       },
     },

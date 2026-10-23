@@ -130,7 +130,30 @@ export function CourseExam() {
           <span>Pass mark: {passScore}%</span>
         </header>
 
-        {phase === "graded" && outcome ? (
+        {/* If student already has a recorded exam score, show one-time exam completed screen */}
+        {result?.finalExamScore != null && phase !== "graded" ? (
+          <section
+            className={`${styles.result} ${
+              (result.finalExamScore ?? 0) >= passScore ? styles.resultPass : styles.resultFail
+            }`}
+          >
+            {(result.finalExamScore ?? 0) >= passScore ? (
+              <CheckCircle2 size={32} />
+            ) : (
+              <XCircle size={32} />
+            )}
+            <h2>
+              {(result.finalExamScore ?? 0) >= passScore
+                ? "Examination completed — Passed"
+                : "Examination completed"}
+            </h2>
+            <p>Your recorded final score is {result.finalExamScore}% (Pass mark: {passScore}%).</p>
+            <p style={{ fontSize: "0.9rem", color: "var(--color-muted)", margin: "0.5rem 0 1.25rem" }}>
+              This final examination is strictly a one-time assessment. You cannot retake or edit your answers.
+            </p>
+            <Button to={ROUTES.student.results}>View my results</Button>
+          </section>
+        ) : phase === "graded" && outcome ? (
           <section
             className={`${styles.result} ${
               outcome.passed ? styles.resultPass : styles.resultFail
@@ -141,23 +164,12 @@ export function CourseExam() {
             ) : (
               <XCircle size={32} />
             )}
-            <h2>{outcome.passed ? "Congratulations — you passed!" : "Not passed this time"}</h2>
-            <p>Your final score is {outcome.score}%.</p>
-            {!outcome.passed && (
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setAnswers(Array(questions.length).fill(""));
-                  setOutcome(null);
-                  setPhase("ready");
-                }}
-              >
-                Retake exam
-              </Button>
-            )}
-            {outcome.passed && (
-              <Button to={ROUTES.student.results}>View my results</Button>
-            )}
+            <h2>{outcome.passed ? "Congratulations — you passed!" : "Examination completed"}</h2>
+            <p>Your final score is {outcome.score}% (Pass mark: {passScore}%).</p>
+            <p style={{ fontSize: "0.9rem", color: "var(--color-muted)", margin: "0.5rem 0 1.25rem" }}>
+              Your examination has been submitted and recorded. Final exams are strictly one-time assessments and cannot be retaken or edited.
+            </p>
+            <Button to={ROUTES.student.results}>View my results</Button>
           </section>
         ) : questions.length === 0 ? (
           <EmptyState

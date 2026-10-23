@@ -1,6 +1,8 @@
 import { type FormEvent, useEffect, useMemo } from "react";
 import {
+  Calendar,
   GraduationCap,
+  Handshake,
   MapPin,
   Plus,
   Trash2,
@@ -152,6 +154,12 @@ export function SchoolAdminWorkspace({ view }: { view: WorkspaceView }) {
                   <section className={styles.card}>
                     <h2>Run the next school action</h2>
                     <div className={styles.actionList}>
+                      <Link to={ROUTES.admin.agreements}>
+                        <Handshake size={18} /> Partnerships & agreements
+                      </Link>
+                      <Link to={ROUTES.admin.schedule}>
+                        <Calendar size={18} /> Master school calendar
+                      </Link>
                       <Link to={ROUTES.admin.classrooms}>
                         <GraduationCap size={18} /> Create a classroom and
                         assign a mentor
