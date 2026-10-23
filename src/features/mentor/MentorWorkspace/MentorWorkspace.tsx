@@ -34,11 +34,14 @@ export function MentorWorkspace({
   const { loadStaffPosts, loadStaffApplications, loadSchools, applyToStaffPost } =
     school;
 
+  const userId = user?.id;
+  const userSchoolId = user?.schoolId;
+
   useEffect(() => {
-    if (!user) return;
-    void loadMentorClassrooms(user.id);
-    if (user.schoolId) void loadCourses({ schoolId: user.schoolId });
-  }, [user?.id, user?.schoolId, loadMentorClassrooms, loadCourses]);
+    if (!userId) return;
+    void loadMentorClassrooms(userId);
+    if (userSchoolId) void loadCourses({ schoolId: userSchoolId });
+  }, [userId, userSchoolId, loadMentorClassrooms, loadCourses]);
 
   // Job board: every school's open role plus this mentor's own applications
   // so cards can show "applied" state without refetching.
@@ -46,10 +49,10 @@ export function MentorWorkspace({
     if (view !== "openings") return;
     void loadStaffPosts();
     void loadSchools({ status: "ACTIVE" });
-    if (user) void loadStaffApplications({ applicantId: user.id });
+    if (userId) void loadStaffApplications({ applicantId: userId });
   }, [
     view,
-    user?.id,
+    userId,
     loadStaffPosts,
     loadSchools,
     loadStaffApplications,

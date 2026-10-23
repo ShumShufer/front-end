@@ -10,3 +10,4 @@ export { paymentService } from "./paymentService.ts";
 export { notificationService } from "./notificationService.ts";
 export { userService } from "./userService.ts";
 export { scheduleService } from "./scheduleService.ts";
+export { uploadService } from "./uploadService.ts";

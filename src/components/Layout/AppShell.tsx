@@ -11,6 +11,7 @@ import {
   FingerprintPattern,
   Flag,
   GraduationCap,
+  Handshake,
   LayoutDashboard,
   ListChecks,
   LogOut,
@@ -69,6 +70,16 @@ function linksFor(homePath: string): NavItem[] {
         label: "Education heads",
         to: ROUTES.admin.educationHeads,
         icon: UserRound,
+      },
+      {
+        label: "Partnerships / Agreements",
+        to: ROUTES.admin.agreements,
+        icon: Handshake,
+      },
+      {
+        label: "Practice requests",
+        to: ROUTES.admin.practiceRequests,
+        icon: MapPinned,
       },
     ];
   if (homePath === ROUTES.student.dashboard)

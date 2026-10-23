@@ -14,9 +14,17 @@ export function MediaViewer() {
   const { mediaId = "" } = useParams();
 
   const decodedId = decodeURIComponent(mediaId);
+  const resolvedUrl = decodedId.startsWith("/uploads/")
+    ? import.meta.env.VITE_API_BASE_URL?.startsWith("http")
+      ? `${new URL(import.meta.env.VITE_API_BASE_URL).origin}${decodedId}`
+      : decodedId
+    : decodedId;
+
   const looksLikeUrl =
-    decodedId.startsWith("http://") || decodedId.startsWith("https://");
-  const extension = decodedId.split(".").pop()?.toUpperCase() ?? "";
+    resolvedUrl.startsWith("http://") ||
+    resolvedUrl.startsWith("https://") ||
+    resolvedUrl.startsWith("/uploads/");
+  const extension = resolvedUrl.split("?")[0].split(".").pop()?.toUpperCase() ?? "";
   const Icon = TYPE_ICONS[extension] ?? FileWarning;
 
   return (
@@ -31,16 +39,16 @@ export function MediaViewer() {
 
         {looksLikeUrl ? (
           <section className={styles.viewer}>
-            {extension === "MP4" || extension === "WEBM" ? (
-              <video controls src={decodedId} className={styles.video} />
+            {extension === "MP4" || extension === "WEBM" || extension === "MOV" ? (
+              <video controls playsInline src={resolvedUrl} className={styles.video} />
             ) : (
-              <object data={decodedId} type="application/pdf" className={styles.frame}>
+              <object data={resolvedUrl} type="application/pdf" className={styles.frame}>
                 <div className={styles.fallback}>
                   <Icon size={22} />
                   <p>
                     This document can't be previewed inline.
                   </p>
-                  <a href={decodedId} target="_blank" rel="noreferrer">
+                  <a href={resolvedUrl} target="_blank" rel="noreferrer">
                     Open in a new tab
                   </a>
                 </div>

@@ -37,7 +37,19 @@ export function PracticeQuizzes() {
     };
   }, []);
 
+  const [completedQuizzes, setCompletedQuizzes] = useState<
+    Record<string, { score: number; passed: boolean }>
+  >(() => {
+    try {
+      const saved = localStorage.getItem("completed_practice_quizzes");
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
   function startQuiz(quiz: Quiz) {
+    if (completedQuizzes[quiz.id]) return;
     setActiveQuiz(quiz);
     setAnswers(quiz.questions.map(() => ""));
     setAttempt(null);
@@ -49,6 +61,18 @@ export function PracticeQuizzes() {
     if (!activeQuiz) return;
     const result = quizService.gradeAttempt(activeQuiz, answers);
     setAttempt(result);
+    setCompletedQuizzes((prev) => {
+      const next = {
+        ...prev,
+        [activeQuiz.id]: { score: result.score, passed: result.passed },
+      };
+      try {
+        localStorage.setItem("completed_practice_quizzes", JSON.stringify(next));
+      } catch {
+        // ignore storage failure
+      }
+      return next;
+    });
     setPhase("result");
   }
 
@@ -82,9 +106,15 @@ export function PracticeQuizzes() {
                     {quiz.questions.length === 1 ? "" : "s"} · pass mark{" "}
                     {quiz.passScore}%
                   </p>
-                  <Button size="sm" onClick={() => startQuiz(quiz)}>
-                    Start quiz
-                  </Button>
+                  {completedQuizzes[quiz.id] ? (
+                    <Button size="sm" variant="secondary" disabled>
+                      Completed ({completedQuizzes[quiz.id].score}%)
+                    </Button>
+                  ) : (
+                    <Button size="sm" onClick={() => startQuiz(quiz)}>
+                      Start quiz
+                    </Button>
+                  )}
                 </article>
               ))}
             </section>
@@ -153,14 +183,14 @@ export function PracticeQuizzes() {
             <p>
               {attempt.passed
                 ? `Well done — you cleared the ${activeQuiz.passScore}% pass mark.`
-                : `You need ${activeQuiz.passScore}% to pass. Review the topic and try again.`}
+                : `You scored ${attempt.score}%. Minimum required to pass was ${activeQuiz.passScore}%.`}
+            </p>
+            <p style={{ fontSize: "0.875rem", color: "var(--color-muted)", margin: "0.5rem 0 1rem" }}>
+              Quiz submitted. This is a one-time assessment and cannot be retaken or edited.
             </p>
             <footer className={styles.actions}>
-              <Button variant="secondary" onClick={() => startQuiz(activeQuiz)}>
-                Retake
-              </Button>
               <Button
-                variant="ghost"
+                variant="primary"
                 onClick={() => {
                   setPhase("list");
                   setActiveQuiz(null);

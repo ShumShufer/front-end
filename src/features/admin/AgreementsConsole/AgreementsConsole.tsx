@@ -137,60 +137,62 @@ export function AgreementsConsole() {
         ) : school.agreements.length ? (
           <ul className={styles.list}>
             {school.agreements.map((agreement) => {
-              const isPartnerB = agreement.schoolBId === schoolId;
-              const partnerId = isPartnerB
-                ? agreement.schoolAId
-                : agreement.schoolBId;
-              return (
-                <li key={agreement.id} className={styles.item}>
-                  <div className={styles.itemMain}>
-                    <strong>{partnerName(partnerId)}</strong>
-                    <span>
-                      Proposed {formatDate(agreement.createdAt)}
-                      {isPartnerB ? " · awaiting your response" : ""}
+                const isPartnerB = agreement.schoolBId === schoolId;
+                const partnerId = isPartnerB
+                  ? agreement.schoolAId
+                  : agreement.schoolBId;
+                const isActive = agreement.status === STATUS_ACTIVE || agreement.status === "ACCEPTED";
+                const isPending = agreement.status === STATUS_PENDING;
+                return (
+                  <li key={agreement.id} className={styles.item}>
+                    <div className={styles.itemMain}>
+                      <strong>{partnerName(partnerId)}</strong>
+                      <span>
+                        Proposed {formatDate(agreement.createdAt)}
+                        {isPartnerB && isPending ? " · awaiting your response" : ""}
+                      </span>
+                    </div>
+                    <span
+                      className={`${styles.badge} ${
+                        isActive
+                          ? styles.toneSuccess
+                          : isPending
+                            ? styles.toneWarning
+                            : styles.toneNeutral
+                      }`}
+                    >
+                      {isActive ? "ACTIVE" : agreement.status}
                     </span>
-                  </div>
-                  <span
-                    className={`${styles.badge} ${
-                      agreement.status === STATUS_ACTIVE
-                        ? styles.toneSuccess
-                        : agreement.status === STATUS_PENDING
-                          ? styles.toneWarning
-                          : styles.toneNeutral
-                    }`}
-                  >
-                    {agreement.status}
-                  </span>
-                  <div className={styles.itemActions}>
-                    {isPartnerB && agreement.status === STATUS_PENDING && (
-                      <>
+                    <div className={styles.itemActions}>
+                      {isPartnerB && isPending && (
+                        <>
+                          <Button
+                            size="sm"
+                            onClick={() => void handleRespond(agreement.id, true)}
+                          >
+                            <Check size={14} /> Accept
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => void handleRespond(agreement.id, false)}
+                          >
+                            <X size={14} /> Decline
+                          </Button>
+                        </>
+                      )}
+                      {isActive && (
                         <Button
                           size="sm"
-                          onClick={() => void handleRespond(agreement.id, true)}
+                          variant="ghost"
+                          onClick={() => void handleTerminate(agreement.id)}
                         >
-                          <Check size={14} /> Accept
+                          Terminate
                         </Button>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => void handleRespond(agreement.id, false)}
-                        >
-                          <X size={14} /> Decline
-                        </Button>
-                      </>
-                    )}
-                    {agreement.status === STATUS_ACTIVE && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => void handleTerminate(agreement.id)}
-                      >
-                        Terminate
-                      </Button>
-                    )}
-                  </div>
-                </li>
-              );
+                      )}
+                    </div>
+                  </li>
+                );
             })}
           </ul>
         ) : (

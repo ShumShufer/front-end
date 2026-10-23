@@ -24,7 +24,8 @@ class SchoolService implements ISchoolService {
       const statusRes = await httpClient.patch<School, School>(`/schools/${id}/status`, {
         status: data.status,
       });
-      const { status: _status, ...rest } = data;
+      const rest = { ...data };
+      delete rest.status;
       if (Object.keys(rest).length > 0) {
         return httpClient.patch<School, School>(`/schools/${id}`, rest);
       }
@@ -54,7 +55,13 @@ class SchoolService implements ISchoolService {
   async createStaffPost(schoolId: string, data: Pick<StaffApplicationPost, "role" | "description">): Promise<StaffApplicationPost> { return httpClient.post<StaffApplicationPost, StaffApplicationPost>(`/schools/${schoolId}/staff-posts`, data); }
   async updateStaffPost(id: string, data: Partial<StaffApplicationPost>): Promise<StaffApplicationPost> { return httpClient.patch<StaffApplicationPost, StaffApplicationPost>(`/staff-posts/${id}`, data); }
   async deleteStaffPost(id: string): Promise<void> { await httpClient.delete<void, void>(`/staff-posts/${id}`); }
-  async getStaffApplications(params?: { schoolId?: string; applicantId?: string }): Promise<StaffApplication[]> { if (!params?.schoolId) return []; return httpClient.get<StaffApplication[], StaffApplication[]>(`/schools/${params.schoolId}/staff-applications`, { params }); }
+  async getStaffApplications(params?: { schoolId?: string; applicantId?: string }): Promise<StaffApplication[]> {
+    if (params?.schoolId) {
+      return httpClient.get<StaffApplication[], StaffApplication[]>(`/schools/${params.schoolId}/staff-applications`, { params });
+    }
+    // applicantId-only query (used by mentors to check their own applications)
+    return httpClient.get<StaffApplication[], StaffApplication[]>(`/staff-applications`, { params });
+  }
   async applyToStaffPost(postId: string, applicantId: string): Promise<StaffApplication> { void applicantId; return httpClient.post<StaffApplication, StaffApplication>(`/staff-posts/${postId}/apply`); }
   async updateStaffApplicationStatus(id: string, status: ApplicationStatus): Promise<StaffApplication> { return httpClient.patch<StaffApplication, StaffApplication>(`/staff-applications/${id}/${status === "ACCEPTED" ? "accept" : "reject"}`); }
   async assignEducationHead(schoolId: string, userId: string): Promise<void> { await httpClient.patch<void, void>(`/users/${userId}/assign-role`, { role: "EDUCATION_HEAD", schoolId }); }
@@ -62,8 +69,8 @@ class SchoolService implements ISchoolService {
   async getSchoolStaff(_schoolId: string, roles?: Role[]): Promise<string[]> { const response = await httpClient.get<{ users: Array<{ id: string }> }, { users: Array<{ id: string }> }>("/users", { params: { roles } }); return response.users.map((user) => user.id); }
   async getAgreements(params?: { schoolId?: string }): Promise<SchoolAgreement[]> { return httpClient.get<SchoolAgreement[], SchoolAgreement[]>("/agreements", { params }); }
   async proposeAgreement(_proposerSchoolId: string, partnerSchoolId: string): Promise<SchoolAgreement> { return httpClient.post<SchoolAgreement, SchoolAgreement>("/agreements", { partnerSchoolId, feeSplit: { homeSchoolPercent: 50, hostSchoolPercent: 50 } }); }
-  async respondToAgreement(id: string, accept: boolean): Promise<SchoolAgreement> { return httpClient.patch<SchoolAgreement, SchoolAgreement>(`/agreements/${id}/status`, { status: accept ? "ACCEPTED" : "REJECTED" }); }
-  async terminateAgreement(id: string): Promise<SchoolAgreement> { return httpClient.patch<SchoolAgreement, SchoolAgreement>(`/agreements/${id}/status`, { status: "REJECTED" }); }
+  async respondToAgreement(id: string, accept: boolean): Promise<SchoolAgreement> { return httpClient.patch<SchoolAgreement, SchoolAgreement>(`/agreements/${id}/status`, { status: accept ? "ACTIVE" : "REJECTED" }); }
+  async terminateAgreement(id: string): Promise<SchoolAgreement> { return httpClient.patch<SchoolAgreement, SchoolAgreement>(`/agreements/${id}/status`, { status: "TERMINATED" }); }
   async getReviews(params?: { schoolId?: string }): Promise<Review[]> { return httpClient.get<Review[], Review[]>(`/schools/${params?.schoolId}/reviews`); }
   async addReview(schoolId: string, _studentId: string, rating: number, comment: string): Promise<Review> { return httpClient.post<Review, Review>(`/schools/${schoolId}/reviews`, { rating, comment }); }
   async getApplicationForm(schoolId: string): Promise<ApplicationFormTemplate["fields"]> { const response = await httpClient.get<ApplicationFormTemplate, ApplicationFormTemplate>(`/schools/${schoolId}/application-form`); return response.fields; }

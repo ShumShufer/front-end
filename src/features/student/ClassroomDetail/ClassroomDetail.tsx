@@ -312,7 +312,9 @@ export function ClassroomDetail({ tab }: { tab: ClassroomTab }) {
                       <Link to={ROUTES.student.coursePlayer(c.id)}>
                         Open course
                       </Link>
-                      <Link to={ROUTES.student.courseExam(c.id)}>Final exam</Link>
+                      {result?.finalExamScore == null && (
+                        <Link to={ROUTES.student.courseExam(c.id)}>Final exam</Link>
+                      )}
                     </div>
                   </article>
                 );
@@ -423,6 +425,13 @@ export function ClassroomDetail({ tab }: { tab: ClassroomTab }) {
             <section className={styles.stack}>
               {classroom.resources.map((r) => {
                 const Icon = RESOURCE_ICONS[r.type] ?? Link2;
+                const resourceHref = r.url.startsWith("http")
+                  ? r.url
+                  : r.url.startsWith("/uploads/")
+                  ? (import.meta.env.VITE_API_BASE_URL?.startsWith("http")
+                      ? `${new URL(import.meta.env.VITE_API_BASE_URL).origin}${r.url}`
+                      : r.url)
+                  : r.url;
                 return (
                   <article key={r.id} className={styles.rowCard}>
                     <Icon size={18} />
@@ -433,7 +442,7 @@ export function ClassroomDetail({ tab }: { tab: ClassroomTab }) {
                         {r.mandatory ? " · Mandatory" : " · Optional"}
                       </span>
                     </div>
-                    <a href={r.url} target="_blank" rel="noreferrer">
+                    <a href={resourceHref} target="_blank" rel="noreferrer">
                       Open
                     </a>
                   </article>
