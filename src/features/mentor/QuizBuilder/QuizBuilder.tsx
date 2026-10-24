@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { ArrowLeft, CheckCircle2, ListChecks, PlusCircle, Trash2 } from "lucide-react";
 import { Button } from "../../../components/Button/Button.tsx";
 import { EmptyState } from "../../../components/EmptyState/EmptyState.tsx";
@@ -7,7 +6,6 @@ import { PageSkeleton } from "../../../components/Skeleton/PageSkeleton.tsx";
 import { useCourse } from "../../../context/course/useCourse.ts";
 import { quizService } from "../../../services/index.ts";
 import type { Quiz } from "../../../types/quiz.types.ts";
-import { ROUTES } from "../../../router/routes.config.ts";
 import styles from "./QuizBuilder.module.css";
 
 const MIN_QUESTIONS = 1;
@@ -116,26 +114,33 @@ export function QuizBuilder() {
     }
     setIsSaving(true);
     try {
-      const payload: Quiz["questions"] = questions.map((q) => {
+      const payload = questions.map((q) => {
         const options = q.options.map((o) => o.text.trim()).filter(Boolean);
         return {
           question: q.prompt.trim(),
           options,
           correctAnswer: options[q.correctIndex] ?? "",
-          points: Number(q.points) || 0,
+          correctOptionIndex: q.correctIndex,
+          points: Number(q.points) || 1,
         };
       });
       await quizService.createQuiz({
-        topicId: selectedTopicId,
+        topicId: selectedTopicId || undefined,
         title:
-          courses.find((c) => c.id === selectedCourseId)?.title ?? "Practice quiz",
+          courses.find((c) => c.id === selectedCourseId)?.title
+            ? `${courses.find((c) => c.id === selectedCourseId)?.title} - Theory Quiz`
+            : "Practice quiz",
         passScore: numericPass,
-        questions: payload,
+        questions: payload as unknown as Quiz["questions"],
       });
       setSuccessMessage("Quiz published — students can take it from Practice quizzes.");
       setQuestions([emptyQuestion()]);
-    } catch {
-      setFormError("The quiz could not be saved. Please try again.");
+    } catch (err: unknown) {
+      const apiMsg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        (err as { message?: string })?.message ||
+        "The quiz could not be saved. Please try again.";
+      setFormError(apiMsg);
     } finally {
       setIsSaving(false);
     }
@@ -146,9 +151,14 @@ export function QuizBuilder() {
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
-        <Link to={ROUTES.mentor.dashboard} className={styles.back}>
-          <ArrowLeft size={16} /> Dashboard
-        </Link>
+        <button
+          type="button"
+          onClick={() => window.history.back()}
+          className={styles.back}
+          style={{ background: "none", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: 0 }}
+        >
+          <ArrowLeft size={16} /> Back
+        </button>
         <header className={styles.header}>
           <p>
             <ListChecks size={14} /> Quiz builder
@@ -250,6 +260,7 @@ export function QuizBuilder() {
                       <li key={oIndex}>
                         <button
                           type="button"
+                          title={question.correctIndex === oIndex ? "This is the correct answer" : "Click to mark this option as the correct answer"}
                           aria-label={`Mark option ${oIndex + 1} correct`}
                           className={`${styles.correctToggle} ${
                             question.correctIndex === oIndex ? styles.correctOn : ""
@@ -257,8 +268,21 @@ export function QuizBuilder() {
                           onClick={() =>
                             updateQuestion(qIndex, { correctIndex: oIndex })
                           }
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            padding: "4px 8px",
+                            borderRadius: "6px",
+                            cursor: "pointer",
+                            background: question.correctIndex === oIndex ? "rgba(16, 185, 129, 0.15)" : "transparent",
+                            border: question.correctIndex === oIndex ? "1px solid #10b981" : "1px dashed #9ca3af",
+                          }}
                         >
                           <CheckCircle2 size={18} />
+                          <span style={{ fontSize: "12px", fontWeight: question.correctIndex === oIndex ? 600 : 400 }}>
+                            {question.correctIndex === oIndex ? "Correct" : "Mark"}
+                          </span>
                         </button>
                         <input
                           value={option.text}

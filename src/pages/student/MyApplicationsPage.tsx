@@ -19,12 +19,13 @@ export default function MyApplicationsPage() {
   const { showToast } = useUI();
   const { loadEnrollments } = enrollment;
   const { loadSchools } = school;
+  const userId = user?.id;
   useEffect(() => {
-    if (user) {
-      void loadEnrollments({ studentId: user.id });
+    if (userId) {
+      void loadEnrollments({ studentId: userId });
       void loadSchools({ status: "ACTIVE" });
     }
-  }, [user?.id, loadEnrollments, loadSchools]);
+  }, [userId, loadEnrollments, loadSchools]);
   if (enrollment.isLoading || school.isLoading)
     return <PageSkeleton variant="list" />;
   const schools = school.schools?.data || [];

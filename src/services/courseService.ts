@@ -2,13 +2,17 @@ import type { ICourseService } from "./interfaces/ICourseService.ts";
 import type { Course, Topic, CourseResult, ClassroomCourseLink } from "../types/course.types.ts";
 import httpClient from "./api/httpClient.ts";
 
-type CourseListResponse = { courses: Course[] };
+type CourseListResponse = { courses: Course[] } | Course[];
 type ProgressResponse = { progress?: CourseResult[]; results?: CourseResult[] };
 
 class CourseService implements ICourseService {
   async getCourses(params?: { schoolId?: string }): Promise<Course[]> {
     const response = await httpClient.get<CourseListResponse, CourseListResponse>("/courses", { params });
-    return response.courses;
+    // Backend returns { success, data: Course[] }; interceptor unwraps to the array directly.
+    // Guard against both shapes for safety.
+    if (Array.isArray(response)) return response;
+    if ('courses' in response && Array.isArray(response.courses)) return response.courses;
+    return [];
   }
 
   async getCourseById(id: string): Promise<Course> { return httpClient.get<Course, Course>(`/courses/${id}`); }
@@ -35,7 +39,7 @@ class CourseService implements ICourseService {
   }
 
   async submitFinalExam(courseId: string, studentId: string, classroomId: string, score: number, passScore: number): Promise<CourseResult> {
-    return this.publishResult(courseId, studentId, { classroomId, finalExamScore: score, status: score >= passScore ? "PASSED" : "RETAKE_REQUIRED" });
+    return this.publishResult(courseId, studentId, { classroomId, finalExamScore: score, status: score >= passScore ? "PASSED" : "FAILED" });
   }
 }
 

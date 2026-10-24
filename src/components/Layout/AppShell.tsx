@@ -11,7 +11,9 @@ import {
   FingerprintPattern,
   Flag,
   GraduationCap,
+  Handshake,
   LayoutDashboard,
+  ListChecks,
   LogOut,
   MapPinned,
   Megaphone,
@@ -69,6 +71,16 @@ function linksFor(homePath: string): NavItem[] {
         to: ROUTES.admin.educationHeads,
         icon: UserRound,
       },
+      {
+        label: "Partnerships / Agreements",
+        to: ROUTES.admin.agreements,
+        icon: Handshake,
+      },
+      {
+        label: "Practice requests",
+        to: ROUTES.admin.practiceRequests,
+        icon: MapPinned,
+      },
     ];
   if (homePath === ROUTES.student.dashboard)
     return [
@@ -76,6 +88,8 @@ function linksFor(homePath: string): NavItem[] {
       { label: "My schools", to: ROUTES.student.applications, icon: School },
       { label: "Classrooms", to: ROUTES.student.classroom, icon: GraduationCap },
       { label: "Courses", to: ROUTES.student.courses, icon: ClipboardList },
+      { label: "Practice quizzes", to: ROUTES.student.practiceQuizzes, icon: ListChecks },
+      { label: "Payments (Chapa)", to: ROUTES.student.payments, icon: CreditCard },
       { label: "My results", to: ROUTES.student.results, icon: ClipboardCheck },
       { label: "My profile", to: ROUTES.student.profile, icon: UserRound },
       { label: "Notifications", to: ROUTES.student.notifications, icon: Bell },
@@ -85,6 +99,7 @@ function linksFor(homePath: string): NavItem[] {
       { label: "Dashboard", to: homePath, icon: LayoutDashboard },
       { label: "My classrooms", to: ROUTES.mentor.classrooms, icon: GraduationCap },
       { label: "Course delivery", to: ROUTES.mentor.courses, icon: ClipboardList },
+      { label: "Quiz builder", to: ROUTES.mentor.quizBuilder, icon: ListChecks },
       { label: "Job openings", to: ROUTES.mentor.openings, icon: Briefcase },
       { label: "My profile", to: ROUTES.mentor.profile, icon: UserRound },
       { label: "Notifications", to: ROUTES.mentor.notifications, icon: Bell },
@@ -96,6 +111,7 @@ function linksFor(homePath: string): NavItem[] {
       { label: "Mentor assignments", to: ROUTES.educationHead.mentors, icon: Users },
       { label: "School calendar", to: ROUTES.educationHead.schedule, icon: Calendar },
       { label: "Course oversight", to: ROUTES.educationHead.courses, icon: ClipboardList },
+      { label: "Quiz builder", to: ROUTES.educationHead.quizBuilder, icon: ListChecks },
       { label: "Notifications", to: ROUTES.educationHead.notifications, icon: Bell },
     ];
   
