@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { AdminManagement } from "../../features/super-admin/AdminManagement/AdminManagement.tsx";
 
 export default function AdminManagementPage() {
-  return <PlaceholderPage title="Admin Management" section="Super Admin" />;
+  return <AdminManagement />;
 }

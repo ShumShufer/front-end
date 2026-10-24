@@ -1,6 +1,8 @@
 import { type FormEvent, useEffect, useMemo } from "react";
 import {
+  Calendar,
   GraduationCap,
+  Handshake,
   MapPin,
   Plus,
   Trash2,
@@ -57,7 +59,7 @@ export function SchoolAdminWorkspace({ view }: { view: WorkspaceView }) {
     void loadBranches(schoolId);
     void loadClassrooms(schoolId);
     void loadStaffPosts(schoolId);
-    void loadStaffApplications(schoolId);
+    void loadStaffApplications({ schoolId });
     void loadUsers();
   }, [
     schoolId,
@@ -152,6 +154,12 @@ export function SchoolAdminWorkspace({ view }: { view: WorkspaceView }) {
                   <section className={styles.card}>
                     <h2>Run the next school action</h2>
                     <div className={styles.actionList}>
+                      <Link to={ROUTES.admin.agreements}>
+                        <Handshake size={18} /> Partnerships & agreements
+                      </Link>
+                      <Link to={ROUTES.admin.schedule}>
+                        <Calendar size={18} /> Master school calendar
+                      </Link>
                       <Link to={ROUTES.admin.classrooms}>
                         <GraduationCap size={18} /> Create a classroom and
                         assign a mentor
@@ -435,16 +443,22 @@ export function SchoolAdminWorkspace({ view }: { view: WorkspaceView }) {
                   school.staffApplications.map((application) => (
                     <article key={application.id} className={styles.row}>
                       <div>
-                        <strong>{userName(application.applicantId)}</strong>
+                        <strong>
+                          {application.applicant
+                            ? `${application.applicant.firstName} ${application.applicant.lastName}`
+                            : userName(application.applicantId)}
+                        </strong>
                         <span>
                           Applied for{" "}
                           {
                             roleNames[
+                              application.post?.role ||
                               school.staffPosts.find(
                                 (post) => post.id === application.postId,
                               )?.role || Role.MENTOR
                             ]
                           }
+                          {application.applicant?.email && ` · ${application.applicant.email}`}
                         </span>
                       </div>
                       <div className={styles.inlineAction}>

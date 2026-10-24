@@ -9,6 +9,7 @@ type TaskAction =
   | { type: "FETCH_TASKS_SUCCESS"; payload: Task[] }
   | { type: "FETCH_TASK_SUCCESS"; payload: Task }
   | { type: "FETCH_SUBMISSIONS_SUCCESS"; payload: Submission[] }
+  | { type: "FETCH_STUDENT_SUBMISSIONS_SUCCESS"; payload: Submission[] }
   | { type: "ACTION_SUCCESS" }
   | { type: "FETCH_ERROR"; payload: string };
 
@@ -22,6 +23,8 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
       return { ...state, isLoading: false, activeTask: action.payload };
     case "FETCH_SUBMISSIONS_SUCCESS":
       return { ...state, isLoading: false, submissions: action.payload };
+    case "FETCH_STUDENT_SUBMISSIONS_SUCCESS":
+      return { ...state, isLoading: false, studentSubmissions: action.payload };
     case "ACTION_SUCCESS":
       return { ...state, isLoading: false, error: null };
     case "FETCH_ERROR":
@@ -38,6 +41,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
     tasks: [],
     activeTask: null,
     submissions: [],
+    studentSubmissions: [],
     isLoading: false,
     error: null,
   });
@@ -160,6 +164,35 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
     [],
   );
 
+  const loadStudentSubmissions = useCallback(async (studentId: string) => {
+    dispatch({ type: "FETCH_START" });
+    try {
+      const submissions = await taskService.getStudentSubmissions(studentId);
+      dispatch({
+        type: "FETCH_STUDENT_SUBMISSIONS_SUCCESS",
+        payload: submissions,
+      });
+    } catch (error: unknown) {
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: getErrorMessage(error, "Failed to load your submissions"),
+      });
+    }
+  }, []);
+
+  const loadSubmissionById = useCallback(async (id: string) => {
+    dispatch({ type: "FETCH_START" });
+    try {
+      const submission = await taskService.getSubmissionById(id);
+      dispatch({ type: "FETCH_SUBMISSIONS_SUCCESS", payload: [submission] });
+    } catch (error: unknown) {
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: getErrorMessage(error, "Failed to load the submission"),
+      });
+    }
+  }, []);
+
   return (
     <TaskContext.Provider
       value={{
@@ -170,6 +203,8 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
         updateTask,
         deleteTask,
         loadSubmissions,
+        loadStudentSubmissions,
+        loadSubmissionById,
         submitTask,
         gradeSubmission,
       }}

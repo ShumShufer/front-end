@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { StudentsDirectory } from "../../features/admin/StudentsDirectory/StudentsDirectory.tsx";
 
 export default function StudentsDirectoryPage() {
-  return <PlaceholderPage title="Students Directory" section="Admin" />;
+  return <StudentsDirectory />;
 }

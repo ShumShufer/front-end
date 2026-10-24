@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from "react-router-dom";
-import type { Role } from "../types/common.types.ts";
+import { Role, VerificationStatus } from "../types/common.types.ts";
 import { useAuth } from "../context/auth/useAuth.ts";
 import { hasRole, getDashboardPathForRole } from "../utils/permissions.ts";
 import { ROUTES } from "./routes.config.ts";
@@ -34,6 +34,14 @@ export function ProtectedRoute({
     );
   }
 
+  // If a student account is pending Fayda verification, gate access and route to verify-fayda
+  if (
+    user.role === Role.STUDENT &&
+    user.verificationStatus === VerificationStatus.PENDING
+  ) {
+    return <Navigate to={ROUTES.auth.verifyFayda} replace />;
+  }
+
   if (!hasRole(user.role, allowedRoles)) {
     return <Navigate to={ROUTES.shared.forbidden} replace />;
   }
@@ -53,6 +61,9 @@ export function GuestRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (user) {
+    if (user.verificationStatus === VerificationStatus.PENDING) {
+      return <Navigate to={ROUTES.auth.verifyFayda} replace />;
+    }
     return <Navigate to={getDashboardPathForRole(user.role)} replace />;
   }
 

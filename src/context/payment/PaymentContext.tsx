@@ -20,7 +20,8 @@ export interface PaymentContextType extends PaymentState {
     type: string,
     amount: number,
     relatedEntityId?: string,
-  ) => Promise<void>;
+  ) => Promise<{ checkoutUrl: string; payment: Payment }>;
+  verifyPayment: (txRef: string) => Promise<Payment>;
 }
 
 export const PaymentContext = createContext<PaymentContextType | null>(null);

@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { AnnouncementComposer } from "../../features/mentor/AnnouncementComposer/AnnouncementComposer.tsx";
 
 export default function CreateAnnouncementPage() {
-  return <PlaceholderPage title="Create/Edit Announcement" section="Mentor" />;
+  return <AnnouncementComposer />;
 }

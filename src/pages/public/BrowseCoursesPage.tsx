@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { BrowseCourses } from "../../features/public/BrowseCourses/BrowseCourses.tsx";
 
 export default function BrowseCoursesPage() {
-  return (
-    <PlaceholderPage title="Browse Independent Courses" section="Public" />
-  );
+  return <BrowseCourses />;
 }

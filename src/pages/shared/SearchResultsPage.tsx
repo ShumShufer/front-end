@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "./PlaceholderPage.tsx";
+import { SearchResults } from "../../features/public/SearchResults/SearchResults.tsx";
 
 export default function SearchResultsPage() {
-  return <PlaceholderPage title="Global Search Results" section="Shared" />;
+  return <SearchResults />;
 }

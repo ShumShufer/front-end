@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { CourseDetail } from "../../features/public/CourseDetail/CourseDetail.tsx";
 
 export default function CourseDetailPage() {
-  return <PlaceholderPage title="Independent Course Detail" section="Public" />;
+  return <CourseDetail />;
 }

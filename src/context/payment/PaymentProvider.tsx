@@ -90,6 +90,7 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
           relatedEntityId,
         );
         dispatch({ type: "INITIATE_PAYMENT_SUCCESS", payload: data });
+        return data;
       } catch (error: unknown) {
         dispatch({
           type: "FETCH_ERROR",
@@ -101,6 +102,21 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
     [],
   );
 
+  const verifyPayment = useCallback(async (txRef: string) => {
+    dispatch({ type: "FETCH_START" });
+    try {
+      const data = await paymentService.verifyPayment(txRef);
+      dispatch({ type: "FETCH_PAYMENT_SUCCESS", payload: data });
+      return data;
+    } catch (error: unknown) {
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: getErrorMessage(error, "Failed to verify payment"),
+      });
+      throw error;
+    }
+  }, []);
+
   return (
     <PaymentContext.Provider
       value={{
@@ -108,6 +124,7 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({
         loadPayments,
         loadPaymentById,
         initiatePayment,
+        verifyPayment,
       }}
     >
       {children}

@@ -12,4 +12,5 @@ export interface IPaymentService {
     amount: number,
     relatedEntityId?: string,
   ): Promise<{ checkoutUrl: string; payment: Payment }>;
+  verifyPayment(txRef: string): Promise<Payment>;
 }

@@ -5,7 +5,8 @@ export interface Quiz {
   questions: Array<{
     question: string;
     options: string[];
-    correctAnswer: string;
+    correctAnswer?: string;
+    correctOptionIndex?: number;
     points: number;
   }>;
   passScore: number;

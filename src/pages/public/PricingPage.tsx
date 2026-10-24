@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { Pricing } from "../../features/public/Pricing/Pricing.tsx";
 
 export default function PricingPage() {
-  return <PlaceholderPage title="Pricing & Commission Info" section="Public" />;
+  return <Pricing />;
 }

@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { ClassroomDetail } from "../../features/student/ClassroomDetail/ClassroomDetail.tsx";
 
 export default function ClassroomFeedPage() {
-  return <PlaceholderPage title="What's New Feed" section="Student" />;
+  return <ClassroomDetail tab="feed" />;
 }

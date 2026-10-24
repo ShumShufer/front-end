@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { RevenueReport } from "../../features/admin/RevenueReport/RevenueReport.tsx";
 
 export default function RevenueReportPage() {
-  return (
-    <PlaceholderPage title="Revenue & Commission Report" section="Admin" />
-  );
+  return <RevenueReport />;
 }

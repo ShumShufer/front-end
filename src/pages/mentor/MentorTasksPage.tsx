@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { MentorTaskBoard } from "../../features/mentor/MentorTaskBoard/MentorTaskBoard.tsx";
 
 export default function MentorTasksPage() {
-  return <PlaceholderPage title="Tasks / Assignments" section="Mentor" />;
+  return <MentorTaskBoard />;
 }

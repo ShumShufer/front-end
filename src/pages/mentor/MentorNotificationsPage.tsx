@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { NotificationsCenter } from "../../features/shared/Notifications/NotificationsCenter.tsx";
 
 export default function MentorNotificationsPage() {
-  return <PlaceholderPage title="Notifications Center" section="Mentor" />;
+  return <NotificationsCenter section="Mentor" />;
 }

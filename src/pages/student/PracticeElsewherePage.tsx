@@ -1,7 +1,5 @@
-import { PlaceholderPage } from "../shared/PlaceholderPage.tsx";
+import { PracticeElsewhere } from "../../features/student/PracticeElsewhere/PracticeElsewhere.tsx";
 
 export default function PracticeElsewherePage() {
-  return (
-    <PlaceholderPage title="Practice-Elsewhere Request" section="Student" />
-  );
+  return <PracticeElsewhere />;
 }
