@@ -1,94 +1,475 @@
+/* Official Fayda National ID verification styles inspired by id.gov.et/scanId */
+
 .page {
-  min-height: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  background: radial-gradient(circle at top, #163242 0%, #0d1e28 100%);
+  color: #f1f5f9;
+  font-family: inherit;
+}
+
+.scannerContainer {
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(46, 168, 109, 0.15);
+  border: 1px solid rgba(46, 168, 109, 0.35);
+  color: #47f4c7;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  font-size: clamp(1.6rem, 3.5vw, 2.3rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.subhead {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 520px;
+  margin: 0;
+}
+
+/* Main Verification Card */
+.mainCard {
+  background: #11222e;
+  border: 1px solid #223c4d;
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.contentWrapper {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Official Portal Hero Card */
+.portalHeroCard {
+  background: linear-gradient(145deg, #183141 0%, #12232f 100%);
+  border: 1px solid #2a4c62;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.portalHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.portalIconWrapper {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: rgba(71, 244, 199, 0.12);
+  border: 1px solid rgba(71, 244, 199, 0.3);
+  color: #47f4c7;
   display: grid;
   place-items: center;
-  padding: var(--space-6);
-  background: var(--color-bg);
+  flex-shrink: 0;
 }
-.card {
-  width: 100%;
-  max-width: 460px;
-  display: grid;
-  gap: var(--space-5);
-  padding: var(--space-8) var(--space-7);
-  background: var(--color-surface-raised);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-card);
+
+.portalTitleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
-.header p {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--color-primary);
-  font-size: var(--text-xs);
-  font-weight: var(--font-weight-bold);
+
+.agencyTag {
+  font-size: 0.75rem;
+  color: #47f4c7;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wide);
 }
-.header h1 {
-  font-size: var(--text-2xl);
-  letter-spacing: var(--letter-spacing-tight);
+
+.portalTitleArea h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
 }
-.header span {
-  display: block;
-  margin-top: var(--space-1);
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
+
+.portalDescription {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 0;
 }
-.form {
-  display: grid;
-  gap: var(--space-4);
-}
-.field {
-  display: grid;
-  gap: var(--space-2);
-}
-.field span {
+
+.primaryPortalLink {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-semibold);
+  justify-content: center;
+  gap: 0.65rem;
+  background: linear-gradient(135deg, #2ea86d 0%, #208053 100%);
+  color: #ffffff;
+  padding: 0.85rem 1.4rem;
+  border-radius: 0.65rem;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 6px 18px rgba(46, 168, 109, 0.3);
+  transition: all 0.2s ease;
+  width: 100%;
 }
-.field input {
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-bg);
-  color: var(--color-text);
-  font: inherit;
-  font-size: var(--text-sm);
+
+.primaryPortalLink:hover {
+  background: linear-gradient(135deg, #33bb7a 0%, #259460 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(46, 168, 109, 0.4);
 }
-.field input:focus {
+
+/* Form Section */
+.verificationForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.inputLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.textInput {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: #09131a;
+  border: 1px solid #244255;
+  border-radius: 0.5rem;
+  color: #f1f5f9;
+  font-size: 0.95rem;
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 var(--space-1) var(--color-focus-ring);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.formError {
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-danger-subtle);
-  color: var(--color-danger);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
+
+.textInput:focus {
+  border-color: #47f4c7;
+  box-shadow: 0 0 0 3px rgba(71, 244, 199, 0.15);
 }
-.formSuccess {
+
+.textInput::placeholder {
+  color: #476173;
+}
+
+.inputHelp {
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* Error Banner */
+.errorBanner {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+/* Submit Button */
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #2c566a;
+  color: #ffffff;
+  border: 1px solid #3c6d85;
+  border-radius: 0.5rem;
+  padding: 0.8rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: #36657d;
+  transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ───────────────────────────────────────────────────
+   OFFICIAL id.gov.et "VERIFIED IDENTITY!" CARD UI
+──────────────────────────────────────────────────── */
+.verifiedCard {
+  background: #ffffff;
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.verifiedBanner {
+  background: #2ea86d;
+  color: #ffffff;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.checkCircle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #2ea86d;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.checkIcon {
+  stroke-width: 2.5;
+}
+
+.verifiedBanner h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  margin: 0;
+  color: #ffffff;
+}
+
+.verifiedBody {
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  gap: 1.75rem;
+  align-items: flex-start;
+}
+
+.photoContainer {
+  flex-shrink: 0;
+}
+
+.avatarPlaceholder {
+  width: 104px;
+  height: 116px;
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: #2ea86d;
+}
+
+.citizenDetails {
   flex: 1;
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-success-subtle);
-  color: var(--color-success);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.95rem;
 }
-.successRow {
+
+.detailRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.detailLabel {
+  color: #2c566a;
+  font-weight: 700;
+  min-width: 95px;
+}
+
+.detailValue {
+  color: #0f172a;
+}
+
+.fcnValue {
+  font-family: ui-monospace, monospace;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #047857;
+  background: #ecfdf5;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #a7f3d0;
+}
+
+.verifiedFooter {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
   flex-wrap: wrap;
+  gap: 0.75rem;
 }
-@media (max-width: 480px) {
-  .card {
-    padding: var(--space-6) var(--space-5);
+
+.countdownText {
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.proceedButton {
+  background: #2c566a;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.15rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.proceedButton:hover {
+  background: #234555;
+}
+
+/* Bottom Official Link Banner */
+.downloadBanner {
+  background: #0f1e28;
+  border: 1px solid #1e3848;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.downloadIcon {
+  color: #47f4c7;
+  display: grid;
+  place-items: center;
+}
+
+.downloadText {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.downloadText span {
+  font-size: 0.7rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.downloadText strong {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.externalLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #47f4c7;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  background: rgba(71, 244, 199, 0.08);
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.externalLink:hover {
+  background: rgba(71, 244, 199, 0.16);
+}
+
+@media (max-width: 600px) {
+  .verifiedBody {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .detailRow {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+  }
+  .detailLabel {
+    min-width: unset;
   }
 }
