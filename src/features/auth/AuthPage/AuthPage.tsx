@@ -24,6 +24,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
@@ -55,6 +56,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const switchMode = (nextMode: AuthMode) => {
     setMode(nextMode);
     setFormError(null);
+    setConfirmPassword("");
     navigate(nextMode === "login" ? ROUTES.auth.login : ROUTES.auth.register, {
       replace: true,
     });
@@ -103,6 +105,14 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
       setFormError(
         "Password must be at least 8 characters and include uppercase, lowercase, a digit and a special character.",
       );
+      return;
+    }
+    if (!confirmPassword) {
+      setFormError("Please confirm your password.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setFormError("Passwords do not match.");
       return;
     }
 
@@ -322,6 +332,19 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     placeholder="Create a password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
+                    icon={<Lock size={16} />}
+                  />
+
+                  <Input
+                    label="Confirm password"
+                    name="confirmPassword"
+                    type="password"
+                    required
+                    minLength={8}
+                    autoComplete="new-password"
+                    placeholder="Re-enter your password"
+                    value={confirmPassword}
+                    onChange={(event) => setConfirmPassword(event.target.value)}
                     icon={<Lock size={16} />}
                   />
 
