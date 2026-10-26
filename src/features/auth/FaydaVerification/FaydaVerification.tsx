@@ -46,7 +46,7 @@ function extractFaydaId(raw: string): string {
     }
   }
 
-  // Check 16-digit FCN sequence (e.g., 4126 5294 6025 8493 or 4126529460258493)
+  // Check 16-digit FCN sequence (e.g., 1234 5678 9012 3456 or 1234567890123456)
   const fcnMatch = trimmed.match(/\b\d{4}\s?\d{4}\s?\d{4}\s?\d{4}\b/);
   if (fcnMatch) {
     return fcnMatch[0].replace(/\s/g, "");
@@ -456,7 +456,7 @@ export function FaydaVerification() {
                     />
                   </div>
                   <span className={styles.inputHelp}>
-                    The 16-digit number printed on your Fayda card (e.g. 4126529460258493)
+                    The 16-digit number printed on your Fayda card (e.g. 1234 5678 9012 3456)
                   </span>
                 </div>
 
