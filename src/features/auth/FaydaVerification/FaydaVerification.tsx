@@ -46,7 +46,7 @@ function extractFaydaId(raw: string): string {
     }
   }
 
-  // Check 16-digit FCN sequence (e.g., 4126 5294 6025 8493 or 4126529460258493)
+  // Check 16-digit FCN sequence (e.g., 7483 9201 8472 9102 or 7483920184729102)
   const fcnMatch = trimmed.match(/\b\d{4}\s?\d{4}\s?\d{4}\s?\d{4}\b/);
   if (fcnMatch) {
     return fcnMatch[0].replace(/\s/g, "");
@@ -449,15 +449,66 @@ export function FaydaVerification() {
                       id="faydaIdInput"
                       type="text"
                       className={styles.textInput}
-                      placeholder="e.g. 4126 5294 6025 8493 or FAY-123456"
+                      placeholder="e.g. 7483 9201 8472 9102 or FAY-123456"
                       value={faydaIdInput}
                       onChange={(e) => setFaydaIdInput(e.target.value)}
                       disabled={verificationState === "verifying"}
                     />
                   </div>
                   <span className={styles.inputHelp}>
-                    The 16-digit number printed on your Fayda card (e.g. 4126529460258493)
+                    The 16-digit number printed on your Fayda card (e.g. 7483920184729102)
                   </span>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center", marginTop: "8px" }}>
+                    <span style={{ fontSize: "11px", color: "var(--color-text-muted, #64748b)" }}>Quick Test Values:</span>
+                    <button
+                      type="button"
+                      onClick={() => setFaydaIdInput("7483 9201 8472 9102")}
+                      style={{
+                        background: "#f1f5f9",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "12px",
+                        padding: "2px 8px",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                        color: "#1e293b",
+                        fontWeight: 500,
+                      }}
+                    >
+                      7483 9201 8472 9102 (16-Digit)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFaydaIdInput("FAY-123456")}
+                      style={{
+                        background: "#f1f5f9",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "12px",
+                        padding: "2px 8px",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                        color: "#1e293b",
+                        fontWeight: 500,
+                      }}
+                    >
+                      FAY-123456
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFaydaIdInput("0911223344")}
+                      style={{
+                        background: "#f1f5f9",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "12px",
+                        padding: "2px 8px",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                        color: "#1e293b",
+                        fontWeight: 500,
+                      }}
+                    >
+                      0911223344 (Phone)
+                    </button>
+                  </div>
                 </div>
 
                 {/* Error Banner */}
