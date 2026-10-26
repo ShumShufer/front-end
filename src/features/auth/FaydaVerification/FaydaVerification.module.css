@@ -128,34 +128,183 @@
   margin: 0;
 }
 
-.portalDescription {
-  color: #94a3b8;
-  font-size: 0.9rem;
-  line-height: 1.55;
-  margin: 0;
-}
-
-.primaryPortalLink {
-  display: inline-flex;
+/* Camera Viewport & Live Scanner */
+.cameraViewportArea {
+  position: relative;
+  width: 100%;
+  min-height: 240px;
+  background: #09131a;
+  border: 1px solid #244255;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
-  background: linear-gradient(135deg, #2ea86d 0%, #208053 100%);
-  color: #ffffff;
-  padding: 0.85rem 1.4rem;
-  border-radius: 0.65rem;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 0.95rem;
-  box-shadow: 0 6px 18px rgba(46, 168, 109, 0.3);
-  transition: all 0.2s ease;
+}
+
+.scannerVideo {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+}
+
+.videoActive {
+  display: block;
+}
+
+.videoHidden {
+  display: none;
+}
+
+.scannerOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.reticleBox {
+  width: 190px;
+  height: 190px;
+  border: 2px solid #47f4c7;
+  border-radius: 14px;
+  box-shadow: 0 0 20px rgba(71, 244, 199, 0.35), inset 0 0 15px rgba(71, 244, 199, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.laserLine {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #47f4c7 30%, #47f4c7 70%, transparent);
+  box-shadow: 0 0 8px #47f4c7;
+  animation: laserSweep 2s ease-in-out infinite alternate;
+}
+
+@keyframes laserSweep {
+  0% {
+    top: 5%;
+  }
+  100% {
+    top: 92%;
+  }
+}
+
+.scanningPrompt {
+  margin-top: 12px;
+  background: rgba(9, 19, 26, 0.85);
+  border: 1px solid rgba(71, 244, 199, 0.3);
+  color: #47f4c7;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  backdrop-filter: blur(4px);
+}
+
+.cameraPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2.25rem 1.5rem;
+  text-align: center;
   width: 100%;
 }
 
-.primaryPortalLink:hover {
+.scanIconPlaceholder {
+  color: #47f4c7;
+  opacity: 0.85;
+}
+
+.cameraHelpText {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  max-width: 380px;
+  margin: 0;
+}
+
+.scannerActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.primaryScanBtn {
+  flex: 1;
+  min-width: 180px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #2ea86d 0%, #208053 100%);
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(46, 168, 109, 0.3);
+  transition: all 0.15s ease;
+}
+
+.primaryScanBtn:hover {
   background: linear-gradient(135deg, #33bb7a 0%, #259460 100%);
   transform: translateY(-1px);
-  box-shadow: 0 8px 22px rgba(46, 168, 109, 0.4);
+}
+
+.secondaryScanBtn {
+  flex: 1;
+  min-width: 180px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #dc2626;
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.secondaryScanBtn:hover {
+  background: #ef4444;
+}
+
+.uploadBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #183141;
+  color: #cbd5e1;
+  border: 1px solid #2a4c62;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.uploadBtn:hover {
+  background: #204054;
+  color: #ffffff;
 }
 
 /* Form Section */
