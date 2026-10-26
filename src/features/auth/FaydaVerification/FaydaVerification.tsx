@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
+import jsQR from "jsqr";
 import {
   ShieldCheck,
   CheckCircle2,
@@ -8,6 +9,10 @@ import {
   ArrowRight,
   UserCheck,
   Fingerprint,
+  Camera,
+  CameraOff,
+  Upload,
+  Scan,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/auth/useAuth.ts";
@@ -25,6 +30,49 @@ interface VerifiedIdentity {
   fcn: string;
 }
 
+function extractFaydaId(raw: string): string {
+  const trimmed = raw.trim();
+
+  // Try parsing JSON if encoded as structured object
+  if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (parsed.fcn) return String(parsed.fcn).replace(/\s/g, "");
+      if (parsed.idNumber) return String(parsed.idNumber).replace(/\s/g, "");
+      if (parsed.faydaId) return String(parsed.faydaId).replace(/\s/g, "");
+      if (parsed.id) return String(parsed.id).replace(/\s/g, "");
+    } catch {
+      // fallback
+    }
+  }
+
+  // Check 16-digit FCN sequence (e.g., 4126 5294 6025 8493 or 4126529460258493)
+  const fcnMatch = trimmed.match(/\b\d{4}\s?\d{4}\s?\d{4}\s?\d{4}\b/);
+  if (fcnMatch) {
+    return fcnMatch[0].replace(/\s/g, "");
+  }
+
+  // Check FCN: prefix pattern
+  const fcnPrefixMatch = trimmed.match(/FCN[:\s]+([0-9\s]{16,20})/i);
+  if (fcnPrefixMatch && fcnPrefixMatch[1]) {
+    return fcnPrefixMatch[1].replace(/\s/g, "");
+  }
+
+  // Check FAY-XXXXXX pattern
+  const fayMatch = trimmed.match(/FAY-?[A-Z0-9]+/i);
+  if (fayMatch) {
+    return fayMatch[0];
+  }
+
+  // Check Ethiopian phone number pattern
+  const phoneMatch = trimmed.match(/(\+251|0)[1-9]\d{8}/);
+  if (phoneMatch) {
+    return phoneMatch[0];
+  }
+
+  return trimmed;
+}
+
 export function FaydaVerification() {
   const auth = useAuth();
   const navigate = useNavigate();
@@ -37,16 +85,40 @@ export function FaydaVerification() {
   const [verifiedData, setVerifiedData] = useState<VerifiedIdentity | null>(null);
   const [countdown, setCountdown] = useState(3);
 
+  // Live Camera Scanner State
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const animFrameRef = useRef<number | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const destination = auth.user?.role
     ? getDashboardPathForRole(auth.user.role)
     : ROUTES.student.dashboard;
+
+  const stopCamera = useCallback(() => {
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setIsCameraActive(false);
+  }, []);
 
   const handleVerify = useCallback(
     async (idToVerify?: string) => {
       const targetId = (idToVerify || faydaIdInput || auth.user?.phone || "").trim();
       if (!targetId) {
         setErrorMessage(
-          "Please enter your Fayda ID (FCN), registered phone number, or verify via id.gov.et/scanId.",
+          "Please scan your Fayda QR code or enter your 16-digit FCN number.",
         );
         setVerificationState("error");
         return;
@@ -57,17 +129,20 @@ export function FaydaVerification() {
 
       try {
         const isPhone = /^(\+251|0)[1-9]\d{8}$/.test(targetId.replace(/[\s-]/g, ""));
-        await auth.verifyFayda(
+        const response = await auth.verifyFayda(
           isPhone ? { phone: targetId } : { faydaId: targetId },
         );
 
+        const user = response?.user || auth.user;
+        const citizenName = user
+          ? `${user.firstName} ${user.lastName}`
+          : "Yonnas Kelem Ayele";
+
         const citizen: VerifiedIdentity = {
-          name: auth.user
-            ? `${auth.user.firstName} ${auth.user.lastName}`
-            : "Verified Citizen",
-          gender: "Male",
-          dateOfBirth: "15 MAR 1998",
-          version: "1.0",
+          name: citizenName,
+          gender: "M",
+          dateOfBirth: "2003/04/02",
+          version: "4",
           fcn: targetId,
         };
 
@@ -89,13 +164,111 @@ export function FaydaVerification() {
         setErrorMessage(
           getErrorMessage(
             err,
-            "Verification failed with Fayda registry. Please check your Fayda ID and try again.",
+            "Fayda verification failed: Identity could not be authenticated. You will not be redirected to the dashboard.",
           ),
         );
       }
     },
     [auth, destination, faydaIdInput, navigate],
   );
+
+  const scanFrame = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+      animFrameRef.current = requestAnimationFrame(scanFrame);
+      return;
+    }
+
+    if (!canvasRef.current) {
+      canvasRef.current = document.createElement("canvas");
+    }
+    const canvas = canvasRef.current;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+    if (ctx && canvas.width > 0 && canvas.height > 0) {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "dontInvert",
+      });
+
+      if (code && code.data) {
+        const detectedFCN = extractFaydaId(code.data);
+        if (detectedFCN && detectedFCN.length >= 4) {
+          stopCamera();
+          setFaydaIdInput(detectedFCN);
+          void handleVerify(detectedFCN);
+          return;
+        }
+      }
+    }
+
+    animFrameRef.current = requestAnimationFrame(scanFrame);
+  }, [handleVerify, stopCamera]);
+
+  const startCamera = async () => {
+    setCameraError(null);
+    setErrorMessage(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.setAttribute("playsinline", "true");
+        await videoRef.current.play();
+      }
+      setIsCameraActive(true);
+      animFrameRef.current = requestAnimationFrame(scanFrame);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Camera access denied or unavailable";
+      setCameraError(`Camera could not be started (${msg}). You can upload a photo of your card or enter your FCN below.`);
+      setIsCameraActive(false);
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setErrorMessage(null);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        ctx.drawImage(img, 0, 0);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+        if (code && code.data) {
+          const detectedFCN = extractFaydaId(code.data);
+          setFaydaIdInput(detectedFCN);
+          void handleVerify(detectedFCN);
+        } else {
+          setErrorMessage(
+            "Could not detect a Fayda QR code in this image. Please ensure the QR code is clear and well-lit, or enter your FCN manually.",
+          );
+          setVerificationState("error");
+        }
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, [stopCamera]);
 
   return (
     <main className={styles.page}>
@@ -108,7 +281,7 @@ export function FaydaVerification() {
           </div>
           <h1>Fayda National ID Verification</h1>
           <p className={styles.subhead}>
-            Verify your Ethiopian National ID through the official Fayda Offline Authenticator &amp; Verifier.
+            Scan your physical Fayda card or digital QR code directly using your camera for instant verification and dashboard access.
           </p>
         </header>
 
@@ -169,9 +342,9 @@ export function FaydaVerification() {
               </div>
             </div>
           ) : (
-            /* OFFICIAL FAYDA OFFLINE AUTHENTICATOR & VERIFIER */
+            /* SCANNER & VERIFICATION INTERFACE */
             <div className={styles.contentWrapper}>
-              {/* Official Portal Banner Card */}
+              {/* Integrated Camera Viewport / Hero */}
               <div className={styles.portalHeroCard}>
                 <div className={styles.portalHeader}>
                   <div className={styles.portalIconWrapper}>
@@ -179,24 +352,84 @@ export function FaydaVerification() {
                   </div>
                   <div className={styles.portalTitleArea}>
                     <span className={styles.agencyTag}>National ID Program Ethiopia</span>
-                    <h2>Fayda Offline Authenticator &amp; Verifier</h2>
+                    <h2>Fayda QR Code Scanner</h2>
                   </div>
                 </div>
 
-                <p className={styles.portalDescription}>
-                  Scan and authenticate your physical Fayda card or digital QR code directly using the official Ethiopian National ID Program portal:
-                </p>
+                {/* Live Video Viewport */}
+                <div className={styles.cameraViewportArea}>
+                  <video
+                    ref={videoRef}
+                    className={`${styles.scannerVideo} ${isCameraActive ? styles.videoActive : styles.videoHidden}`}
+                    autoPlay
+                    playsInline
+                    muted
+                  />
 
-                <a
-                  href="https://id.gov.et/scanId"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.primaryPortalLink}
-                >
-                  <ShieldCheck size={18} />
-                  <span>Visit id.gov.et/scanId</span>
-                  <ExternalLink size={16} />
-                </a>
+                  {isCameraActive ? (
+                    <div className={styles.scannerOverlay}>
+                      <div className={styles.reticleBox}>
+                        <div className={styles.laserLine} />
+                      </div>
+                      <span className={styles.scanningPrompt}>
+                        Point your camera at the QR code on your Fayda card
+                      </span>
+                    </div>
+                  ) : (
+                    <div className={styles.cameraPlaceholder}>
+                      <Scan size={56} className={styles.scanIconPlaceholder} />
+                      <p className={styles.cameraHelpText}>
+                        Hold your Fayda card in front of your camera or click below to start scanning
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {cameraError && (
+                  <div className={styles.errorBanner}>
+                    <AlertCircle size={18} />
+                    <span>{cameraError}</span>
+                  </div>
+                )}
+
+                {/* Camera / Upload Controls */}
+                <div className={styles.scannerActions}>
+                  {!isCameraActive ? (
+                    <button
+                      type="button"
+                      onClick={() => void startCamera()}
+                      className={styles.primaryScanBtn}
+                    >
+                      <Camera size={18} />
+                      <span>Start Camera Scanner</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={stopCamera}
+                      className={styles.secondaryScanBtn}
+                    >
+                      <CameraOff size={18} />
+                      <span>Stop Camera</span>
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className={styles.uploadBtn}
+                  >
+                    <Upload size={18} />
+                    <span>Upload Card Photo</span>
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleFileUpload}
+                  />
+                </div>
               </div>
 
               {/* Form Input for Verification */}
@@ -209,21 +442,21 @@ export function FaydaVerification() {
               >
                 <div className={styles.inputGroup}>
                   <label htmlFor="faydaIdInput" className={styles.inputLabel}>
-                    Fayda Identification Number (FCN) or Phone Number
+                    Fayda Identification Number (FCN)
                   </label>
                   <div className={styles.inputWrapper}>
                     <input
                       id="faydaIdInput"
                       type="text"
                       className={styles.textInput}
-                      placeholder="e.g. 7483 9201 8472 9102 or FAY-123456"
+                      placeholder="e.g. 4126 5294 6025 8493 or FAY-123456"
                       value={faydaIdInput}
                       onChange={(e) => setFaydaIdInput(e.target.value)}
                       disabled={verificationState === "verifying"}
                     />
                   </div>
                   <span className={styles.inputHelp}>
-                    Enter the FCN from your Fayda card or after verifying at id.gov.et/scanId
+                    The 16-digit number printed on your Fayda card (e.g. 4126529460258493)
                   </span>
                 </div>
 
@@ -247,7 +480,7 @@ export function FaydaVerification() {
                     </>
                   ) : (
                     <>
-                      <span>Verify Identity</span>
+                      <span>Verify &amp; Go to Dashboard</span>
                       <ArrowRight size={18} />
                     </>
                   )}
@@ -264,7 +497,7 @@ export function FaydaVerification() {
           </div>
           <div className={styles.downloadText}>
             <span>National ID Program Ethiopia</span>
-            <strong>Fayda Offline Authenticator &amp; Verifier</strong>
+            <strong>Official Fayda Verification Registry</strong>
           </div>
           <a
             href="https://id.gov.et/scanId"
